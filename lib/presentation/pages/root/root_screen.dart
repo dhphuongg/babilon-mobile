@@ -49,7 +49,7 @@ class _RootScreenState extends State<RootScreen> {
           lastName: await SharedPreferencesHelper.getStringValue(
               SharedPreferencesHelper.LAST_NAME),
         ));
-        if (mounted) Navigator.popAndPushNamed(context, RouteName.home);
+        if (mounted) Navigator.popAndPushNamed(context, RouteName.app);
       } else {
         if (mounted) Navigator.popAndPushNamed(context, RouteName.login);
       }

@@ -1,3 +1,4 @@
+import 'package:babilon/presentation/pages/app/app_screen.dart';
 import 'package:babilon/presentation/pages/home/home_screen.dart';
 import 'package:babilon/presentation/pages/root/root_screen.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,9 @@ class AppRoutes {
         break;
       case RouteName.home:
         routeWidget = const HomeScreen();
+        break;
+      case RouteName.app:
+        routeWidget = const AppScreen();
         break;
       default:
         routeWidget;

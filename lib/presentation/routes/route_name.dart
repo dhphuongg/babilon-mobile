@@ -1,5 +1,9 @@
 class RouteName {
   static const String rootScreen = '/';
   static const String login = "login";
+  static const String app = "app";
   static const String home = "home";
+  static const String friends = "friends";
+  static const String notifications = "notifications";
+  static const String profile = "profile";
 }

@@ -99,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
       listener: (context, state) {
         if (state.loginStatus == LoadStatus.SUCCESS) {
           Navigator.pushNamedAndRemoveUntil(
-              context, RouteName.home, (Route<dynamic> route) => false);
+              context, RouteName.app, (Route<dynamic> route) => false);
         }
         if (state.loginStatus == LoadStatus.FAILURE) {
           AppSnackBar.showError(
