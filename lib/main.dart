@@ -31,6 +31,10 @@ void main() async {
     databaseFactory = databaseFactoryFfi;
   }
 
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
+
   runApp(EasyLocalization(
     supportedLocales: const [Locale('en', 'US'), Locale('vi', 'VN')],
     path: 'assets/translations',

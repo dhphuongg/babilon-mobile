@@ -42,6 +42,11 @@ class _AppScreenState extends State<AppScreen> {
     _appCubit = getIt<AppCubit>();
     pageController = PageController(initialPage: 0);
     _currentPageIndex.addListener(() {
+      if (_currentPageIndex.value != 0) {
+        _appCubit.pauseVideo();
+      } else {
+        _appCubit.playVideo();
+      }
       pageController.jumpToPage(_currentPageIndex.value);
     });
   }
@@ -58,12 +63,12 @@ class _AppScreenState extends State<AppScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
-      body: PageView(
-        physics: const NeverScrollableScrollPhysics(),
-        controller: pageController,
-        children: _screens
-            .map((screen) => SafeArea(bottom: false, child: screen))
-            .toList(),
+      body: SafeArea(
+        child: PageView(
+          physics: const NeverScrollableScrollPhysics(),
+          controller: pageController,
+          children: _screens.map((screen) => screen).toList(),
+        ),
       ),
       bottomNavigationBar: Container(
         padding: EdgeInsets.only(

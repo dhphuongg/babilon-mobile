@@ -52,4 +52,4 @@ pubspec.lock
 Podfile.lock
 
 .di.config.dart
-
+.clinerules

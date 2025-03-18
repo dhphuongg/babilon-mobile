@@ -7,6 +7,18 @@ part 'app_state.dart';
 class AppCubit extends Cubit<AppState> {
   AppCubit() : super(const AppState());
 
+  void pauseVideo() {
+    emit(state.copyWith(
+      isVideoPlaying: false,
+    ));
+  }
+
+  void playVideo() {
+    emit(state.copyWith(
+      isVideoPlaying: true,
+    ));
+  }
+
   Future<void> saveUserProfile(UserProfile userProfile) async {
     emit(state.copyWith(
       userProfile: userProfile,
