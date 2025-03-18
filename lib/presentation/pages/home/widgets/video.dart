@@ -1,3 +1,4 @@
+import 'package:babilon/presentation/pages/home/widgets/video_side_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:video_player/video_player.dart';
@@ -16,8 +17,8 @@ class AppVideo extends StatefulWidget {
 class _AppVideoState extends State<AppVideo>
     with AutomaticKeepAliveClientMixin {
   late VideoPlayerController _vidController;
-  bool _isPlaying = true;
   bool _isVisible = false;
+  bool _showPlayIcon = false;
 
   @override
   void initState() {
@@ -67,10 +68,10 @@ class _AppVideoState extends State<AppVideo>
     setState(() {
       if (_vidController.value.isPlaying) {
         _vidController.pause();
-        _isPlaying = false;
+        _showPlayIcon = true;
       } else {
         _vidController.play();
-        _isPlaying = true;
+        _showPlayIcon = false;
       }
     });
   }
@@ -86,7 +87,6 @@ class _AppVideoState extends State<AppVideo>
         color: Colors.black,
         child: _vidController.value.isInitialized
             ? Stack(
-                alignment: Alignment.center,
                 children: <Widget>[
                   GestureDetector(
                     onTap: _togglePlayPause,
@@ -98,24 +98,18 @@ class _AppVideoState extends State<AppVideo>
                       ),
                     ),
                   ),
-                  if (!_isPlaying)
-                    GestureDetector(
-                      onTap: _togglePlayPause,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.3),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Icon(
-                            Icons.play_arrow,
-                            color: Colors.white,
-                            size: 42,
-                          ),
+                  if (_showPlayIcon)
+                    Center(
+                      child: GestureDetector(
+                        onTap: _togglePlayPause,
+                        child: Icon(
+                          Icons.play_arrow_rounded,
+                          color: Colors.white.withOpacity(0.75),
+                          size: 50,
                         ),
                       ),
                     ),
+                  const VideoSideButton(),
                 ],
               )
             : const Center(
