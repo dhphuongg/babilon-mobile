@@ -4,8 +4,8 @@ import 'package:babilon/core/application/models/response/login/login.dart';
 import 'package:babilon/core/application/repositories/auth_repository.dart';
 import 'package:babilon/core/domain/resources/client_provider.dart';
 
-class AuthRepository extends IAuthRepository {
-  AuthRepository();
+class AuthRepositoryImpl extends AuthRepository {
+  AuthRepositoryImpl();
 
   @override
   Future<ObjectResponse<LoginResponse>> login(LoginRequest body) {

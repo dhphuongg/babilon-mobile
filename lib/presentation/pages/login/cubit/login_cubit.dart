@@ -1,6 +1,7 @@
 import 'package:babilon/core/application/models/response/login/login.dart';
 import 'package:babilon/core/application/models/response/user/user_profile.dart';
 import 'package:babilon/core/application/repositories/app_cubit/app_cubit.dart';
+import 'package:babilon/core/application/repositories/auth_repository.dart';
 import 'package:babilon/di.dart';
 import 'package:equatable/equatable.dart';
 import 'package:babilon/core/application/api/error_response.dart';
@@ -10,7 +11,6 @@ import 'package:babilon/core/domain/resources/client_provider.dart';
 import 'package:babilon/core/domain/utils/logger.dart';
 import 'package:babilon/core/domain/utils/share_preferrences.dart';
 import 'package:babilon/core/domain/utils/utils.dart';
-import 'package:babilon/infrastructure/repositories/auth_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'login_state.dart';

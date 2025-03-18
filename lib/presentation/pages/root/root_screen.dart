@@ -1,6 +1,5 @@
 import 'package:babilon/core/application/models/response/user/user_profile.dart';
 import 'package:babilon/core/application/repositories/app_cubit/app_cubit.dart';
-import 'package:babilon/core/domain/constants/images.dart';
 import 'package:babilon/core/domain/storages/global_storages.dart';
 import 'package:babilon/core/domain/utils/check_connection_util.dart';
 import 'package:babilon/core/domain/utils/share_preferrences.dart';
@@ -60,9 +59,9 @@ class _RootScreenState extends State<RootScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(
-        child: Image.asset(Images.logo, fit: BoxFit.fill),
+        child: Text('Root Screen'),
       ),
     );
   }

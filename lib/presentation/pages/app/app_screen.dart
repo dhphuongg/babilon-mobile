@@ -1,9 +1,15 @@
+import 'package:babilon/core/application/repositories/app_cubit/app_cubit.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
+import 'package:babilon/di.dart';
 import 'package:babilon/presentation/pages/friends/friends_screen.dart';
 import 'package:babilon/presentation/pages/home/home_screen.dart';
+import 'package:babilon/presentation/pages/create_video/create_video_screen.dart';
 import 'package:babilon/presentation/pages/notifications/notifications_screen.dart';
-import 'package:babilon/presentation/pages/profile/profile_screen.dart';
+import 'package:babilon/presentation/pages/user/cubit/user_cubit.dart';
+import 'package:babilon/presentation/pages/user/user_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppScreen extends StatefulWidget {
   const AppScreen({Key? key}) : super(key: key);
@@ -13,42 +19,95 @@ class AppScreen extends StatefulWidget {
 }
 
 class _AppScreenState extends State<AppScreen> {
-  int _selectedIndex = 0;
+  late AppCubit _appCubit;
+  ValueNotifier<int> _currentPageIndex = ValueNotifier<int>(0);
+  late PageController pageController;
 
   final List<Widget> _screens = [
     const HomeScreen(),
     const FriendsScreen(),
-    const Center(), // Placeholder for FAB
+    const CreateVideoScreen(), // Placeholder for FAB
     const NotificationsScreen(),
-    const ProfileScreen(),
+    BlocProvider(
+        create: (context) {
+          return UserCubit(userRepository: getIt());
+        },
+        child: const UserScreen())
   ];
+
+  @override
+  void initState() {
+    super.initState();
+
+    _appCubit = getIt<AppCubit>();
+    pageController = PageController(initialPage: 0);
+    _currentPageIndex.addListener(() {
+      pageController.jumpToPage(_currentPageIndex.value);
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _appCubit.close();
+    pageController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: _screens,
+      backgroundColor: AppColors.white,
+      body: PageView(
+        physics: const NeverScrollableScrollPhysics(),
+        controller: pageController,
+        children: _screens
+            .map((screen) => SafeArea(bottom: false, child: screen))
+            .toList(),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Add action here
-        },
-        shape: const CircleBorder(),
-        child: const Icon(Icons.add),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 8.0,
+      bottomNavigationBar: Container(
+        padding: EdgeInsets.only(
+          top: 5.h,
+          bottom: 20.h,
+          left: 20.w,
+          right: 20.w,
+        ),
+        decoration: const BoxDecoration(
+          // color: AppColors.black,
+          border: Border(
+            top: BorderSide(
+              color: Color.fromRGBO(0, 0, 0, 0.1),
+              width: 0.5,
+            ),
+          ),
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _buildNavItem(0, Icons.home, 'Home'),
-            _buildNavItem(1, Icons.people, 'Friends'),
-            const SizedBox(width: 48), // Space for FAB
-            _buildNavItem(3, Icons.notifications, 'Notifications'),
-            _buildNavItem(4, Icons.person, 'Profile'),
+            _buildNavItem(0, Icons.home, 'Trang chủ'),
+            _buildNavItem(1, Icons.people, 'Theo dõi'),
+            Container(
+              width: 60.w,
+              height: 40.h,
+              decoration: BoxDecoration(
+                color: AppColors.grayF5,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: GestureDetector(
+                onTap: () {
+                  _currentPageIndex.value = 2;
+                  // Navigator.pushNamed(context, RouteName.newVideo);
+                },
+                child: const Icon(
+                  Icons.add,
+                  size: 32,
+                  color: AppColors.main,
+                ), // Icon ở giữa
+              ),
+            ),
+            _buildNavItem(3, Icons.notifications, 'Thông báo'),
+            _buildNavItem(4, Icons.person, 'Hồ sơ'),
           ],
         ),
       ),
@@ -57,16 +116,26 @@ class _AppScreenState extends State<AppScreen> {
 
   Widget _buildNavItem(int index, IconData icon, String label) {
     return InkWell(
-      onTap: () => setState(() => _selectedIndex = index),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Center(
-          child: Icon(
-            icon,
-            color: _selectedIndex == index ? AppColors.main : Colors.grey,
-          ),
-        ),
-      ),
+      onTap: () => setState(() => _currentPageIndex.value = index),
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              color: _currentPageIndex.value == index
+                  ? AppColors.main
+                  : AppColors.gray,
+            ),
+            Text(label,
+                style: TextStyle(
+                    color: _currentPageIndex.value == index
+                        ? AppColors.main
+                        : AppColors.gray,
+                    fontSize: 10)),
+          ]),
     );
   }
 }

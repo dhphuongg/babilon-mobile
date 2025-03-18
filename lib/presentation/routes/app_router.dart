@@ -1,5 +1,4 @@
 import 'package:babilon/presentation/pages/app/app_screen.dart';
-import 'package:babilon/presentation/pages/home/home_screen.dart';
 import 'package:babilon/presentation/pages/root/root_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:babilon/di.dart';
@@ -24,9 +23,6 @@ class AppRoutes {
               return LoginCubit(authRepository: getIt());
             },
             child: const LoginScreen());
-        break;
-      case RouteName.home:
-        routeWidget = const HomeScreen();
         break;
       case RouteName.app:
         routeWidget = const AppScreen();

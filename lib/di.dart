@@ -1,4 +1,7 @@
+import 'package:babilon/core/application/repositories/auth_repository.dart';
+import 'package:babilon/core/application/repositories/user_repository.dart';
 import 'package:babilon/infrastructure/repositories/auth_repository.dart';
+import 'package:babilon/infrastructure/repositories/user_repository.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'core/application/repositories/app_cubit/app_cubit.dart';
@@ -17,5 +20,6 @@ Future<void> configureDependencies() async {
   getIt.registerLazySingleton<AppCubit>(() => AppCubit());
 
   // repository
-  getIt.registerLazySingleton<AuthRepository>(() => AuthRepository());
+  getIt.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl());
+  getIt.registerLazySingleton<UserRepository>(() => UserRepositoryImpl());
 }
