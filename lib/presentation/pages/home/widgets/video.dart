@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:video_player/video_player.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 class AppVideo extends StatefulWidget {
   final String videoUrl;
-  const AppVideo({Key? key, required this.videoUrl}) : super(key: key);
+  final String videoId;
+  const AppVideo({Key? key, required this.videoUrl, required this.videoId})
+      : super(key: key);
 
   @override
   State<AppVideo> createState() => _AppVideoState();
@@ -13,11 +16,16 @@ class AppVideo extends StatefulWidget {
 class _AppVideoState extends State<AppVideo>
     with AutomaticKeepAliveClientMixin {
   late VideoPlayerController _vidController;
+  bool _isPlaying = true;
+  bool _isVisible = false;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    _initializeVideo();
+  }
+
+  void _initializeVideo() {
     _vidController =
         VideoPlayerController.network(Uri.parse(widget.videoUrl).toString())
           ..initialize().then((_) {
@@ -26,63 +34,99 @@ class _AppVideoState extends State<AppVideo>
             print('Failed to initialize video player: $error');
           });
 
-    _vidController.setVolume(0);
+    _vidController.setVolume(1.0);
     _vidController.setLooping(true);
-    _vidController.play();
-    _vidController.addListener(() {
-      setState(() {});
-    });
+  }
+
+  void _handleVisibilityChanged(VisibilityInfo info) {
+    if (info.visibleFraction > 0.8) {
+      if (!_isVisible) {
+        setState(() {
+          _isVisible = true;
+        });
+        _vidController.seekTo(Duration.zero);
+        _vidController.play();
+      }
+    } else {
+      if (_isVisible) {
+        setState(() {
+          _isVisible = false;
+        });
+        _vidController.pause();
+      }
+    }
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
-    super.dispose();
     _vidController.dispose();
+    super.dispose();
   }
 
   void _togglePlayPause() {
-    if (_vidController.value.isPlaying) {
-      _vidController.pause();
-    } else {
-      _vidController.play();
-    }
+    setState(() {
+      if (_vidController.value.isPlaying) {
+        _vidController.pause();
+        _isPlaying = false;
+      } else {
+        _vidController.play();
+        _isPlaying = true;
+      }
+    });
   }
-
-  // pause video when user leaves the screen
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return _vidController.value.isInitialized
-        ? Container(
-            height: MediaQuery.of(context).size.height.h - 180.h,
-            alignment: Alignment.center,
-            child: Stack(
-              alignment: Alignment.center,
-              children: <Widget>[
-                GestureDetector(
-                  onTap: _togglePlayPause,
-                  child: AspectRatio(
-                    aspectRatio: _vidController.value.aspectRatio,
-                    child: VideoPlayer(_vidController),
+    return VisibilityDetector(
+      key: Key(widget.videoId),
+      onVisibilityChanged: _handleVisibilityChanged,
+      child: Container(
+        height: 1.sh - kBottomNavigationBarHeight,
+        color: Colors.black,
+        child: _vidController.value.isInitialized
+            ? Stack(
+                alignment: Alignment.center,
+                children: <Widget>[
+                  GestureDetector(
+                    onTap: _togglePlayPause,
+                    behavior: HitTestBehavior.opaque,
+                    child: Center(
+                      child: AspectRatio(
+                        aspectRatio: _vidController.value.aspectRatio,
+                        child: VideoPlayer(_vidController),
+                      ),
+                    ),
                   ),
+                  if (!_isPlaying)
+                    GestureDetector(
+                      onTap: _togglePlayPause,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.3),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Icon(
+                            Icons.play_arrow,
+                            color: Colors.white,
+                            size: 42,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              )
+            : const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.white,
                 ),
-                if (!_vidController.value.isPlaying)
-                  const Icon(
-                    Icons.play_arrow,
-                    color: Colors.white,
-                    size: 50,
-                  )
-              ],
-            ),
-          )
-        : const Center(
-            child: CircularProgressIndicator(),
-          );
+              ),
+      ),
+    );
   }
 
   @override
-  // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 }
