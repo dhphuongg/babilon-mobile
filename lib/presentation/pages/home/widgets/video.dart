@@ -1,3 +1,4 @@
+import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/presentation/pages/home/widgets/video_side_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -44,6 +45,7 @@ class _AppVideoState extends State<AppVideo>
       if (!_isVisible) {
         setState(() {
           _isVisible = true;
+          _showPlayIcon = false;
         });
         _vidController.seekTo(Duration.zero);
         _vidController.play();
@@ -84,7 +86,7 @@ class _AppVideoState extends State<AppVideo>
       onVisibilityChanged: _handleVisibilityChanged,
       child: Container(
         height: 1.sh - kBottomNavigationBarHeight,
-        color: Colors.black,
+        color: AppColors.black,
         child: _vidController.value.isInitialized
             ? Stack(
                 children: <Widget>[
@@ -92,10 +94,21 @@ class _AppVideoState extends State<AppVideo>
                     onTap: _togglePlayPause,
                     behavior: HitTestBehavior.opaque,
                     child: Center(
+                      // child: _vidController.value.aspectRatio == 9 / 16
+                      // ? SizedBox.expand(
+                      //     child: AspectRatio(
+                      //       aspectRatio: _vidController.value.aspectRatio,
+                      //       child: VideoPlayer(_vidController),
+                      //     ),
+                      //   )
+                      // : AspectRatio(
+                      //     aspectRatio: _vidController.value.aspectRatio,
+                      //     child: VideoPlayer(_vidController),
+                      //   ),
                       child: AspectRatio(
                         aspectRatio: _vidController.value.aspectRatio,
                         child: VideoPlayer(_vidController),
-                      ),
+                      )
                     ),
                   ),
                   if (_showPlayIcon)

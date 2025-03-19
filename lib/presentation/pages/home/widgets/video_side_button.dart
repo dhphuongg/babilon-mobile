@@ -119,7 +119,7 @@ class _VideoSideButtonState extends State<VideoSideButton>
             ),
           ),
           _buildActionButton(
-            icon: _isLiked ? Icons.favorite : Icons.favorite_border,
+            icon: _isLiked ? Icons.favorite : Icons.favorite,
             onTap: _handleLikePressed,
             label: StringUtils.formatNumber(123000),
             iconColor: _isLiked ? Colors.red : Colors.white,

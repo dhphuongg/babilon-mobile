@@ -63,12 +63,10 @@ class _AppScreenState extends State<AppScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
-      body: SafeArea(
-        child: PageView(
-          physics: const NeverScrollableScrollPhysics(),
-          controller: pageController,
-          children: _screens.map((screen) => screen).toList(),
-        ),
+      body: PageView(
+        physics: const NeverScrollableScrollPhysics(),
+        controller: pageController,
+        children: _screens.map((screen) => screen).toList(),
       ),
       bottomNavigationBar: Container(
         padding: EdgeInsets.only(
@@ -81,8 +79,8 @@ class _AppScreenState extends State<AppScreen> {
           // color: AppColors.black,
           border: Border(
             top: BorderSide(
-              color: Color.fromRGBO(0, 0, 0, 0.1),
-              width: 0.5,
+              color: AppColors.grayF5,
+              width: 0.3,
             ),
           ),
         ),
@@ -94,7 +92,7 @@ class _AppScreenState extends State<AppScreen> {
             _buildNavItem(1, Icons.people, 'Theo dõi'),
             Container(
               width: 60.w,
-              height: 40.h,
+              height: 35.h,
               decoration: BoxDecoration(
                 color: AppColors.grayF5,
                 borderRadius: BorderRadius.circular(10),
