@@ -85,7 +85,7 @@ class _AppVideoState extends State<AppVideo>
       key: Key(widget.videoId),
       onVisibilityChanged: _handleVisibilityChanged,
       child: Container(
-        height: 1.sh - kBottomNavigationBarHeight,
+        height: 1.sh - kBottomNavigationBarHeight.h,
         color: AppColors.black,
         child: _vidController.value.isInitialized
             ? Stack(
@@ -94,21 +94,21 @@ class _AppVideoState extends State<AppVideo>
                     onTap: _togglePlayPause,
                     behavior: HitTestBehavior.opaque,
                     child: Center(
-                      // child: _vidController.value.aspectRatio == 9 / 16
-                      // ? SizedBox.expand(
-                      //     child: AspectRatio(
-                      //       aspectRatio: _vidController.value.aspectRatio,
-                      //       child: VideoPlayer(_vidController),
-                      //     ),
-                      //   )
-                      // : AspectRatio(
-                      //     aspectRatio: _vidController.value.aspectRatio,
-                      //     child: VideoPlayer(_vidController),
-                      //   ),
-                      child: AspectRatio(
-                        aspectRatio: _vidController.value.aspectRatio,
-                        child: VideoPlayer(_vidController),
-                      )
+                      child: _vidController.value.aspectRatio == 9 / 16
+                          ? SizedBox.expand(
+                              child: AspectRatio(
+                                aspectRatio: _vidController.value.aspectRatio,
+                                child: VideoPlayer(_vidController),
+                              ),
+                            )
+                          : AspectRatio(
+                              aspectRatio: _vidController.value.aspectRatio,
+                              child: VideoPlayer(_vidController),
+                            ),
+                      // child: AspectRatio(
+                      //   aspectRatio: _vidController.value.aspectRatio,
+                      //   child: VideoPlayer(_vidController),
+                      // ),
                     ),
                   ),
                   if (_showPlayIcon)

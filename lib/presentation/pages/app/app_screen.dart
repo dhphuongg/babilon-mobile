@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:babilon/core/application/repositories/app_cubit/app_cubit.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/di.dart';
@@ -63,15 +65,17 @@ class _AppScreenState extends State<AppScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
-      body: PageView(
-        physics: const NeverScrollableScrollPhysics(),
-        controller: pageController,
-        children: _screens.map((screen) => screen).toList(),
+      body: SafeArea(
+        child: PageView(
+          physics: const NeverScrollableScrollPhysics(),
+          controller: pageController,
+          children: _screens.map((screen) => screen).toList(),
+        ),
       ),
       bottomNavigationBar: Container(
         padding: EdgeInsets.only(
-          top: 5.h,
-          bottom: 20.h,
+          top: 10.h,
+          bottom: MediaQuery.of(context).padding.bottom,
           left: 20.w,
           right: 20.w,
         ),

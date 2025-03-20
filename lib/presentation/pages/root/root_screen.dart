@@ -61,7 +61,9 @@ class _RootScreenState extends State<RootScreen> {
   Widget build(BuildContext context) {
     return const Scaffold(
       body: Center(
-        child: Text('Root Screen'),
+        child: Image(
+          image: AssetImage('assets/images/logo.png'),
+        ),
       ),
     );
   }
