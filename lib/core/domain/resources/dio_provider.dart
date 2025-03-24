@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:babilon/core/application/common/widgets/app_snack_bar.dart';
 import 'package:babilon/core/domain/utils/navigation_services.dart';
 import 'package:babilon/core/domain/utils/share_preferrences.dart';
 import 'package:babilon/presentation/routes/route_name.dart';
@@ -109,7 +110,9 @@ Future<Dio> provideDio(
 }
 
 customHandleErrorByStatusCode(
-    DioError e, ErrorInterceptorHandler handler) async {
+  DioError e,
+  ErrorInterceptorHandler handler,
+) async {
   if (e.type == DioErrorType.cancel) {
     // Suppress this type of error, clear and move next
     e.error = "";

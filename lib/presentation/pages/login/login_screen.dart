@@ -102,8 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
               context, RouteName.app, (Route<dynamic> route) => false);
         }
         if (state.loginStatus == LoadStatus.FAILURE) {
-          AppSnackBar.showError(
-              state.errLogin?.message ?? '', state.errLogin?.details ?? '');
+          AppSnackBar.showError(state.errLogin?.message ?? '', '');
         }
       },
       builder: (context, state) {

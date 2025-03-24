@@ -71,9 +71,15 @@ class LoginCubit extends Cubit<LoginState> {
         ));
       }
     } catch (e) {
-      emit(state.copyWith(
+      emit(
+        state.copyWith(
           loginStatus: LoadStatus.FAILURE,
-          errLogin: ErrorResponse(message: e.toString())));
+          errLogin: ErrorResponse(
+            statusCode: 500,
+            message: 'Thông tin đăng nhập không chính xác',
+          ),
+        ),
+      );
     }
   }
 
