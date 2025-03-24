@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SharedPreferencesHelper {
   // as String
   static const String ACCESS_TOKEN = 'accessToken';
+  static const String REFRESH_TOKEN = 'refreshToken';
   static const String USER_ID = 'userId';
   static const String PROJECT_ID = 'projectId';
   static const String PROSPECT_ID = 'prospectId';
@@ -36,7 +37,8 @@ class SharedPreferencesHelper {
     prefs.remove(key);
   }
 
-  static Future<void> savePoints(String id, List<Map<String, double>> points) async {
+  static Future<void> savePoints(
+      String id, List<Map<String, double>> points) async {
     final prefs = await SharedPreferences.getInstance();
     final String pointsJson = jsonEncode(points);
     await prefs.setString(id, pointsJson);
@@ -48,9 +50,16 @@ class SharedPreferencesHelper {
     final String? pointsJson = prefs.getString(id);
     if (pointsJson != null) {
       final List<dynamic> pointsList = jsonDecode(pointsJson);
-      return pointsList.map((point) => Map<String, double>.from(point)).toList();
+      return pointsList
+          .map((point) => Map<String, double>.from(point))
+          .toList();
     } else {
       return null;
     }
+  }
+
+  static Future<void> clearAll() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.clear();
   }
 }

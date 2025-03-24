@@ -8,7 +8,7 @@ part 'object_response.g.dart';
 class ObjectResponse<T> {
   final bool? success;
   final ErrorResponse? error;
-  final T? result;
+  final T? data;
 
   factory ObjectResponse.fromJson(
           Map<String, dynamic> json, T Function(Object? json) fromJsonT) =>
@@ -20,18 +20,18 @@ class ObjectResponse<T> {
   ObjectResponse copyWith({
     final bool? success,
     final ErrorResponse? error,
-    final T? result,
+    final T? data,
   }) {
     return ObjectResponse(
       success: success ?? this.success,
       error: error ?? this.error,
-      result: result ?? this.result,
+      data: data ?? this.data,
     );
   }
 
   const ObjectResponse({
     this.success,
     this.error,
-    this.result,
+    this.data,
   });
 }

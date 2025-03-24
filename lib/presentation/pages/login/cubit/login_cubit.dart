@@ -21,23 +21,24 @@ class LoginCubit extends Cubit<LoginState> {
 
   LoginCubit({required this.authRepository}) : super(const LoginState());
 
-  void onChangeEmail(String email) {
+  void onChangeEmailOrUsername(String emailOrUsername) {
     String emailValidate = "";
-    if (email.trim().isEmpty) {
-      emailValidate = "Yêu cầu nhập email";
+    if (emailOrUsername.trim().isEmpty) {
+      emailValidate = "Vui lòng nhập email hoặc tên đăng nhập";
     }
-    emit(state.copyWith(email: email.trim(), emailValidate: emailValidate));
+    emit(state.copyWith(
+        emailOrUsername: emailOrUsername.trim(), emailValidate: emailValidate));
     onCheckEnableButton();
   }
 
   void onChangePassword(String password) {
     String passwordValidate = "";
     if (password.trim().isEmpty) {
-      passwordValidate = "Yêu cầu nhập mật khẩu";
+      passwordValidate = "Vui lòng nhập mật khẩu";
     }
-    if (password.length < 6) {
-      passwordValidate = "Mật khẩu phải có ít nhất 6 ký tự";
-    }
+    // if (password.length < 6) {
+    //   passwordValidate = "Mật khẩu phải có ít nhất 6 ký tự";
+    // }
     emit(state.copyWith(
         password: password.trim(), passwordValidate: passwordValidate));
     onCheckEnableButton();
@@ -54,20 +55,12 @@ class LoginCubit extends Cubit<LoginState> {
       emit(state.copyWith(loginStatus: LoadStatus.LOADING));
 
       final response = await authRepository.login(LoginRequest(
-        userNameOrEmailAddress: state.email,
+        emailOrUsername: state.emailOrUsername,
         password: state.password,
       ));
 
-      if (response.isSuccess || response.result != null) {
-        await saveLoggedInSession(response.result!);
-        _appCubit.saveUserProfile(UserProfile(
-          userId: response.result?.userId ?? 0,
-          companyName: response.result?.companyName ?? '',
-          projectId: response.result?.projectId ?? 0,
-          prospectId: response.result?.prospectId ?? 0,
-          firstName: response.result?.firstName ?? '',
-          lastName: response.result?.lastName ?? '',
-        ));
+      if (response.isSuccess || response.data != null) {
+        await saveLoggedInSession(response.data!);
         emit(state.copyWith(
           loginStatus: LoadStatus.SUCCESS,
         ));
@@ -89,17 +82,7 @@ class LoginCubit extends Cubit<LoginState> {
       await SharedPreferencesHelper.saveStringValue(
           SharedPreferencesHelper.ACCESS_TOKEN, res.accessToken ?? "");
       await SharedPreferencesHelper.saveStringValue(
-          SharedPreferencesHelper.USER_ID, res.userId.toString());
-      await SharedPreferencesHelper.saveStringValue(
-          SharedPreferencesHelper.PROJECT_ID, res.projectId.toString());
-      await SharedPreferencesHelper.saveStringValue(
-          SharedPreferencesHelper.PROSPECT_ID, res.prospectId.toString());
-      await SharedPreferencesHelper.saveStringValue(
-          SharedPreferencesHelper.FIRST_NAME, res.firstName ?? "");
-      await SharedPreferencesHelper.saveStringValue(
-          SharedPreferencesHelper.LAST_NAME, res.lastName ?? "");
-      await SharedPreferencesHelper.saveStringValue(
-          SharedPreferencesHelper.COMPANY_NAME, res.companyName ?? "");
+          SharedPreferencesHelper.REFRESH_TOKEN, res.refreshToken ?? "");
       await RestClientProvider.init(forceInit: true);
     } catch (e) {
       AppLogger.instance.error(e);

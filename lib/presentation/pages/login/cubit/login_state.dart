@@ -1,7 +1,7 @@
 part of 'login_cubit.dart';
 
 class LoginState extends Equatable {
-  final String email;
+  final String emailOrUsername;
   final String? emailValidate;
   final String password;
   final String? passwordValidate;
@@ -11,7 +11,7 @@ class LoginState extends Equatable {
   final ErrorResponse? errLogin;
 
   const LoginState(
-      {this.email = "",
+      {this.emailOrUsername = "",
       this.emailValidate,
       this.password = "",
       this.passwordValidate,
@@ -20,7 +20,7 @@ class LoginState extends Equatable {
       this.errLogin});
 
   LoginState copyWith({
-    String? email,
+    String? emailOrUsername,
     String? emailValidate,
     String? password,
     String? passwordValidate,
@@ -29,7 +29,7 @@ class LoginState extends Equatable {
     ErrorResponse? errLogin,
   }) {
     return LoginState(
-      email: email ?? this.email,
+      emailOrUsername: emailOrUsername ?? this.emailOrUsername,
       emailValidate: emailValidate ?? this.emailValidate,
       password: password ?? this.password,
       passwordValidate: passwordValidate ?? this.passwordValidate,
@@ -42,7 +42,7 @@ class LoginState extends Equatable {
   @override
   // TODO: implement props
   List<Object?> get props => [
-        email,
+        emailOrUsername,
         emailValidate,
         password,
         passwordValidate,

@@ -35,10 +35,10 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
     _cubit = BlocProvider.of<LoginCubit>(context);
     _cancelToken = CancelToken();
-    taxEmailController = TextEditingController(text: 'henry@gmail.com');
-    passwordController = TextEditingController(text: '123qwe');
-    _cubit.onChangeEmail(taxEmailController.text);
-    _cubit.onChangePassword(passwordController.text);
+    taxEmailController = TextEditingController(text: '');
+    passwordController = TextEditingController(text: '');
+    // _cubit.onChangeEmail(taxEmailController.text);
+    // _cubit.onChangePassword(passwordController.text);
   }
 
   @override
@@ -131,7 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         validator: state.emailValidate,
                         controller: taxEmailController,
                         onChanged: (value) {
-                          _cubit.onChangeEmail(value);
+                          _cubit.onChangeEmailOrUsername(value);
                         },
                         keyboardType: TextInputType.text,
                       ),
