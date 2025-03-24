@@ -34,20 +34,6 @@ class _RootScreenState extends State<RootScreen> {
         SharedPreferencesHelper.ACCESS_TOKEN);
     try {
       if (token.isNotEmpty) {
-        _appCubit.saveUserProfile(UserProfile(
-          userId: int.parse(await SharedPreferencesHelper.getStringValue(
-              SharedPreferencesHelper.USER_ID)),
-          companyName: await SharedPreferencesHelper.getStringValue(
-              SharedPreferencesHelper.COMPANY_NAME),
-          projectId: int.parse(await SharedPreferencesHelper.getStringValue(
-              SharedPreferencesHelper.PROJECT_ID)),
-          prospectId: int.parse(await SharedPreferencesHelper.getStringValue(
-              SharedPreferencesHelper.PROSPECT_ID)),
-          firstName: await SharedPreferencesHelper.getStringValue(
-              SharedPreferencesHelper.FIRST_NAME),
-          lastName: await SharedPreferencesHelper.getStringValue(
-              SharedPreferencesHelper.LAST_NAME),
-        ));
         if (mounted) Navigator.popAndPushNamed(context, RouteName.app);
       } else {
         if (mounted) Navigator.popAndPushNamed(context, RouteName.login);

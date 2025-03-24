@@ -4,4 +4,5 @@ import 'package:babilon/core/application/models/response/login/login.dart';
 
 abstract class AuthRepository {
   Future<ObjectResponse<LoginResponse>> login(LoginRequest body);
+  Future<ObjectResponse<void>> logout();
 }

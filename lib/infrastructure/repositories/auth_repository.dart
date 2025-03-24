@@ -11,4 +11,9 @@ class AuthRepositoryImpl extends AuthRepository {
   Future<ObjectResponse<LoginResponse>> login(LoginRequest body) {
     return RestClientProvider.apiClient!.login(body);
   }
+
+  @override
+  Future<ObjectResponse<void>> logout() {
+    return RestClientProvider.apiClient!.logout();
+  }
 }

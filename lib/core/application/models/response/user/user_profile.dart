@@ -4,54 +4,73 @@ part 'user_profile.g.dart';
 
 @JsonSerializable()
 class UserProfile {
-  int? userId;
-  String? companyName;
-  int? projectId;
-  int? prospectId;
-  String? firstName;
-  String? lastName;
+  String id;
+  String username;
+  String fullName;
+  String email;
+  String? avatar;
+  String? signature;
+  UserProfileCount count;
 
   UserProfile({
-    this.userId,
-    this.companyName,
-    this.projectId,
-    this.prospectId,
-    this.firstName,
-    this.lastName,
+    required this.id,
+    required this.username,
+    required this.fullName,
+    required this.email,
+    this.avatar,
+    this.signature,
+    required this.count,
   });
 
   UserProfile copyWith({
-    int? userId,
-    String? companyName,
-    int? projectId,
-    int? prospectId,
-    String? firstName,
-    String? lastName,
+    String? id,
+    String? username,
+    String? fullName,
+    String? normalizedName,
+    String? email,
+    dynamic avatar,
+    dynamic signature,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    UserProfileCount? count,
   }) =>
       UserProfile(
-        userId: userId ?? this.userId,
-        companyName: companyName ?? this.companyName,
-        projectId: projectId ?? this.projectId,
-        prospectId: prospectId ?? this.prospectId,
-        firstName: firstName ?? this.firstName,
-        lastName: lastName ?? this.lastName,
+        id: id ?? this.id,
+        username: username ?? this.username,
+        fullName: fullName ?? this.fullName,
+        email: email ?? this.email,
+        avatar: avatar ?? this.avatar,
+        signature: signature ?? this.signature,
+        count: count ?? this.count,
       );
 
-  factory UserProfile.fromJson(Map<String, dynamic> json) => UserProfile(
-        userId: json["userId"],
-        companyName: json["companyName"],
-        projectId: json["projectId"],
-        prospectId: json["prospectId"],
-        firstName: json["firstName"],
-        lastName: json["lastName"],
+  factory UserProfile.fromJson(Map<String, dynamic> json) =>
+      _$UserProfileFromJson(json);
+
+  Map<String, dynamic> toJson() => _$UserProfileToJson(this);
+}
+
+@JsonSerializable()
+class UserProfileCount {
+  int followers;
+  int followings;
+
+  UserProfileCount({
+    required this.followers,
+    required this.followings,
+  });
+
+  UserProfileCount copyWith({
+    int? followers,
+    int? followings,
+  }) =>
+      UserProfileCount(
+        followers: followers ?? this.followers,
+        followings: followings ?? this.followings,
       );
 
-  Map<String, dynamic> toJson() => {
-        "userId": userId,
-        "companyName": companyName,
-        "projectId": projectId,
-        "prospectId": prospectId,
-        "firstName": firstName,
-        "lastName": lastName,
-      };
+  factory UserProfileCount.fromJson(Map<String, dynamic> json) =>
+      _$UserProfileCountFromJson(json);
+
+  Map<String, dynamic> toJson() => _$UserProfileCountToJson(this);
 }
