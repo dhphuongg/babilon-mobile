@@ -2,6 +2,7 @@ import 'package:babilon/presentation/pages/user/cubit/user_cubit.dart';
 import 'package:babilon/presentation/routes/route_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class UserScreen extends StatefulWidget {
   const UserScreen({Key? key}) : super(key: key);
@@ -118,7 +119,7 @@ class _UserScreenState extends State<UserScreen> {
             ],
           ),
           body: SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               children: [
                 // Avatar Section
@@ -126,25 +127,24 @@ class _UserScreenState extends State<UserScreen> {
                   child: Container(
                     width: 120,
                     height: 120,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Theme.of(context).primaryColor,
-                        width: 2,
-                      ),
                     ),
                     child: state.avatarUrl != null
                         ? CircleAvatar(
                             radius: 58,
                             backgroundImage: NetworkImage(state.avatarUrl!),
                           )
-                        : const CircleAvatar(
-                            radius: 58,
-                            backgroundColor: Colors.grey,
-                            child: Icon(
-                              Icons.person,
-                              size: 60,
-                              color: Colors.white,
+                        : const Opacity(
+                            opacity: 0.4,
+                            child: CircleAvatar(
+                              radius: 58,
+                              backgroundColor: Colors.grey,
+                              child: Icon(
+                                Icons.person,
+                                size: 60,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                   ),
@@ -155,11 +155,10 @@ class _UserScreenState extends State<UserScreen> {
                 Text(
                   state.fullName,
                   style: const TextStyle(
-                    fontSize: 24,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 4),
                 Text(
                   '@${state.username}',
                   style: const TextStyle(
@@ -175,24 +174,24 @@ class _UserScreenState extends State<UserScreen> {
                     fontSize: 16,
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 12),
 
                 // Stats Section
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     _buildStatColumn(
-                      'Following',
+                      'Đã theo dõi',
                       state.followingCount.toString(),
                     ),
                     Container(
-                      height: 40,
+                      height: 25.h,
                       width: 1,
                       color: Colors.grey.withOpacity(0.3),
                       margin: const EdgeInsets.symmetric(horizontal: 24),
                     ),
                     _buildStatColumn(
-                      'Followers',
+                      'Người theo dõi',
                       state.followersCount.toString(),
                     ),
                   ],
@@ -211,11 +210,10 @@ class _UserScreenState extends State<UserScreen> {
         Text(
           count,
           style: const TextStyle(
-            fontSize: 20,
+            fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: 4),
         Text(
           label,
           style: const TextStyle(

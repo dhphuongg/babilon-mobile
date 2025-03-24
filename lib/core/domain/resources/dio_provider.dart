@@ -1,5 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:babilon/core/domain/utils/navigation_services.dart';
+import 'package:babilon/core/domain/utils/share_preferrences.dart';
+import 'package:babilon/presentation/routes/route_name.dart';
 import 'package:babilon/sql_lite.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
@@ -8,6 +11,7 @@ import 'package:babilon/core/domain/storages/global_storages.dart';
 import 'package:babilon/core/domain/utils/check_connection_util.dart';
 import 'package:babilon/core/domain/utils/logger.dart';
 import 'package:babilon/core/domain/utils/utils.dart';
+import 'package:flutter/material.dart';
 
 Future<Dio> provideDio(
     {Map<String, dynamic>? pHeaders, bool isNewVersion = false}) async {
@@ -81,6 +85,20 @@ Future<Dio> provideDio(
       }
       if (isNetworkAvailable && !Platform.isWindows)
         await saveResponseToCache(response);
+
+      if (response.statusCode == 401) {
+        await SharedPreferencesHelper.removeByKey(
+            SharedPreferencesHelper.ACCESS_TOKEN);
+        await SharedPreferencesHelper.removeByKey(
+            SharedPreferencesHelper.REFRESH_TOKEN);
+
+        Navigator.pushNamedAndRemoveUntil(
+          NavigationService.navigatorKey.currentContext!,
+          RouteName.login,
+          (Route<dynamic> route) => false,
+        );
+      }
+
       return responseInterceptorHandler.next(response);
     },
     onError: customHandleErrorByStatusCode,
