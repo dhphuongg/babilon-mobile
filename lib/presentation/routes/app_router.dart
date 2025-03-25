@@ -1,4 +1,6 @@
 import 'package:babilon/presentation/pages/app/app_screen.dart';
+import 'package:babilon/presentation/pages/register/cubit/register_cubit.dart';
+import 'package:babilon/presentation/pages/register/register_screen.dart';
 import 'package:babilon/presentation/pages/root/root_screen.dart';
 import 'package:babilon/presentation/pages/setting/setting_screen.dart';
 import 'package:flutter/material.dart';
@@ -17,13 +19,23 @@ class AppRoutes {
       case RouteName.rootScreen:
         routeWidget = const RootScreen();
         break;
+      case RouteName.register:
+        // login
+        routeWidget = BlocProvider(
+          create: (context) {
+            return RegisterCubit(authRepository: getIt());
+          },
+          child: const RegisterScreen(),
+        );
+        break;
       case RouteName.login:
         // login
         routeWidget = BlocProvider(
-            create: (context) {
-              return LoginCubit(authRepository: getIt());
-            },
-            child: const LoginScreen());
+          create: (context) {
+            return LoginCubit(authRepository: getIt());
+          },
+          child: const LoginScreen(),
+        );
         break;
       case RouteName.setting:
         routeWidget = const SettingScreen();

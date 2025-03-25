@@ -1,5 +1,7 @@
+import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/core/domain/constants/app_spacing.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:babilon/core/application/common/widgets/button/app_button.dart';
 import 'package:babilon/core/application/common/widgets/app_page_widget.dart';
@@ -177,6 +179,26 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     );
                   },
+                ),
+                SizedBox(height: 20.h),
+                RichText(
+                  text: TextSpan(
+                    text: "Chưa có tài khoản? ",
+                    style: AppStyle.regular14black,
+                    children: [
+                      TextSpan(
+                        text: 'Đăng ký',
+                        style: AppStyle.regular14black.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.main,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Navigator.of(context).pushNamed(RouteName.register);
+                          },
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
