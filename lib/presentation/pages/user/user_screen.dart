@@ -37,7 +37,7 @@ class _UserScreenState extends State<UserScreen> {
         bloc: _cubit,
         builder: (context, state) {
           return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -51,9 +51,17 @@ class _UserScreenState extends State<UserScreen> {
                   ),
                 ),
                 ListTile(
+                  leading: const Icon(Icons.settings),
+                  title: const Text('Cài đặt'),
+                  onTap: () {
+                    Navigator.pop(context); // Close bottom sheet first
+                    Navigator.pushNamed(context, RouteName.setting);
+                  },
+                ),
+                ListTile(
                   leading: const Icon(Icons.logout, color: Colors.red),
                   title: const Text(
-                    'Logout',
+                    'Đăng xuất',
                     style: TextStyle(
                       color: Colors.red,
                       fontWeight: FontWeight.w600,
@@ -100,6 +108,7 @@ class _UserScreenState extends State<UserScreen> {
       builder: (context, state) {
         if (state.isLoading) {
           return const Scaffold(
+            backgroundColor: Colors.white,
             body: Center(
               child: CircularProgressIndicator(),
             ),

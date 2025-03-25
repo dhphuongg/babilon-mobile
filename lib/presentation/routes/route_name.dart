@@ -7,4 +7,5 @@ class RouteName {
   static const String notifications = "notifications";
   static const String user = "user";
   static const String newVideo = "newVideo";
+  static const String setting = "setting";
 }

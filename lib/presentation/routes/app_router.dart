@@ -1,5 +1,6 @@
 import 'package:babilon/presentation/pages/app/app_screen.dart';
 import 'package:babilon/presentation/pages/root/root_screen.dart';
+import 'package:babilon/presentation/pages/setting/setting_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:babilon/di.dart';
 import 'package:babilon/presentation/pages/login/cubit/login_cubit.dart';
@@ -23,6 +24,9 @@ class AppRoutes {
               return LoginCubit(authRepository: getIt());
             },
             child: const LoginScreen());
+        break;
+      case RouteName.setting:
+        routeWidget = const SettingScreen();
         break;
       case RouteName.app:
         routeWidget = const AppScreen();
