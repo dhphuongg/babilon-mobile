@@ -8,7 +8,7 @@ class LoginState extends Equatable {
   final bool isEnable;
 
   final LoadStatus? loginStatus;
-  final ErrorResponse? errLogin;
+  final String? errLogin;
 
   const LoginState(
       {this.emailOrUsername = "",
@@ -26,7 +26,7 @@ class LoginState extends Equatable {
     String? passwordValidate,
     bool? isEnable,
     LoadStatus? loginStatus,
-    ErrorResponse? errLogin,
+    String? errLogin,
   }) {
     return LoginState(
       emailOrUsername: emailOrUsername ?? this.emailOrUsername,

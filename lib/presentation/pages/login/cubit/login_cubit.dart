@@ -4,7 +4,6 @@ import 'package:babilon/core/application/repositories/app_cubit/app_cubit.dart';
 import 'package:babilon/core/application/repositories/auth_repository.dart';
 import 'package:babilon/di.dart';
 import 'package:equatable/equatable.dart';
-import 'package:babilon/core/application/api/error_response.dart';
 import 'package:babilon/core/application/models/request/login/login_request.dart';
 import 'package:babilon/core/domain/enum/load_status.dart';
 import 'package:babilon/core/domain/resources/client_provider.dart';
@@ -74,10 +73,7 @@ class LoginCubit extends Cubit<LoginState> {
       emit(
         state.copyWith(
           loginStatus: LoadStatus.FAILURE,
-          errLogin: ErrorResponse(
-            statusCode: 500,
-            message: 'Thông tin đăng nhập không chính xác',
-          ),
+          errLogin: 'Đã xảy ra lỗi, vui lòng thử lại sau',
         ),
       );
     }
