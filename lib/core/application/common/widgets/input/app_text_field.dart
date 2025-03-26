@@ -1,11 +1,12 @@
+import 'package:babilon/core/domain/constants/app_colors.dart';
+import 'package:babilon/core/domain/constants/app_spacing.dart';
+import 'package:babilon/core/domain/constants/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:babilon/core/domain/constants/app_colors.dart';
-import 'package:babilon/core/domain/constants/app_text_styles.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppTextField extends StatefulWidget {
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final String? initialValue;
   final String? hintText;
   final int? maxLine;
@@ -23,10 +24,13 @@ class AppTextField extends StatefulWidget {
   final String? suffixText;
   final EdgeInsets? contentPadding;
   final FocusNode? focusNode;
+  final int maxLength;
+  final Widget? prefix;
+  final String? Function(String?)? validateFunction;
 
   const AppTextField({
     Key? key,
-    required this.controller,
+    this.controller,
     this.initialValue,
     this.hintText,
     this.maxLine = 1,
@@ -44,6 +48,9 @@ class AppTextField extends StatefulWidget {
     this.suffixText,
     this.contentPadding,
     this.focusNode,
+    this.maxLength = 255,
+    this.prefix,
+    this.validateFunction,
   }) : super(key: key);
 
   @override
@@ -72,6 +79,7 @@ class _AppTextFieldState extends State<AppTextField> {
           SizedBox(height: 4.h),
         ],
         TextFormField(
+          maxLength: widget.maxLength,
           textInputAction: TextInputAction.done,
           initialValue: widget.initialValue,
           controller: widget.controller,
@@ -83,33 +91,38 @@ class _AppTextFieldState extends State<AppTextField> {
           textAlign: widget.textAlign ?? TextAlign.start,
           focusNode: widget.focusNode,
           decoration: InputDecoration(
+            counterText: '',
             suffixText: widget.suffixText,
             filled: widget.enable ? null : true,
             fillColor: widget.enable ? null : AppColors.disable,
             contentPadding: widget.contentPadding ??
-                EdgeInsets.only(
-                    left: 10.w, right: 10.w, top: 14.h, bottom: 14.h),
+                EdgeInsets.only(right: 10.w, top: 14.h, bottom: 14.h),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(AppSpacing.borderRadius),
               borderSide: const BorderSide(color: AppColors.gray),
             ),
             disabledBorder: OutlineInputBorder(
                 borderSide: const BorderSide(color: AppColors.gray),
-                borderRadius: BorderRadius.circular(8.w)),
+                borderRadius: BorderRadius.circular(AppSpacing.borderRadius)),
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
                   color: (widget.validator?.isNotEmpty ?? false)
                       ? AppColors.red
                       : AppColors.gray),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(AppSpacing.borderRadius),
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
                   color: (widget.validator?.isNotEmpty ?? false)
                       ? AppColors.red
                       : AppColors.main),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(AppSpacing.borderRadius),
             ),
+            errorBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: AppColors.red),
+              borderRadius: BorderRadius.circular(AppSpacing.borderRadius),
+            ),
+            errorStyle: AppStyle.regular12red,
             hintText: widget.hintText,
             suffixStyle: AppStyle.regular12gray,
             hintStyle: AppStyle.regular14gray,
@@ -121,17 +134,21 @@ class _AppTextFieldState extends State<AppTextField> {
             suffixIconConstraints:
                 BoxConstraints(minWidth: 15.w, minHeight: 15.h),
             isDense: true,
+            prefix: widget.prefix ?? SizedBox(width: 10.w),
           ),
           keyboardType: widget.keyboardType,
           onChanged: widget.onChanged,
           style: AppStyle.regular14black,
           autovalidateMode: AutovalidateMode.onUserInteraction,
-          // validator: (value) {
-          //   if (value == null || value.isEmpty && widget.isRequired) {
-          //     return "This field is required"; // Error message
-          //   }
-          //   return null; // Return null if the input is valid
-          // },
+          validator: (value) {
+            if (value == null || value.trim().isEmpty && widget.isRequired) {
+              return "Vui lòng nhập ${widget.label}";
+            }
+            if (widget.validateFunction != null) {
+              return widget.validateFunction!(value);
+            }
+            return null;
+          },
           onFieldSubmitted: widget.onFieldSubmitted ?? (_) {},
         ),
         if (widget.validator?.isNotEmpty ?? false) ...{
@@ -140,7 +157,7 @@ class _AppTextFieldState extends State<AppTextField> {
             margin: EdgeInsets.only(top: 2.h),
             child: Text(
               widget.validator!,
-              style: AppStyle.regular14red,
+              style: AppStyle.regular12red,
             ),
           )
         }
