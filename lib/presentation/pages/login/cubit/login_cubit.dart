@@ -16,43 +16,11 @@ class LoginCubit extends Cubit<LoginState> {
 
   LoginCubit({required this.authRepository}) : super(const LoginState());
 
-  void onChangeEmailOrUsername(String emailOrUsername) {
-    String emailValidate = "";
-    if (emailOrUsername.trim().isEmpty) {
-      emailValidate = "Vui lòng nhập email hoặc tên đăng nhập";
-    }
-    emit(state.copyWith(
-        emailOrUsername: emailOrUsername.trim(), emailValidate: emailValidate));
-    onCheckEnableButton();
-  }
-
-  void onChangePassword(String password) {
-    String passwordValidate = "";
-    if (password.trim().isEmpty) {
-      passwordValidate = "Vui lòng nhập mật khẩu";
-    }
-    // if (password.length < 6) {
-    //   passwordValidate = "Mật khẩu phải có ít nhất 6 ký tự";
-    // }
-    emit(state.copyWith(
-        password: password.trim(), passwordValidate: passwordValidate));
-    onCheckEnableButton();
-  }
-
-  void onCheckEnableButton() {
-    final isEnable = state.emailValidate?.isEmpty == true &&
-        state.passwordValidate?.isEmpty == true;
-    emit(state.copyWith(isEnable: isEnable));
-  }
-
-  Future<void> login() async {
+  Future<void> login(LoginRequest body) async {
     try {
       emit(state.copyWith(loginStatus: LoadStatus.LOADING));
 
-      final response = await authRepository.login(LoginRequest(
-        emailOrUsername: state.emailOrUsername,
-        password: state.password,
-      ));
+      final response = await authRepository.login(body);
 
       if (response.isSuccess || response.data != null) {
         await saveLoggedInSession(response.data!);

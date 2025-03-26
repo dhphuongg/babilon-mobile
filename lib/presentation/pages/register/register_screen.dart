@@ -4,6 +4,7 @@ import 'package:babilon/core/application/common/widgets/app_page_widget.dart';
 import 'package:babilon/core/application/common/widgets/app_snack_bar.dart';
 import 'package:babilon/core/application/common/widgets/button/app_button.dart';
 import 'package:babilon/core/application/common/widgets/input/app_text_field.dart';
+import 'package:babilon/core/application/models/request/auth/login_request.dart';
 import 'package:babilon/core/application/models/request/auth/register.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/core/domain/constants/app_padding.dart';
@@ -294,9 +295,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
           startTimer();
         }
         if (state.registerStatus == LoadStatus.SUCCESS) {
-          _loginCubit.onChangeEmailOrUsername(_emailController.text);
-          _loginCubit.onChangePassword(_passwordController.text);
-          await _loginCubit.login();
+          await _loginCubit.login(
+            LoginRequest(
+              emailOrUsername: _emailController.text,
+              password: _passwordController.text,
+            ),
+          );
 
           if (context.mounted) {
             Navigator.pushNamedAndRemoveUntil(
