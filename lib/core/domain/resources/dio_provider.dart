@@ -83,8 +83,9 @@ Future<Dio> provideDio(
       if (kReleaseMode) {
         AppLogger.instance.debug(response.toString());
       }
-      if (isNetworkAvailable && !Platform.isWindows)
+      if (isNetworkAvailable && !Platform.isWindows) {
         await saveResponseToCache(response);
+      }
 
       if (response.statusCode == 401) {
         await SharedPreferencesHelper.removeByKey(

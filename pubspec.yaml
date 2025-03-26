@@ -70,6 +70,7 @@ dependencies:
   sqflite_common_ffi: ^2.3.3
   video_player: ^2.9.3
   visibility_detector: ^0.4.0+2
+  flutter_otp_text_field: ^1.5.1+1
 
 dev_dependencies:
   flutter_test:

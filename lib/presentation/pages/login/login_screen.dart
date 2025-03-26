@@ -110,11 +110,10 @@ class _LoginScreenState extends State<LoginScreen> {
       },
       builder: (context, state) {
         return AppPageWidget(
-            body: Center(
+            body: SafeArea(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: AppPadding.horizontal),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Column(
                   children: <Widget>[
@@ -186,7 +185,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(height: 20.h),
                 RichText(
                   text: TextSpan(
-                    text: "Chưa có tài khoản? ",
+                    text: "Bạn chưa có tài khoản? ",
                     style: AppStyle.regular14black,
                     children: [
                       TextSpan(
@@ -197,7 +196,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
-                            Navigator.of(context).pushNamed(RouteName.register);
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                                RouteName.register, (route) => false);
                           },
                       ),
                     ],
