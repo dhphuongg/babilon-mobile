@@ -1,5 +1,6 @@
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/core/domain/constants/app_spacing.dart';
+import 'package:babilon/core/domain/constants/images.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -117,10 +118,12 @@ class _LoginScreenState extends State<LoginScreen> {
               children: <Widget>[
                 Column(
                   children: <Widget>[
-                    // Image.asset(Images.logo, fit: BoxFit.fill),
+                    Image.asset(Images.logoImage, fit: BoxFit.fill),
                     SizedBox(height: 16.h),
-                    Text('Welcome back! Please enter your details',
-                        style: AppStyle.medium16black),
+                    Text(
+                      'Đăng nhập',
+                      style: AppStyle.medium24black,
+                    ),
                     SizedBox(height: 40.h),
                     BlocBuilder<LoginCubit, LoginState>(
                       buildWhen: (previous, current) =>

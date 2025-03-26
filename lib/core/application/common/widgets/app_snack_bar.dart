@@ -113,7 +113,7 @@ class AppSnackBar {
           blurRadius: 10.w,
         )
       ],
-      duration: const Duration(seconds: 100),
+      duration: const Duration(seconds: 3),
       margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 3.h),
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
       borderRadius: BorderRadius.circular(8),

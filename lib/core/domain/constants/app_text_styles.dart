@@ -176,7 +176,7 @@ class AppStyle {
     fontFamily: "Visby",
     fontWeight: FontWeight.w500,
     fontSize: 24.sp,
-    color: AppColors.iconButton,
+    color: AppColors.black,
     height: 1.4,
   );
 }

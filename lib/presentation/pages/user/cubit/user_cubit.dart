@@ -1,7 +1,6 @@
 import 'package:babilon/core/application/repositories/user_repository.dart';
-import 'package:babilon/core/domain/utils/share_preferrences.dart';
+import 'package:babilon/core/domain/utils/share_preferences.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'user_state.dart';

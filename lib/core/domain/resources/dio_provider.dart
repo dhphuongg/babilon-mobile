@@ -1,8 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:babilon/core/application/common/widgets/app_snack_bar.dart';
 import 'package:babilon/core/domain/utils/navigation_services.dart';
-import 'package:babilon/core/domain/utils/share_preferrences.dart';
+import 'package:babilon/core/domain/utils/share_preferences.dart';
 import 'package:babilon/presentation/routes/route_name.dart';
 import 'package:babilon/sql_lite.dart';
 import 'package:dio/adapter.dart';

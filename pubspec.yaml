@@ -118,13 +118,13 @@ flutter_native_splash:
   #  ios_content_mode: "scaleAspectFit"
   android_12:
     color: "#ffffff"
-    image: assets/images/logo-image-12.png
+    image: assets/images/logo-image-splash.png
     icon_background_color: "#ffffff"
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path_android: assets/images/logo-image-splash-android.png
-  adaptive_icon_background: assets/images/logo-image-splash-android.png
-  adaptive_icon_foreground: assets/images/logo-image-splash-android.png
-  image_path_ios: assets/images/logo-image.png
+  image_path_android: assets/images/logo.png
+  adaptive_icon_background: assets/images/logo.png
+  adaptive_icon_foreground: assets/images/logo.png
+  image_path_ios: assets/images/logo.png
   remove_alpha_ios: true

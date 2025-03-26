@@ -1,14 +1,11 @@
 import 'package:babilon/core/application/models/response/login/login.dart';
-import 'package:babilon/core/application/models/response/user/user_profile.dart';
-import 'package:babilon/core/application/repositories/app_cubit/app_cubit.dart';
 import 'package:babilon/core/application/repositories/auth_repository.dart';
-import 'package:babilon/di.dart';
 import 'package:equatable/equatable.dart';
 import 'package:babilon/core/application/models/request/login/login_request.dart';
 import 'package:babilon/core/domain/enum/load_status.dart';
 import 'package:babilon/core/domain/resources/client_provider.dart';
 import 'package:babilon/core/domain/utils/logger.dart';
-import 'package:babilon/core/domain/utils/share_preferrences.dart';
+import 'package:babilon/core/domain/utils/share_preferences.dart';
 import 'package:babilon/core/domain/utils/utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -16,7 +13,6 @@ part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
   final AuthRepository authRepository;
-  final AppCubit _appCubit = getIt<AppCubit>();
 
   LoginCubit({required this.authRepository}) : super(const LoginState());
 
