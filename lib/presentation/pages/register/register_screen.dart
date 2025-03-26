@@ -4,6 +4,7 @@ import 'package:babilon/core/application/common/widgets/app_page_widget.dart';
 import 'package:babilon/core/application/common/widgets/app_snack_bar.dart';
 import 'package:babilon/core/application/common/widgets/button/app_button.dart';
 import 'package:babilon/core/application/common/widgets/input/app_text_field.dart';
+import 'package:babilon/core/application/models/request/auth/register.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/core/domain/constants/app_padding.dart';
 import 'package:babilon/core/domain/constants/app_spacing.dart';
@@ -11,6 +12,7 @@ import 'package:babilon/core/domain/constants/app_text_styles.dart';
 import 'package:babilon/core/domain/constants/images.dart';
 import 'package:babilon/core/domain/enum/load_status.dart';
 import 'package:babilon/core/domain/validators/validators.dart';
+import 'package:babilon/presentation/pages/login/cubit/login_cubit.dart';
 import 'package:babilon/presentation/pages/register/cubit/register_cubit.dart';
 import 'package:babilon/presentation/routes/route_name.dart';
 import 'package:flutter/gestures.dart';
@@ -28,20 +30,22 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   late RegisterCubit _cubit;
+  late LoginCubit _loginCubit;
   final _fullNameController = TextEditingController();
   final _emailController = TextEditingController();
+  final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
 
-  int time = 10;
+  int time = 60;
   Timer? _timer;
 
   void startTimer() {
     _timer?.cancel();
-    setState(() => time = 10);
+    setState(() => time = 60);
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (time > 0) {
@@ -58,30 +62,45 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return '$minutes:${remainingSeconds.toString().padLeft(2, '0')}';
   }
 
-  Future<void> handleRegister() async {
+  Future<void> handleRequestRegister() async {
     if (_formKey.currentState!.validate()) {
-      _cubit.register();
+      await _cubit.requestRegister(_emailController.text);
     }
   }
 
   Future<void> resendOTP() async {
-    await _cubit.verifyOtp();
+    await _cubit.requestRegister(_emailController.text);
     startTimer();
+  }
+
+  Future<void> handleRegister(String otpCode) async {
+    await _cubit.register(
+      RegisterRequest(
+        email: _emailController.text,
+        username: _usernameController.text,
+        fullName: _fullNameController.text,
+        password: _passwordController.text,
+        otpCode: otpCode,
+      ),
+    );
   }
 
   @override
   void initState() {
     _cubit = BlocProvider.of<RegisterCubit>(context);
+    _loginCubit = BlocProvider.of<LoginCubit>(context);
     super.initState();
   }
 
   @override
   void dispose() {
     _fullNameController.dispose();
+    _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     _cubit.close();
+    _loginCubit.close();
     _timer?.cancel();
     super.dispose();
   }
@@ -112,6 +131,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
             },
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
+          ),
+          SizedBox(height: AppPadding.input),
+          AppTextField(
+            label: 'Tên người dùng',
+            hintText: 'Nhập tên người dùng',
+            isRequired: true,
+            controller: _usernameController,
+            keyboardType: TextInputType.text,
           ),
           SizedBox(height: AppPadding.input),
           AppTextField(
@@ -168,8 +195,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 height: AppSpacing.buttonHeight,
                 child: AppButton(
                   text: 'Đăng ký',
-                  disable: state.registerStatus == LoadStatus.LOADING,
-                  onPressed: handleRegister,
+                  disable: state.requestRegisterStatus == LoadStatus.LOADING,
+                  onPressed: handleRequestRegister,
                   textStyle: AppStyle.semiBold18white,
                 ),
               );
@@ -216,7 +243,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
             cursorColor: AppColors.main,
             focusedBorderColor: AppColors.main,
             onCodeChanged: (String code) {},
-            onSubmit: (String verificationCode) {},
+            onSubmit: (String verificationCode) async {
+              await handleRegister(verificationCode);
+            },
           ),
           SizedBox(height: AppPadding.input),
           GestureDetector(
@@ -250,7 +279,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<RegisterCubit, RegisterState>(
-      listener: (context, state) {
+      buildWhen: (previous, current) =>
+          previous.requestRegisterStatus != current.requestRegisterStatus ||
+          previous.registerStatus != current.registerStatus,
+      listenWhen: (previous, current) =>
+          previous.requestRegisterStatus != current.requestRegisterStatus ||
+          previous.registerStatus != current.registerStatus,
+      listener: (context, state) async {
         if (state.error != null) {
           AppSnackBar.showError(state.error!);
           _cubit.clearError();
@@ -258,27 +293,43 @@ class _RegisterScreenState extends State<RegisterScreen> {
         if (state.currentStep == RegisterStep.otp) {
           startTimer();
         }
+        if (state.registerStatus == LoadStatus.SUCCESS) {
+          _loginCubit.onChangeEmailOrUsername(_emailController.text);
+          _loginCubit.onChangePassword(_passwordController.text);
+          await _loginCubit.login();
+
+          if (context.mounted) {
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              RouteName.home,
+              (route) => false,
+            );
+          }
+        }
       },
       builder: (context, state) {
         return AppPageWidget(
           body: SafeArea(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppPadding.horizontal),
-              child: Column(
-                children: [
-                  Image.asset(Images.logoImage, fit: BoxFit.fill),
-                  SizedBox(height: 16.h),
-                  Text(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding:
+                    EdgeInsets.symmetric(horizontal: AppPadding.horizontal),
+                child: Column(
+                  children: [
+                    Image.asset(Images.logoImage, fit: BoxFit.fill),
+                    SizedBox(height: 16.h),
+                    Text(
+                      state.currentStep == RegisterStep.form
+                          ? 'Đăng ký tài khoản'
+                          : 'Xác thực OTP',
+                      style: AppStyle.medium24black,
+                    ),
+                    SizedBox(height: 40.h),
                     state.currentStep == RegisterStep.form
-                        ? 'Đăng ký tài khoản'
-                        : 'Xác thực OTP',
-                    style: AppStyle.medium24black,
-                  ),
-                  SizedBox(height: 40.h),
-                  state.currentStep == RegisterStep.form
-                      ? _buildRegisterForm()
-                      : _buildOtpVerification(),
-                ],
+                        ? _buildRegisterForm()
+                        : _buildOtpVerification(),
+                  ],
+                ),
               ),
             ),
           ),

@@ -1,7 +1,7 @@
 import 'package:babilon/core/application/models/response/login/login.dart';
 import 'package:babilon/core/application/repositories/auth_repository.dart';
 import 'package:equatable/equatable.dart';
-import 'package:babilon/core/application/models/request/login/login_request.dart';
+import 'package:babilon/core/application/models/request/auth/login_request.dart';
 import 'package:babilon/core/domain/enum/load_status.dart';
 import 'package:babilon/core/domain/resources/client_provider.dart';
 import 'package:babilon/core/domain/utils/logger.dart';

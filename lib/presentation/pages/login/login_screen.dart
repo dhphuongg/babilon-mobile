@@ -105,7 +105,8 @@ class _LoginScreenState extends State<LoginScreen> {
               context, RouteName.app, (Route<dynamic> route) => false);
         }
         if (state.loginStatus == LoadStatus.FAILURE) {
-          AppSnackBar.showError(state.errLogin ?? '');
+          AppSnackBar.showError(
+              state.errLogin ?? 'Thông tin đăng nhập không chính xác');
         }
       },
       builder: (context, state) {

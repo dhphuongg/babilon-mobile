@@ -21,10 +21,17 @@ class AppRoutes {
         break;
       case RouteName.register:
         // login
-        routeWidget = BlocProvider(
-          create: (context) {
-            return RegisterCubit(authRepository: getIt());
-          },
+        routeWidget = MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) {
+                return RegisterCubit(authRepository: getIt());
+              },
+            ),
+            BlocProvider(create: (context) {
+              return LoginCubit(authRepository: getIt());
+            }),
+          ],
           child: const RegisterScreen(),
         );
         break;
