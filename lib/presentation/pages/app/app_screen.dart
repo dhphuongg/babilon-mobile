@@ -35,28 +35,27 @@ class _AppScreenState extends State<AppScreen> {
         child: const UserScreen())
   ];
 
+  void _onPageChanged() {
+    if (_currentPageIndex.value != 0) {
+      _appCubit.pauseVideo();
+    } else {
+      _appCubit.playVideo();
+    }
+    pageController.jumpToPage(_currentPageIndex.value);
+  }
+
   @override
   void initState() {
     super.initState();
 
     _appCubit = getIt<AppCubit>();
     pageController = PageController(initialPage: 0);
-    _currentPageIndex.addListener(() {
-      if (_currentPageIndex.value != 0) {
-        _appCubit.pauseVideo();
-      } else {
-        _appCubit.playVideo();
-      }
-      pageController.jumpToPage(_currentPageIndex.value);
-    });
+    _currentPageIndex.addListener(_onPageChanged);
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
-    _appCubit.close();
-    pageController.dispose();
   }
 
   @override
