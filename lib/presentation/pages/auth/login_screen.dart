@@ -2,6 +2,7 @@ import 'package:babilon/core/application/models/request/auth/login_request.dart'
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/core/domain/constants/app_spacing.dart';
 import 'package:babilon/core/domain/constants/images.dart';
+import 'package:babilon/presentation/pages/auth/cubit/auth_cubit.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,6 @@ import 'package:babilon/core/application/common/widgets/app_snack_bar.dart';
 import 'package:babilon/core/application/common/widgets/input/app_text_field.dart';
 import 'package:babilon/core/domain/constants/app_text_styles.dart';
 import 'package:babilon/core/domain/enum/load_status.dart';
-import 'package:babilon/presentation/pages/login/cubit/login_cubit.dart';
 import 'package:babilon/presentation/routes/route_name.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -25,7 +25,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  late LoginCubit _cubit;
+  late AuthCubit _cubit;
   CancelToken? _cancelToken;
   final _formKey = GlobalKey<FormState>();
   final _emailOrUsernameController = TextEditingController();
@@ -35,7 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    _cubit = BlocProvider.of<LoginCubit>(context);
+    _cubit = BlocProvider.of<AuthCubit>(context);
     _cancelToken = CancelToken();
   }
 
@@ -68,7 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<LoginCubit, LoginState>(
+    return BlocConsumer<AuthCubit, AuthState>(
       buildWhen: (previous, current) =>
           previous.loginStatus != current.loginStatus,
       listenWhen: (previous, current) =>
@@ -123,7 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     obscureText: !showPass,
                   ),
                   SizedBox(height: 40.h),
-                  BlocBuilder<LoginCubit, LoginState>(
+                  BlocBuilder<AuthCubit, AuthState>(
                     builder: (_, state) {
                       return SizedBox(
                         height: AppSpacing.buttonHeight,

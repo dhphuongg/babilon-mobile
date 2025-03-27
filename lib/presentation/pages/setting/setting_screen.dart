@@ -1,5 +1,8 @@
 import 'package:babilon/core/domain/constants/app_colors.dart';
+import 'package:babilon/presentation/pages/auth/cubit/auth_cubit.dart';
+import 'package:babilon/presentation/routes/route_name.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -9,6 +12,20 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
+  late AuthCubit _cubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _cubit = BlocProvider.of<AuthCubit>(context);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _cubit.close();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,8 +63,13 @@ class _SettingScreenState extends State<SettingScreen> {
               icon: Icons.logout_rounded,
               title: 'Đăng xuất',
               textColor: Colors.red,
-              onTap: () {
-                // TODO: Implement logout
+              onTap: () async {
+                await _cubit.logout();
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  RouteName.login,
+                  (route) => false,
+                );
               },
             ),
           ],

@@ -1,12 +1,11 @@
 import 'package:babilon/presentation/pages/app/app_screen.dart';
-import 'package:babilon/presentation/pages/register/cubit/register_cubit.dart';
-import 'package:babilon/presentation/pages/register/register_screen.dart';
+import 'package:babilon/presentation/pages/auth/cubit/auth_cubit.dart';
+import 'package:babilon/presentation/pages/auth/register_screen.dart';
 import 'package:babilon/presentation/pages/root/root_screen.dart';
 import 'package:babilon/presentation/pages/setting/setting_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:babilon/di.dart';
-import 'package:babilon/presentation/pages/login/cubit/login_cubit.dart';
-import 'package:babilon/presentation/pages/login/login_screen.dart';
+import 'package:babilon/presentation/pages/auth/login_screen.dart';
 import 'package:babilon/presentation/routes/route_name.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,18 +19,11 @@ class AppRoutes {
         routeWidget = const RootScreen();
         break;
       case RouteName.register:
-        // login
-        routeWidget = MultiBlocProvider(
-          providers: [
-            BlocProvider(
-              create: (context) {
-                return RegisterCubit(authRepository: getIt());
-              },
-            ),
-            BlocProvider(create: (context) {
-              return LoginCubit(authRepository: getIt());
-            }),
-          ],
+        // register
+        routeWidget = BlocProvider(
+          create: (context) {
+            return AuthCubit(authRepository: getIt());
+          },
           child: const RegisterScreen(),
         );
         break;
@@ -39,13 +31,18 @@ class AppRoutes {
         // login
         routeWidget = BlocProvider(
           create: (context) {
-            return LoginCubit(authRepository: getIt());
+            return AuthCubit(authRepository: getIt());
           },
           child: const LoginScreen(),
         );
         break;
       case RouteName.setting:
-        routeWidget = const SettingScreen();
+        routeWidget = BlocProvider(
+          create: (context) {
+            return AuthCubit(authRepository: getIt());
+          },
+          child: const SettingScreen(),
+        );
         break;
       case RouteName.app:
         routeWidget = const AppScreen();

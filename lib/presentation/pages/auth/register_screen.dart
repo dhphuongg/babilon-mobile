@@ -13,8 +13,7 @@ import 'package:babilon/core/domain/constants/app_text_styles.dart';
 import 'package:babilon/core/domain/constants/images.dart';
 import 'package:babilon/core/domain/enum/load_status.dart';
 import 'package:babilon/core/domain/validators/validators.dart';
-import 'package:babilon/presentation/pages/login/cubit/login_cubit.dart';
-import 'package:babilon/presentation/pages/register/cubit/register_cubit.dart';
+import 'package:babilon/presentation/pages/auth/cubit/auth_cubit.dart';
 import 'package:babilon/presentation/routes/route_name.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -30,8 +29,7 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  late RegisterCubit _cubit;
-  late LoginCubit _loginCubit;
+  late AuthCubit _cubit;
   final _fullNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _usernameController = TextEditingController();
@@ -88,8 +86,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   void initState() {
-    _cubit = BlocProvider.of<RegisterCubit>(context);
-    _loginCubit = BlocProvider.of<LoginCubit>(context);
+    _cubit = BlocProvider.of<AuthCubit>(context);
     super.initState();
   }
 
@@ -101,7 +98,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     _cubit.close();
-    _loginCubit.close();
     _timer?.cancel();
     super.dispose();
   }
@@ -190,7 +186,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
           ),
           SizedBox(height: 40.h),
-          BlocBuilder<RegisterCubit, RegisterState>(
+          BlocBuilder<AuthCubit, AuthState>(
             builder: (_, state) {
               return SizedBox(
                 height: AppSpacing.buttonHeight,
@@ -279,7 +275,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<RegisterCubit, RegisterState>(
+    return BlocConsumer<AuthCubit, AuthState>(
       buildWhen: (previous, current) =>
           previous.requestRegisterStatus != current.requestRegisterStatus ||
           previous.registerStatus != current.registerStatus,
@@ -287,15 +283,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
           previous.requestRegisterStatus != current.requestRegisterStatus ||
           previous.registerStatus != current.registerStatus,
       listener: (context, state) async {
-        if (state.error != null) {
-          AppSnackBar.showError(state.error!);
+        if (state.errRegister != null) {
+          AppSnackBar.showError(state.errRegister!);
           _cubit.clearError();
         }
         if (state.currentStep == RegisterStep.otp) {
           startTimer();
         }
         if (state.registerStatus == LoadStatus.SUCCESS) {
-          await _loginCubit.login(
+          await _cubit.login(
             LoginRequest(
               emailOrUsername: _emailController.text,
               password: _passwordController.text,

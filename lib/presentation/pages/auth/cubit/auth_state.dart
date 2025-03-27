@@ -1,30 +1,37 @@
-part of 'register_cubit.dart';
+part of 'auth_cubit.dart';
 
 enum RegisterStep { form, otp }
 
-class RegisterState extends Equatable {
-  final String? error;
+class AuthState extends Equatable {
+  final LoadStatus? loginStatus;
+  final String? errLogin;
+
+  final String? errRegister;
   final RegisterStep currentStep;
   final LoadStatus? requestRegisterStatus;
   final LoadStatus? registerStatus;
 
-  const RegisterState({
-    this.error,
+  const AuthState({
+    this.loginStatus,
+    this.errLogin = '',
+    this.errRegister = '',
     this.currentStep = RegisterStep.form,
     this.requestRegisterStatus,
     this.registerStatus,
   });
 
-  RegisterState copyWith({
-    bool? isLoading,
-    String? error,
+  AuthState copyWith({
+    LoadStatus? loginStatus,
+    String? errLogin,
+    String? errRegister,
     RegisterStep? currentStep,
-    bool? isEnable,
     LoadStatus? requestRegisterStatus,
     LoadStatus? registerStatus,
   }) {
-    return RegisterState(
-      error: error,
+    return AuthState(
+      loginStatus: loginStatus ?? this.loginStatus,
+      errLogin: errLogin ?? this.errLogin,
+      errRegister: errRegister ?? this.errRegister,
       currentStep: currentStep ?? this.currentStep,
       requestRegisterStatus:
           requestRegisterStatus ?? this.requestRegisterStatus,
@@ -34,7 +41,9 @@ class RegisterState extends Equatable {
 
   @override
   List<Object?> get props => [
-        error,
+        loginStatus,
+        errLogin,
+        errRegister,
         currentStep,
         requestRegisterStatus,
         registerStatus,
