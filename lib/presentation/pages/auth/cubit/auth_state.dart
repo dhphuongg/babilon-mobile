@@ -11,13 +11,22 @@ class AuthState extends Equatable {
   final LoadStatus? requestRegisterStatus;
   final LoadStatus? registerStatus;
 
+  final String? errResetPassword;
+  final LoadStatus? requestResetPasswordStatus;
+  final LoadStatus? resetPasswordVerifyOtpStatus;
+  final LoadStatus? resetPasswordStatus;
+
   const AuthState({
     this.loginStatus,
-    this.errLogin = '',
-    this.errRegister = '',
+    this.errLogin,
+    this.errRegister,
     this.currentStep = RegisterStep.form,
     this.requestRegisterStatus,
     this.registerStatus,
+    this.errResetPassword,
+    this.requestResetPasswordStatus,
+    this.resetPasswordVerifyOtpStatus,
+    this.resetPasswordStatus,
   });
 
   AuthState copyWith({
@@ -27,6 +36,10 @@ class AuthState extends Equatable {
     RegisterStep? currentStep,
     LoadStatus? requestRegisterStatus,
     LoadStatus? registerStatus,
+    String? errResetPassword,
+    LoadStatus? requestResetPasswordStatus,
+    LoadStatus? resetPasswordVerifyOtpStatus,
+    LoadStatus? resetPasswordStatus,
   }) {
     return AuthState(
       loginStatus: loginStatus ?? this.loginStatus,
@@ -36,6 +49,12 @@ class AuthState extends Equatable {
       requestRegisterStatus:
           requestRegisterStatus ?? this.requestRegisterStatus,
       registerStatus: registerStatus ?? this.registerStatus,
+      errResetPassword: errResetPassword ?? this.errResetPassword,
+      requestResetPasswordStatus:
+          requestResetPasswordStatus ?? this.requestResetPasswordStatus,
+      resetPasswordVerifyOtpStatus:
+          resetPasswordVerifyOtpStatus ?? this.resetPasswordVerifyOtpStatus,
+      resetPasswordStatus: resetPasswordStatus ?? this.resetPasswordStatus,
     );
   }
 
@@ -47,5 +66,9 @@ class AuthState extends Equatable {
         currentStep,
         requestRegisterStatus,
         registerStatus,
+        errResetPassword,
+        requestResetPasswordStatus,
+        resetPasswordVerifyOtpStatus,
+        resetPasswordStatus,
       ];
 }

@@ -1,6 +1,7 @@
 import 'package:babilon/presentation/pages/app/app_screen.dart';
 import 'package:babilon/presentation/pages/auth/cubit/auth_cubit.dart';
 import 'package:babilon/presentation/pages/auth/register_screen.dart';
+import 'package:babilon/presentation/pages/auth/reset_password_screen.dart';
 import 'package:babilon/presentation/pages/root/root_screen.dart';
 import 'package:babilon/presentation/pages/setting/setting_screen.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +35,15 @@ class AppRoutes {
             return AuthCubit(authRepository: getIt());
           },
           child: const LoginScreen(),
+        );
+        break;
+      case RouteName.resetPassword:
+        // reset password
+        routeWidget = BlocProvider(
+          create: (context) {
+            return AuthCubit(authRepository: getIt());
+          },
+          child: const ResetPasswordScreen(),
         );
         break;
       case RouteName.setting:

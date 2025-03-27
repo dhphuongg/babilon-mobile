@@ -122,6 +122,25 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     obscureText: !showPass,
                   ),
+                  SizedBox(height: AppPadding.input),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      GestureDetector(
+                        child: Text(
+                          'Quên mật khẩu?',
+                          style: AppStyle.regular14black.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.main,
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.of(context)
+                              .pushNamed(RouteName.resetPassword);
+                        },
+                      ),
+                    ],
+                  ),
                   SizedBox(height: 40.h),
                   BlocBuilder<AuthCubit, AuthState>(
                     builder: (_, state) {
