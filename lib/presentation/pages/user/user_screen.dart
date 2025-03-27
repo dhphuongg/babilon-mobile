@@ -27,70 +27,6 @@ class _UserScreenState extends State<UserScreen> {
     super.dispose();
   }
 
-  void _showBottomSheet() {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) => BlocBuilder<UserCubit, UserState>(
-        bloc: _cubit,
-        builder: (context, state) {
-          return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 40,
-                  height: 4,
-                  margin: const EdgeInsets.only(bottom: 20),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.settings),
-                  title: const Text('Cài đặt'),
-                  onTap: () {
-                    Navigator.pop(context); // Close bottom sheet first
-                    Navigator.pushNamed(context, RouteName.setting);
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.logout, color: Colors.red),
-                  title: const Text(
-                    'Đăng xuất',
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  enabled: !state.isLoading,
-                  trailing: state.isLoading
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : null,
-                  onTap: () async {
-                    await _cubit.logout();
-                    if (mounted) {
-                      Navigator.pushNamedAndRemoveUntil(context,
-                          RouteName.login, (Route<dynamic> route) => false);
-                    }
-                  },
-                ),
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<UserCubit, UserState>(
@@ -123,7 +59,9 @@ class _UserScreenState extends State<UserScreen> {
             actions: [
               IconButton(
                 icon: const Icon(Icons.menu),
-                onPressed: _showBottomSheet,
+                onPressed: () {
+                  Navigator.pushNamed(context, RouteName.setting);
+                },
               ),
             ],
           ),
