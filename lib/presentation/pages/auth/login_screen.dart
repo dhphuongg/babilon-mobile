@@ -76,7 +76,11 @@ class _LoginScreenState extends State<LoginScreen> {
       listener: (context, state) {
         if (state.loginStatus == LoadStatus.SUCCESS) {
           Navigator.pushNamedAndRemoveUntil(
-              context, RouteName.app, (Route<dynamic> route) => false);
+            context,
+            RouteName.app,
+            (Route<dynamic> route) => false,
+          );
+          AppSnackBar.showSuccess('Đăng nhập thành công');
         }
         if (state.loginStatus == LoadStatus.FAILURE) {
           AppSnackBar.showError(

@@ -1,3 +1,4 @@
+import 'package:babilon/core/application/common/widgets/app_snack_bar.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/presentation/pages/auth/cubit/auth_cubit.dart';
 import 'package:babilon/presentation/routes/route_name.dart';
@@ -64,12 +65,56 @@ class _SettingScreenState extends State<SettingScreen> {
               title: 'Đăng xuất',
               textColor: Colors.red,
               onTap: () async {
-                await _cubit.logout();
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  RouteName.login,
-                  (route) => false,
+                final bool? confirm = await showDialog<bool>(
+                  context: context,
+                  builder: (BuildContext context) => AlertDialog(
+                    title: const Text(
+                      'Đăng xuất',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    content: const Text(
+                      'Bạn có chắc chắn muốn đăng xuất không?',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        child: const Text(
+                          'Hủy',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(true),
+                        child: Text(
+                          'Đăng xuất',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.red[700],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 );
+
+                if (confirm == true) {
+                  await _cubit.logout();
+                  if (mounted) {
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      RouteName.login,
+                      (route) => false,
+                    );
+                  }
+                  AppSnackBar.showSuccess('Đăng xuất thành công');
+                }
               },
             ),
           ],

@@ -102,13 +102,14 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> register(RegisterRequest body) async {
     try {
       emit(state.copyWith(
-        errRegister: null,
+        errRegister: '',
         registerStatus: LoadStatus.LOADING,
       ));
       final response = await authRepository.register(body);
 
       if (response.success) {
         emit(state.copyWith(
+          errRegister: '',
           registerStatus: LoadStatus.SUCCESS,
         ));
       } else {
