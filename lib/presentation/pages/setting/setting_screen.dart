@@ -1,5 +1,6 @@
 import 'package:babilon/core/application/common/widgets/app_snack_bar.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
+import 'package:babilon/core/domain/constants/app_text_styles.dart';
 import 'package:babilon/presentation/pages/auth/cubit/auth_cubit.dart';
 import 'package:babilon/presentation/routes/route_name.dart';
 import 'package:flutter/material.dart';
@@ -32,14 +33,7 @@ class _SettingScreenState extends State<SettingScreen> {
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(
-            Icons.chevron_left_rounded,
-            size: 32,
-          ),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text('Cài đặt'),
+        title: Text('Cài đặt', style: AppStyle.bold18black),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -58,6 +52,13 @@ class _SettingScreenState extends State<SettingScreen> {
               title: 'Chia sẻ',
               onTap: () {
                 // TODO: Share app
+              },
+            ),
+            _buildSettingItem(
+              icon: Icons.lock_outline,
+              title: 'Đổi mật khẩu',
+              onTap: () {
+                Navigator.pushNamed(context, RouteName.changePassword);
               },
             ),
             _buildSettingItem(
@@ -106,7 +107,7 @@ class _SettingScreenState extends State<SettingScreen> {
 
                 if (confirm == true) {
                   await _cubit.logout();
-                  if (mounted) {
+                  if (context.mounted) {
                     Navigator.pushNamedAndRemoveUntil(
                       context,
                       RouteName.login,

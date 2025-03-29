@@ -16,6 +16,9 @@ class AuthState extends Equatable {
   final LoadStatus? resetPasswordVerifyOtpStatus;
   final LoadStatus? resetPasswordStatus;
 
+  final LoadStatus? changePasswordStatus;
+  final String? errChangePassword;
+
   const AuthState({
     this.loginStatus,
     this.errLogin,
@@ -27,6 +30,8 @@ class AuthState extends Equatable {
     this.requestResetPasswordStatus,
     this.resetPasswordVerifyOtpStatus,
     this.resetPasswordStatus,
+    this.changePasswordStatus,
+    this.errChangePassword,
   });
 
   AuthState copyWith({
@@ -40,6 +45,8 @@ class AuthState extends Equatable {
     LoadStatus? requestResetPasswordStatus,
     LoadStatus? resetPasswordVerifyOtpStatus,
     LoadStatus? resetPasswordStatus,
+    LoadStatus? changePasswordStatus,
+    String? errChangePassword,
   }) {
     return AuthState(
       loginStatus: loginStatus ?? this.loginStatus,
@@ -55,6 +62,8 @@ class AuthState extends Equatable {
       resetPasswordVerifyOtpStatus:
           resetPasswordVerifyOtpStatus ?? this.resetPasswordVerifyOtpStatus,
       resetPasswordStatus: resetPasswordStatus ?? this.resetPasswordStatus,
+      changePasswordStatus: changePasswordStatus ?? this.changePasswordStatus,
+      errChangePassword: errChangePassword ?? this.errChangePassword,
     );
   }
 
@@ -70,5 +79,7 @@ class AuthState extends Equatable {
         requestResetPasswordStatus,
         resetPasswordVerifyOtpStatus,
         resetPasswordStatus,
+        changePasswordStatus,
+        errChangePassword,
       ];
 }

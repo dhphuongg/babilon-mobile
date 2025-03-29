@@ -1,4 +1,5 @@
 import 'package:babilon/core/application/api/object_response.dart';
+import 'package:babilon/core/application/models/request/auth/change_password.dart';
 import 'package:babilon/core/application/models/request/auth/login_request.dart';
 import 'package:babilon/core/application/models/request/auth/register.dart';
 import 'package:babilon/core/application/models/request/auth/reset_password.dart';
@@ -35,6 +36,11 @@ class AuthRepositoryImpl extends AuthRepository {
   @override
   Future<ObjectResponse> resetPassword(ResetPassword body) {
     return RestClientProvider.apiClient!.resetPassword(body);
+  }
+
+  @override
+  Future<ObjectResponse> changePassword(ChangePassword body) {
+    return RestClientProvider.apiClient!.changePassword(body);
   }
 
   @override

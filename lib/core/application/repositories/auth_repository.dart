@@ -1,4 +1,5 @@
 import 'package:babilon/core/application/api/object_response.dart';
+import 'package:babilon/core/application/models/request/auth/change_password.dart';
 import 'package:babilon/core/application/models/request/auth/login_request.dart';
 import 'package:babilon/core/application/models/request/auth/register.dart';
 import 'package:babilon/core/application/models/request/auth/reset_password.dart';
@@ -14,4 +15,5 @@ abstract class AuthRepository {
   Future<ObjectResponse<dynamic>> logout();
   Future<ObjectResponse<VerifyOtpResponse>> verifyOtp(VerifyOtp body);
   Future<ObjectResponse<dynamic>> resetPassword(ResetPassword body);
+  Future<ObjectResponse<dynamic>> changePassword(ChangePassword body);
 }

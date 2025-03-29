@@ -1,3 +1,4 @@
+import 'package:babilon/core/application/models/request/auth/change_password.dart';
 import 'package:babilon/core/application/models/request/auth/register.dart';
 import 'package:babilon/core/application/models/request/auth/reset_password.dart';
 import 'package:babilon/core/application/models/request/otp/request.dart';
@@ -131,12 +132,14 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> logout() async {
     try {
-      await SharedPreferencesHelper.removeByKey(
-          SharedPreferencesHelper.ACCESS_TOKEN);
-      await SharedPreferencesHelper.removeByKey(
-          SharedPreferencesHelper.REFRESH_TOKEN);
-      await RestClientProvider.init(forceInit: true);
       await authRepository.logout();
+      await SharedPreferencesHelper.removeByKey(
+        SharedPreferencesHelper.ACCESS_TOKEN,
+      );
+      await SharedPreferencesHelper.removeByKey(
+        SharedPreferencesHelper.REFRESH_TOKEN,
+      );
+      await RestClientProvider.init(forceInit: true);
     } catch (e) {
       AppLogger.instance.error(e);
     }
@@ -231,6 +234,33 @@ class AuthCubit extends Cubit<AuthState> {
       emit(state.copyWith(
         resetPasswordStatus: LoadStatus.FAILURE,
         errResetPassword: e.toString(),
+      ));
+    }
+  }
+
+  Future<void> changePassword(ChangePassword body) async {
+    try {
+      emit(state.copyWith(
+        errChangePassword: '',
+        changePasswordStatus: LoadStatus.LOADING,
+      ));
+
+      final response = await authRepository.changePassword(body);
+      if (response.success) {
+        emit(state.copyWith(
+          errChangePassword: '',
+          changePasswordStatus: LoadStatus.SUCCESS,
+        ));
+      } else {
+        emit(state.copyWith(
+          changePasswordStatus: LoadStatus.FAILURE,
+          errChangePassword: response.error,
+        ));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+        changePasswordStatus: LoadStatus.FAILURE,
+        errChangePassword: e.toString(),
       ));
     }
   }

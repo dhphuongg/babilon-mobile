@@ -93,6 +93,14 @@ class AppStyle {
         height: 1.4,
       );
 
+  static TextStyle get medium18black => TextStyle(
+        fontFamily: GoogleFonts.dmSans().fontFamily,
+        fontWeight: FontWeight.w500,
+        fontSize: 18.0.sp,
+        color: AppColors.black,
+        height: 1.4,
+      );
+
   static TextStyle get semiBold16white => TextStyle(
         fontFamily: GoogleFonts.dmSans().fontFamily,
         fontWeight: FontWeight.w600,
@@ -185,6 +193,14 @@ class AppStyle {
         fontFamily: GoogleFonts.dmSans().fontFamily,
         fontWeight: FontWeight.w700,
         fontSize: 17.0.sp,
+        color: AppColors.black,
+        height: 1.4,
+      );
+
+  static TextStyle get bold18black => TextStyle(
+        fontFamily: GoogleFonts.dmSans().fontFamily,
+        fontWeight: FontWeight.w700,
+        fontSize: 18.0.sp,
         color: AppColors.black,
         height: 1.4,
       );

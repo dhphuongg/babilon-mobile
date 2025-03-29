@@ -1,3 +1,4 @@
+import 'package:babilon/core/application/models/request/auth/change_password.dart';
 import 'package:babilon/core/application/models/request/auth/register.dart';
 import 'package:babilon/core/application/models/request/auth/reset_password.dart';
 import 'package:babilon/core/application/models/request/otp/request.dart';
@@ -33,6 +34,11 @@ abstract class ApiClient {
 
   @GET('/auth/profile')
   Future<ObjectResponse<UserProfile>> getUserProfile();
+
+  @POST('/auth/change-password')
+  Future<ObjectResponse<dynamic>> changePassword(
+    @Body() ChangePassword body,
+  );
 
   @POST('/otp/request')
   Future<ObjectResponse<dynamic>> requestOtp(@Body() RequestOtpDto body);

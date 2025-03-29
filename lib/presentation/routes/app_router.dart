@@ -1,4 +1,5 @@
 import 'package:babilon/presentation/pages/app/app_screen.dart';
+import 'package:babilon/presentation/pages/auth/change_password_screen.dart';
 import 'package:babilon/presentation/pages/auth/cubit/auth_cubit.dart';
 import 'package:babilon/presentation/pages/auth/register_screen.dart';
 import 'package:babilon/presentation/pages/auth/reset_password_screen.dart';
@@ -19,8 +20,9 @@ class AppRoutes {
       case RouteName.rootScreen:
         routeWidget = const RootScreen();
         break;
+
+      // register
       case RouteName.register:
-        // register
         routeWidget = BlocProvider(
           create: (context) {
             return AuthCubit(authRepository: getIt());
@@ -28,8 +30,9 @@ class AppRoutes {
           child: const RegisterScreen(),
         );
         break;
+
+      // login
       case RouteName.login:
-        // login
         routeWidget = BlocProvider(
           create: (context) {
             return AuthCubit(authRepository: getIt());
@@ -37,8 +40,9 @@ class AppRoutes {
           child: const LoginScreen(),
         );
         break;
+
+      // reset password
       case RouteName.resetPassword:
-        // reset password
         routeWidget = BlocProvider(
           create: (context) {
             return AuthCubit(authRepository: getIt());
@@ -46,6 +50,18 @@ class AppRoutes {
           child: const ResetPasswordScreen(),
         );
         break;
+
+      // change password
+      case RouteName.changePassword:
+        routeWidget = BlocProvider(
+          create: (context) {
+            return AuthCubit(authRepository: getIt());
+          },
+          child: const ChangePasswordScreen(),
+        );
+        break;
+
+      // setting
       case RouteName.setting:
         routeWidget = BlocProvider(
           create: (context) {
@@ -54,6 +70,7 @@ class AppRoutes {
           child: const SettingScreen(),
         );
         break;
+
       case RouteName.app:
         routeWidget = const AppScreen();
         break;
