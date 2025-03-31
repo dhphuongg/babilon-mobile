@@ -2,6 +2,7 @@ import 'package:babilon/core/application/models/request/auth/login_request.dart'
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/core/domain/constants/app_spacing.dart';
 import 'package:babilon/core/domain/constants/images.dart';
+import 'package:babilon/core/domain/utils/share_preferences.dart';
 import 'package:babilon/presentation/pages/auth/cubit/auth_cubit.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
@@ -55,12 +56,16 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  void handleLogin() {
+  Future<void> handleLogin() async {
     if (_formKey.currentState!.validate()) {
-      _cubit.login(
+      String deviceToken = await SharedPreferencesHelper.getStringValue(
+        SharedPreferencesHelper.DEVICE_TOKEN,
+      );
+      await _cubit.login(
         LoginRequest(
           emailOrUsername: _emailOrUsernameController.text,
           password: _passwordController.text,
+          deviceToken: deviceToken,
         ),
       );
     }

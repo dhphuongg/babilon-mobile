@@ -12,6 +12,7 @@ import 'package:babilon/core/domain/constants/app_spacing.dart';
 import 'package:babilon/core/domain/constants/app_text_styles.dart';
 import 'package:babilon/core/domain/constants/images.dart';
 import 'package:babilon/core/domain/enum/load_status.dart';
+import 'package:babilon/core/domain/utils/share_preferences.dart';
 import 'package:babilon/core/domain/validators/validators.dart';
 import 'package:babilon/presentation/pages/auth/cubit/auth_cubit.dart';
 import 'package:babilon/presentation/routes/route_name.dart';
@@ -291,10 +292,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
           startTimer();
         }
         if (state.registerStatus == LoadStatus.SUCCESS) {
+          String deviceToken = await SharedPreferencesHelper.getStringValue(
+            SharedPreferencesHelper.DEVICE_TOKEN,
+          );
           await _cubit.login(
             LoginRequest(
               emailOrUsername: _emailController.text,
               password: _passwordController.text,
+              deviceToken: deviceToken,
             ),
           );
 

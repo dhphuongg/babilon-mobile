@@ -14,6 +14,7 @@ class SharedPreferencesHelper {
   static const String FIRST_NAME = 'firstName';
   static const String LAST_NAME = 'lastName';
   static const String COMPANY_NAME = 'companyName';
+  static const String DEVICE_TOKEN = 'deviceToken';
 
   /// Store String value locally.
   /// [key] The key of saved value, which will be used later when getting

@@ -1,6 +1,10 @@
 import 'dart:io';
 
+import 'package:babilon/firebase_options.dart';
+import 'package:babilon/infrastructure/services/notification.service.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:babilon/core/domain/resources/client_provider.dart';
@@ -12,11 +16,23 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  print('Handling a background message ${message.messageId}');
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Load .env file
   await dotenv.load(fileName: '.env');
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   // DI init
   await configureDependencies();
@@ -54,10 +70,21 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final AppRoutes _appRoute = AppRoutes();
 
+  NotificationServices notificationServices = NotificationServices();
+
+  void initFirebase() async {
+    await notificationServices.initialize();
+    await notificationServices.requestPermission();
+    await notificationServices.getDeviceToken().then((value) {
+      print('Device Token : $value');
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    initFirebase();
   }
 
   // This widget is the root of your application.

@@ -34,7 +34,7 @@ if (keystorePropertiesFile.exists()) {
 android {
     compileSdkVersion 35
 
-    namespace 'your.babilon.mobile'
+    namespace 'com.babilon.mobile'
 
     compileOptions {
         coreLibraryDesugaringEnabled true
