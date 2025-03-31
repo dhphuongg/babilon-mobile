@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "348899470531",
+    "project_id": "babilon-cd57e",
+    "storage_bucket": "babilon-cd57e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:348899470531:android:dc08822bee8cfff8730676",
+        "android_client_info": {
+          "package_name": "com.babilon.mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwL9g_3g4lcDZJTgO-MCvXsg8ZslZfNnY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

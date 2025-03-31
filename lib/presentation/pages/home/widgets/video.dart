@@ -94,21 +94,21 @@ class _AppVideoState extends State<AppVideo>
                     onTap: _togglePlayPause,
                     behavior: HitTestBehavior.opaque,
                     child: Center(
-                      child: _vidController.value.aspectRatio == 9 / 16
-                          ? SizedBox.expand(
-                              child: AspectRatio(
-                                aspectRatio: _vidController.value.aspectRatio,
-                                child: VideoPlayer(_vidController),
-                              ),
-                            )
-                          : AspectRatio(
-                              aspectRatio: _vidController.value.aspectRatio,
-                              child: VideoPlayer(_vidController),
-                            ),
-                      // child: AspectRatio(
-                      //   aspectRatio: _vidController.value.aspectRatio,
-                      //   child: VideoPlayer(_vidController),
-                      // ),
+                      // child: _vidController.value.aspectRatio == 9 / 16
+                      //     ? SizedBox.expand(
+                      //         child: AspectRatio(
+                      //           aspectRatio: _vidController.value.aspectRatio,
+                      //           child: VideoPlayer(_vidController),
+                      //         ),
+                      //       )
+                      //     : AspectRatio(
+                      //         aspectRatio: _vidController.value.aspectRatio,
+                      //         child: VideoPlayer(_vidController),
+                      //       ),
+                      child: AspectRatio(
+                        aspectRatio: _vidController.value.aspectRatio,
+                        child: VideoPlayer(_vidController),
+                      ),
                     ),
                   ),
                   if (_showPlayIcon)

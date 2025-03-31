@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:babilon/core/application/repositories/app_cubit/app_cubit.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/di.dart';
@@ -72,9 +74,9 @@ class _AppScreenState extends State<AppScreen> {
       bottomNavigationBar: Container(
         padding: EdgeInsets.only(
           top: 10.h,
-          bottom: MediaQuery.of(context).padding.bottom,
-          left: 20.w,
-          right: 20.w,
+          bottom: Platform.isIOS ? MediaQuery.of(context).padding.bottom : 10.h,
+          // left: 20.w,
+          // right: 20.w,
         ),
         decoration: const BoxDecoration(
           // color: AppColors.black,

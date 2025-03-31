@@ -136,6 +136,7 @@ class _AppTextFieldState extends State<AppTextField> {
             isDense: true,
             prefix: widget.prefix ?? SizedBox(width: 10.w),
           ),
+          cursorColor: AppColors.main,
           keyboardType: widget.keyboardType,
           onChanged: widget.onChanged,
           style: AppStyle.regular14black,
