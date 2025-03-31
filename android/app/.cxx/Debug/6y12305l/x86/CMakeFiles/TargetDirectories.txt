@@ -1,0 +1,2 @@
+/Users/dhphuong/Documents/code/babilon/app/android/app/.cxx/Debug/6y12305l/x86/CMakeFiles/edit_cache.dir
+/Users/dhphuong/Documents/code/babilon/app/android/app/.cxx/Debug/6y12305l/x86/CMakeFiles/rebuild_cache.dir
