@@ -7,8 +7,8 @@ import 'package:babilon/presentation/pages/friends/friends_screen.dart';
 import 'package:babilon/presentation/pages/home/home_screen.dart';
 import 'package:babilon/presentation/pages/create_video/create_video_screen.dart';
 import 'package:babilon/presentation/pages/notifications/notifications_screen.dart';
-import 'package:babilon/presentation/pages/user/cubit/user_cubit.dart';
-import 'package:babilon/presentation/pages/user/user_screen.dart';
+import 'package:babilon/presentation/pages/profile/cubit/user_cubit.dart';
+import 'package:babilon/presentation/pages/profile/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -31,10 +31,11 @@ class _AppScreenState extends State<AppScreen> {
     const CreateVideoScreen(), // Placeholder for FAB
     const NotificationsScreen(),
     BlocProvider(
-        create: (context) {
-          return UserCubit(userRepository: getIt());
-        },
-        child: const UserScreen())
+      create: (context) {
+        return UserCubit(userRepository: getIt());
+      },
+      child: const ProfileScreen(),
+    )
   ];
 
   void _onPageChanged() {
