@@ -1,3 +1,4 @@
+import 'package:babilon/core/application/models/entities/user.entity.dart';
 import 'package:babilon/presentation/pages/app/app_screen.dart';
 import 'package:babilon/presentation/pages/auth/change_password_screen.dart';
 import 'package:babilon/presentation/pages/auth/cubit/auth_cubit.dart';
@@ -5,6 +6,8 @@ import 'package:babilon/presentation/pages/auth/register_screen.dart';
 import 'package:babilon/presentation/pages/auth/reset_password_screen.dart';
 import 'package:babilon/presentation/pages/root/root_screen.dart';
 import 'package:babilon/presentation/pages/setting/setting_screen.dart';
+import 'package:babilon/presentation/pages/user/cubit/user_cubit.dart';
+import 'package:babilon/presentation/pages/user/update_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:babilon/di.dart';
 import 'package:babilon/presentation/pages/auth/login_screen.dart';
@@ -63,11 +66,32 @@ class AppRoutes {
 
       // setting
       case RouteName.setting:
+        routeWidget = MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) {
+                return AuthCubit(authRepository: getIt());
+              },
+            ),
+            BlocProvider(
+              create: (context) {
+                return UserCubit(userRepository: getIt());
+              },
+            ),
+          ],
+          child: const SettingScreen(),
+        );
+        break;
+
+      // update profile
+      case RouteName.updateProfile:
+        final UserEntity user = routeSettings.arguments as UserEntity;
+
         routeWidget = BlocProvider(
           create: (context) {
-            return AuthCubit(authRepository: getIt());
+            return UserCubit(userRepository: getIt());
           },
-          child: const SettingScreen(),
+          child: UpdateProfileScreen(user: user),
         );
         break;
 

@@ -1,3 +1,6 @@
+import 'package:babilon/core/application/common/widgets/app_snack_bar.dart';
+import 'package:babilon/core/domain/constants/app_colors.dart';
+import 'package:babilon/core/domain/enum/load_status.dart';
 import 'package:babilon/presentation/pages/user/cubit/user_cubit.dart';
 import 'package:babilon/presentation/routes/route_name.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +21,7 @@ class _UserScreenState extends State<UserScreen> {
   void initState() {
     super.initState();
     _cubit = BlocProvider.of<UserCubit>(context);
-    _cubit.loadUserProfile();
+    // _cubit.loadUserProfile();
   }
 
   @override
@@ -30,19 +33,17 @@ class _UserScreenState extends State<UserScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<UserCubit, UserState>(
+      buildWhen: (previous, current) =>
+          previous.getProfileStatus != current.getProfileStatus,
+      listenWhen: (previous, current) =>
+          previous.getProfileStatus != current.getProfileStatus,
       listener: (context, state) {
-        if (state.error != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.error!),
-              backgroundColor: Colors.red,
-            ),
-          );
-          _cubit.clearError();
+        if (state.getProfileStatus == LoadStatus.FAILURE) {
+          AppSnackBar.showError(state.error!);
         }
       },
       builder: (context, state) {
-        if (state.isLoading) {
+        if (state.getProfileStatus == LoadStatus.LOADING) {
           return const Scaffold(
             backgroundColor: Colors.white,
             body: Center(
@@ -77,10 +78,11 @@ class _UserScreenState extends State<UserScreen> {
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                     ),
-                    child: state.avatarUrl != null
+                    child: state.user?.avatar != null
                         ? CircleAvatar(
                             radius: 58,
-                            backgroundImage: NetworkImage(state.avatarUrl!),
+                            backgroundImage:
+                                NetworkImage(state.user!.avatar ?? ''),
                           )
                         : const Opacity(
                             opacity: 0.4,
@@ -99,15 +101,46 @@ class _UserScreenState extends State<UserScreen> {
                 const SizedBox(height: 16),
 
                 // User Info Section
-                Text(
-                  state.fullName,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      state.user?.fullName ?? '',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          RouteName.updateProfile,
+                          arguments: state.user,
+                        );
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.grayF5,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 15,
+                          vertical: 4,
+                        ),
+                        child: Icon(
+                          Icons.edit_sharp,
+                          size: 16.w,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
+
+                // Username
                 Text(
-                  '@${state.username}',
+                  '@${state.user?.username}',
                   style: const TextStyle(
                     fontSize: 16,
                     color: Colors.grey,
@@ -115,7 +148,7 @@ class _UserScreenState extends State<UserScreen> {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  state.signature ?? '',
+                  state.user?.signature ?? '',
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 16,
@@ -129,7 +162,7 @@ class _UserScreenState extends State<UserScreen> {
                   children: [
                     _buildStatColumn(
                       'Đã theo dõi',
-                      state.followingCount.toString(),
+                      state.user?.followings.toString() ?? '',
                     ),
                     Container(
                       height: 25.h,
@@ -139,7 +172,7 @@ class _UserScreenState extends State<UserScreen> {
                     ),
                     _buildStatColumn(
                       'Người theo dõi',
-                      state.followersCount.toString(),
+                      state.user?.followers.toString() ?? '',
                     ),
                   ],
                 ),

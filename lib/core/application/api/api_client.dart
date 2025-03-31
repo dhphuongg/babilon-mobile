@@ -3,6 +3,7 @@ import 'package:babilon/core/application/models/request/auth/register.dart';
 import 'package:babilon/core/application/models/request/auth/reset_password.dart';
 import 'package:babilon/core/application/models/request/otp/request.dart';
 import 'package:babilon/core/application/models/request/otp/verify.dart';
+import 'package:babilon/core/application/models/request/user/update_profile.request.dart';
 import 'package:babilon/core/application/models/response/otp/verify.dart';
 import 'package:babilon/core/application/models/response/user/user_profile.dart';
 import 'package:dio/dio.dart';
@@ -18,6 +19,7 @@ part 'api_client.g.dart';
 abstract class ApiClient {
   factory ApiClient(Dio dio, {String? baseUrl}) = _ApiClient;
 
+  // ========================== Auth ==========================
   @POST('/auth/login')
   Future<ObjectResponse<LoginResponse>> login(
     @Body() LoginRequest body,
@@ -40,9 +42,16 @@ abstract class ApiClient {
     @Body() ChangePassword body,
   );
 
+  // ========================== OTP ==========================
   @POST('/otp/request')
   Future<ObjectResponse<dynamic>> requestOtp(@Body() RequestOtpDto body);
 
   @POST('/otp/verify')
   Future<ObjectResponse<VerifyOtpResponse>> verifyOtp(@Body() VerifyOtp body);
+
+  // ========================== User ==========================
+  @POST('/user')
+  Future<ObjectResponse<UserProfile>> updateProfile(
+    @Body() UpdateProfileRequest body,
+  );
 }

@@ -1,4 +1,8 @@
+import 'package:babilon/core/application/models/entities/user.entity.dart';
+import 'package:babilon/core/application/models/request/user/update_profile.request.dart';
+import 'package:babilon/core/application/models/response/user/user_profile.dart';
 import 'package:babilon/core/application/repositories/user_repository.dart';
+import 'package:babilon/core/domain/enum/load_status.dart';
 import 'package:babilon/core/domain/utils/share_preferences.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,25 +12,43 @@ part 'user_state.dart';
 class UserCubit extends Cubit<UserState> {
   final UserRepository userRepository;
 
-  UserCubit({required this.userRepository}) : super(const UserState());
+  UserCubit({required this.userRepository}) : super(const UserState()) {
+    loadUserProfile();
+  }
 
   Future<void> loadUserProfile() async {
     try {
-      emit(state.copyWith(isLoading: true, error: null));
+      emit(state.copyWith(getProfileStatus: LoadStatus.LOADING, error: ''));
 
       final response = await userRepository.getUserProfile();
-      emit(state.copyWith(
-        isLoading: false,
-        fullName: response.data?.fullName,
-        username: response.data?.username,
-        signature: response.data?.signature,
-        avatarUrl: response.data?.avatar,
-        followingCount: response.data?.count.followings,
-        followersCount: response.data?.count.followers,
-      ));
+      if (response.success && response.data != null) {
+        UserProfile userProfile = response.data!;
+        final user = UserEntity(
+          id: userProfile.id,
+          username: userProfile.username,
+          fullName: userProfile.fullName,
+          avatar: userProfile.avatar,
+          signature: userProfile.signature,
+          email: userProfile.email,
+          followers: userProfile.count.followers,
+          followings: userProfile.count.followings,
+        );
+        emit(
+          state.copyWith(
+            getProfileStatus: LoadStatus.SUCCESS,
+            user: user,
+            error: '',
+          ),
+        );
+      } else {
+        emit(state.copyWith(
+          getProfileStatus: LoadStatus.FAILURE,
+          error: response.error ?? 'Failed to load profile',
+        ));
+      }
     } catch (e) {
       emit(state.copyWith(
-        isLoading: false,
+        getProfileStatus: LoadStatus.FAILURE,
         error: 'Failed to load profile: ${e.toString()}',
       ));
     }
@@ -34,7 +56,7 @@ class UserCubit extends Cubit<UserState> {
 
   Future<void> logout() async {
     try {
-      emit(state.copyWith(isLoading: true, error: null));
+      emit(state.copyWith(isLoading: true, error: ''));
 
       await SharedPreferencesHelper.removeByKey(
           SharedPreferencesHelper.ACCESS_TOKEN);
@@ -51,7 +73,27 @@ class UserCubit extends Cubit<UserState> {
     }
   }
 
-  void clearError() {
-    emit(state.copyWith(error: null));
+  Future<void> updateProfile(UpdateProfileRequest body) async {
+    try {
+      emit(state.copyWith(updateStatus: LoadStatus.LOADING, error: ''));
+
+      final response = await userRepository.updateProfile(body);
+      if (response.success) {
+        emit(state.copyWith(
+          updateStatus: LoadStatus.SUCCESS,
+          error: '',
+        ));
+      } else {
+        emit(state.copyWith(
+          updateStatus: LoadStatus.FAILURE,
+          error: response.error ?? 'Failed to update profile',
+        ));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+        updateStatus: LoadStatus.FAILURE,
+        error: 'Failed to update profile: ${e.toString()}',
+      ));
+    }
   }
 }

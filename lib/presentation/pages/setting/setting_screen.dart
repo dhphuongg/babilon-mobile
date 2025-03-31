@@ -2,6 +2,7 @@ import 'package:babilon/core/application/common/widgets/app_snack_bar.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/core/domain/constants/app_text_styles.dart';
 import 'package:babilon/presentation/pages/auth/cubit/auth_cubit.dart';
+import 'package:babilon/presentation/pages/user/cubit/user_cubit.dart';
 import 'package:babilon/presentation/routes/route_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,18 +15,20 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
-  late AuthCubit _cubit;
+  late AuthCubit _autCubit;
+  late UserCubit _userCubit;
 
   @override
   void initState() {
     super.initState();
-    _cubit = BlocProvider.of<AuthCubit>(context);
+    _autCubit = BlocProvider.of<AuthCubit>(context);
+    _userCubit = BlocProvider.of<UserCubit>(context);
   }
 
   @override
   void dispose() {
     super.dispose();
-    _cubit.close();
+    _autCubit.close();
   }
 
   @override
@@ -44,7 +47,11 @@ class _SettingScreenState extends State<SettingScreen> {
               icon: Icons.person_outline,
               title: 'Tài khoản',
               onTap: () {
-                // TODO: Navigate to account settings
+                Navigator.pushNamed(
+                  context,
+                  RouteName.updateProfile,
+                  arguments: _userCubit.state.user,
+                );
               },
             ),
             _buildSettingItem(
@@ -106,7 +113,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 );
 
                 if (confirm == true) {
-                  await _cubit.logout();
+                  await _autCubit.logout();
                   if (context.mounted) {
                     Navigator.pushNamedAndRemoveUntil(
                       context,

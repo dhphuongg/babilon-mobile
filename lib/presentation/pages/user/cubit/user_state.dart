@@ -1,57 +1,43 @@
 part of 'user_cubit.dart';
 
 class UserState extends Equatable {
-  final String? avatarUrl;
-  final String fullName;
-  final String username;
-  final String? signature;
-  final int followingCount;
-  final int followersCount;
+  final UserEntity? user;
   final bool isLoading;
   final String? error;
 
+  final LoadStatus? getProfileStatus;
+  final LoadStatus? updateStatus;
+
   const UserState({
-    this.avatarUrl,
-    this.fullName = '',
-    this.username = '',
-    this.signature = '',
-    this.followingCount = 0,
-    this.followersCount = 0,
+    this.user,
     this.isLoading = false,
     this.error,
+    this.updateStatus,
+    this.getProfileStatus,
   });
 
   UserState copyWith({
-    String? avatarUrl,
-    String? fullName,
-    String? username,
-    String? signature,
-    int? followingCount,
-    int? followersCount,
+    UserEntity? user,
     bool? isLoading,
     String? error,
+    LoadStatus? updateStatus,
+    LoadStatus? getProfileStatus,
   }) {
     return UserState(
-      avatarUrl: avatarUrl ?? this.avatarUrl,
-      fullName: fullName ?? this.fullName,
-      username: username ?? this.username,
-      signature: signature ?? this.signature,
-      followingCount: followingCount ?? this.followingCount,
-      followersCount: followersCount ?? this.followersCount,
+      user: user ?? this.user,
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
+      updateStatus: updateStatus ?? this.updateStatus,
+      getProfileStatus: getProfileStatus ?? this.getProfileStatus,
     );
   }
 
   @override
   List<Object?> get props => [
-        avatarUrl,
-        fullName,
-        username,
-        signature,
-        followingCount,
-        followersCount,
+        user,
         isLoading,
         error,
+        updateStatus,
+        getProfileStatus,
       ];
 }
