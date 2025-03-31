@@ -4,9 +4,9 @@ import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/core/domain/constants/app_padding.dart';
 import 'package:babilon/core/domain/constants/app_text_styles.dart';
 import 'package:babilon/presentation/pages/profile/cubit/user_cubit.dart';
+import 'package:babilon/presentation/pages/profile/widgets/profile_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -68,20 +68,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
           children: [
             GestureDetector(
               onTap: _updateAvatar,
-              child: CircleAvatar(
-                backgroundColor: AppColors.grayF5,
-                radius: 50.w,
-                backgroundImage: widget.user.avatar != null
-                    ? CachedNetworkImageProvider(widget.user.avatar ?? '')
-                    : null,
-                child: widget.user.avatar == null
-                    ? Icon(
-                        Icons.person,
-                        size: 50.w,
-                        color: AppColors.black,
-                      )
-                    : null,
-              ),
+              child: ProfileAvatar(avatar: widget.user.avatar),
             ),
             SizedBox(height: 40.h),
             // username

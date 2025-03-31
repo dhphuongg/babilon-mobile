@@ -2,6 +2,7 @@ import 'package:babilon/core/application/common/widgets/app_snack_bar.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/core/domain/enum/load_status.dart';
 import 'package:babilon/presentation/pages/profile/cubit/user_cubit.dart';
+import 'package:babilon/presentation/pages/profile/widgets/profile_avatar.dart';
 import 'package:babilon/presentation/routes/route_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -71,33 +72,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Column(
               children: [
                 // Avatar Section
-                Center(
-                  child: Container(
-                    width: 120,
-                    height: 120,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                    ),
-                    child: state.user?.avatar != null
-                        ? CircleAvatar(
-                            radius: 58,
-                            backgroundImage:
-                                NetworkImage(state.user!.avatar ?? ''),
-                          )
-                        : const Opacity(
-                            opacity: 0.4,
-                            child: CircleAvatar(
-                              radius: 58,
-                              backgroundColor: Colors.grey,
-                              child: Icon(
-                                Icons.person,
-                                size: 60,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                  ),
-                ),
+                ProfileAvatar(avatar: state.user?.avatar),
                 const SizedBox(height: 16),
 
                 // User Info Section
