@@ -118,7 +118,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
           if (state.updateStatus == LoadStatus.FAILURE) {
             AppSnackBar.showError(state.error!);
           } else if (state.updateStatus == LoadStatus.SUCCESS) {
-            Navigator.pop(context, 1);
+            Navigator.pop(context, true);
             AppSnackBar.showSuccess('Cập nhật thành công');
           }
         },
