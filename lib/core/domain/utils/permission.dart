@@ -23,21 +23,18 @@ class PermissionUtil {
 
   static Future<void> requestGalleryPermission(Function? function) async {
     final photosStatus = await Permission.photos.status;
-    final storageStatus = await Permission.storage.status;
-    if (photosStatus.isDenied || storageStatus.isDenied) {
+    if (photosStatus.isDenied) {
       // Request permission
-      final result = await Permission.photos.request();
-      final storageResult = await Permission.storage.request();
-      if (result.isGranted && storageResult.isGranted) {
+      final photosResult = await Permission.photos.request();
+      if (photosResult.isGranted) {
         if (function != null) {
           function();
         }
-      } else if (result.isPermanentlyDenied ||
-          storageResult.isPermanentlyDenied) {
+      } else if (photosResult.isPermanentlyDenied) {
         // Open app settings
         openAppSettings();
       }
-    } else if (photosStatus.isGranted && storageStatus.isGranted) {
+    } else if (photosStatus.isGranted) {
       if (function != null) {
         function();
       }
