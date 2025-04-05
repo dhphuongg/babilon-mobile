@@ -1,4 +1,5 @@
 import 'package:babilon/core/domain/constants/app_colors.dart';
+import 'package:babilon/core/domain/utils/string.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -18,7 +19,7 @@ class _ProfileAvatarState extends State<ProfileAvatar> {
       backgroundColor: AppColors.grayF5,
       radius: 50.w,
       backgroundImage: widget.avatar != null && widget.avatar!.isNotEmpty
-          ? CachedNetworkImageProvider(widget.avatar!)
+          ? CachedNetworkImageProvider(StringUtils.getImgUrl(widget.avatar!))
           : null,
       child: widget.avatar == null || widget.avatar!.isEmpty
           ? Icon(

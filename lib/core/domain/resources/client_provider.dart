@@ -20,11 +20,13 @@ class RestClientProvider {
     // If dio is not passed, generate new one
     apiProvidedDio ??= await provideDio();
 
+    final String _baseUrl = '${baseUrl ?? Api.baseUrl}/api/v1';
+
     if (forceInit) {
-      apiClient = ApiClient(apiProvidedDio, baseUrl: baseUrl ?? Api.baseUrl);
+      apiClient = ApiClient(apiProvidedDio, baseUrl: _baseUrl);
     } else {
       // Only recreate when restClient is null.
-      apiClient ??= ApiClient(apiProvidedDio, baseUrl: baseUrl ?? Api.baseUrl);
+      apiClient ??= ApiClient(apiProvidedDio, baseUrl: _baseUrl);
     }
   }
 }
