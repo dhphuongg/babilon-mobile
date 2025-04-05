@@ -67,7 +67,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
           toolbarTitle: 'Chỉnh sửa ảnh',
           cropStyle: CropStyle.circle,
           toolbarColor: AppColors.white,
-          toolbarWidgetColor: Colors.black,
+          toolbarWidgetColor: AppColors.black,
           initAspectRatio: CropAspectRatioPreset.square,
           lockAspectRatio: true,
           hideBottomControls: false,
