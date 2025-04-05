@@ -3,6 +3,7 @@ import 'package:babilon/core/application/common/widgets/app_snack_bar.dart';
 import 'package:babilon/core/application/common/widgets/input/app_text_field.dart';
 import 'package:babilon/core/application/models/entities/user.entity.dart';
 import 'package:babilon/core/application/models/request/user/update_profile.request.dart';
+import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/core/domain/constants/app_padding.dart';
 import 'package:babilon/core/domain/constants/app_text_styles.dart';
 import 'package:babilon/core/domain/enum/load_status.dart';
@@ -73,83 +74,120 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return BlocConsumer<UserCubit, UserState>(
-      listenWhen: (previous, current) =>
-          previous.updateStatus != current.updateStatus,
-      buildWhen: (previous, current) =>
-          previous.updateStatus != current.updateStatus,
-      listener: (context, state) {
-        if (state.updateStatus == LoadStatus.FAILURE) {
-          AppSnackBar.showError(state.error!);
-        } else if (state.updateStatus == LoadStatus.SUCCESS) {
-          Navigator.pop(context, true);
-          AppSnackBar.showSuccess('Cập nhật thành công');
-        }
-      },
-      builder: (context, state) => AppPageWidget(
-        isLoading: _cubit.state.updateStatus == LoadStatus.LOADING,
-        appbar: AppBar(
-          title: Text('Sửa hồ sơ', style: AppStyle.bold18black),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          actionsPadding: EdgeInsets.symmetric(
-            horizontal: AppPadding.horizontal,
-          ),
+  bool hasUnsavedChanges() {
+    return _usernameController.text != widget.user.username ||
+        _fullNameController.text != widget.user.fullName ||
+        _signatureController.text != (widget.user.signature ?? '');
+  }
+
+  Future<bool> _onWillPop() async {
+    if (hasUnsavedChanges()) {
+      final result = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          backgroundColor: AppColors.white,
+          title: const Text('Hủy thay đổi?'),
+          content: const Text('Bạn có chắc chắn muốn hủy các thay đổi?'),
           actions: [
-            GestureDetector(
-              onTap: handleUpdateProfile,
-              child: Text('Lưu', style: AppStyle.bold17black),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Không'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Có'),
             ),
           ],
         ),
-        body: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: AppPadding.horizontal),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
+      );
+      return result ?? false;
+    }
+    return true;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: BlocConsumer<UserCubit, UserState>(
+        listenWhen: (previous, current) =>
+            previous.updateStatus != current.updateStatus,
+        buildWhen: (previous, current) =>
+            previous.updateStatus != current.updateStatus,
+        listener: (context, state) {
+          if (state.updateStatus == LoadStatus.FAILURE) {
+            AppSnackBar.showError(state.error!);
+          } else if (state.updateStatus == LoadStatus.SUCCESS) {
+            Navigator.pop(context, 1);
+            AppSnackBar.showSuccess('Cập nhật thành công');
+          }
+        },
+        builder: (context, state) => GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: AppPageWidget(
+            isLoading: _cubit.state.updateStatus == LoadStatus.LOADING,
+            appbar: AppBar(
+              title: Text('Sửa hồ sơ', style: AppStyle.bold18black),
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              actionsPadding: EdgeInsets.symmetric(
+                horizontal: AppPadding.horizontal,
+              ),
+              actions: [
                 GestureDetector(
-                  onTap: _updateAvatar,
-                  child: ProfileAvatar(avatar: widget.user.avatar),
-                ),
-                SizedBox(height: 40.h),
-                // username
-                AppTextField(
-                  label: 'ID',
-                  controller: _usernameController,
-                  validateFunction: (username) {
-                    if (username == null || username.isEmpty) {
-                      return 'ID không được để trống';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 30.h),
-                // full name
-                AppTextField(
-                  label: 'Họ và tên',
-                  hintText: 'Nhập họ và tên',
-                  controller: _fullNameController,
-                  validateFunction: (fullName) {
-                    if (fullName == null || fullName.isEmpty) {
-                      return 'Họ và tên không được để trống';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 30.h),
-                // signature
-                AppTextField(
-                  label: 'Giới thiệu',
-                  hintText: 'Nhập giới thiệu',
-                  controller: _signatureController,
-                  keyboardType: TextInputType.multiline,
-                  maxLength: 100,
-                  maxLine: 3,
+                  onTap: handleUpdateProfile,
+                  child: Text('Lưu', style: AppStyle.bold17black),
                 ),
               ],
+            ),
+            body: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(horizontal: AppPadding.horizontal),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: _updateAvatar,
+                      child: ProfileAvatar(avatar: widget.user.avatar),
+                    ),
+                    SizedBox(height: 40.h),
+                    // username
+                    AppTextField(
+                      label: 'ID',
+                      controller: _usernameController,
+                      validateFunction: (username) {
+                        if (username == null || username.isEmpty) {
+                          return 'ID không được để trống';
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 30.h),
+                    // full name
+                    AppTextField(
+                      label: 'Họ và tên',
+                      hintText: 'Nhập họ và tên',
+                      controller: _fullNameController,
+                      validateFunction: (fullName) {
+                        if (fullName == null || fullName.isEmpty) {
+                          return 'Họ và tên không được để trống';
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 30.h),
+                    // signature
+                    AppTextField(
+                      label: 'Giới thiệu',
+                      hintText: 'Nhập giới thiệu',
+                      controller: _signatureController,
+                      keyboardType: TextInputType.multiline,
+                      maxLength: 100,
+                      maxLine: 3,
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
