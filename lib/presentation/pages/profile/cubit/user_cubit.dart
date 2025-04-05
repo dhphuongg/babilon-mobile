@@ -4,8 +4,10 @@ import 'package:babilon/core/application/models/response/user/user_profile.dart'
 import 'package:babilon/core/application/repositories/user_repository.dart';
 import 'package:babilon/core/domain/enum/load_status.dart';
 import 'package:babilon/core/domain/utils/share_preferences.dart';
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http_parser/http_parser.dart';
 
 part 'user_state.dart';
 
@@ -66,7 +68,31 @@ class UserCubit extends Cubit<UserState> {
     try {
       emit(state.copyWith(updateStatus: LoadStatus.LOADING, error: ''));
 
-      final response = await userRepository.updateProfile(body);
+      FormData formData = FormData();
+
+      if (body.username != null) {
+        formData.fields.add(MapEntry('username', body.username!));
+      }
+      if (body.fullName != null) {
+        formData.fields.add(MapEntry('fullName', body.fullName!));
+      }
+      if (body.signature != null) {
+        formData.fields.add(MapEntry('signature', body.signature!));
+      }
+      if (body.avatar != null) {
+        formData.files.add(
+          MapEntry(
+            'avatar',
+            await MultipartFile.fromFile(
+              body.avatar!.path,
+              contentType: MediaType('image', 'jpeg'),
+            ),
+          ),
+        );
+      }
+
+      final response = await userRepository.updateProfile(formData);
+
       if (response.success && response.data != null) {
         emit(state.copyWith(
           updateStatus: LoadStatus.SUCCESS,

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:babilon/core/application/common/widgets/app_page_widget.dart';
 import 'package:babilon/core/application/common/widgets/app_snack_bar.dart';
 import 'package:babilon/core/application/common/widgets/input/app_text_field.dart';
@@ -7,8 +9,11 @@ import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/core/domain/constants/app_padding.dart';
 import 'package:babilon/core/domain/constants/app_text_styles.dart';
 import 'package:babilon/core/domain/enum/load_status.dart';
+import 'package:babilon/core/domain/utils/permission.dart';
+import 'package:babilon/core/domain/utils/string.dart';
 import 'package:babilon/presentation/pages/profile/cubit/user_cubit.dart';
 import 'package:babilon/presentation/pages/profile/widgets/profile_avatar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -29,6 +34,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final _usernameController = TextEditingController();
   final _fullNameController = TextEditingController();
   final _signatureController = TextEditingController();
+  XFile? _avatarSelected;
 
   @override
   void initState() {
@@ -50,38 +56,115 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     _cubit.close();
   }
 
-  Future<void> _updateAvatar() async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-
-    if (image != null) {
-      if (!mounted) return;
-      await _cubit.updateProfile(
-        UpdateProfileRequest(avatar: image.path),
-      );
-    }
+  void _viewAvatar() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (BuildContext context) => Scaffold(
+          backgroundColor: Colors.black,
+          body: SafeArea(
+            child: Stack(
+              children: [
+                Center(
+                  child: InteractiveViewer(
+                    child: Image.network(
+                      StringUtils.getImgUrl(widget.user.avatar!),
+                      errorBuilder: (_, __, ___) => const Icon(
+                        Icons.person,
+                        size: 150,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 10,
+                  right: 10,
+                  child: IconButton(
+                    icon: const Icon(Icons.close, color: Colors.white),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
-  Future<void> handleUpdateProfile() async {
+  Future<void> _handleUploadAvatar() async {
+    await showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        actions: <CupertinoActionSheetAction>[
+          CupertinoActionSheetAction(
+            onPressed: () async {
+              Navigator.pop(context);
+              // Check camera permission
+              await PermissionUtil.checkCameraPermission(() async {
+                final ImagePicker picker = ImagePicker();
+                _avatarSelected = await picker.pickImage(
+                  source: ImageSource.camera,
+                );
+                setState(() {});
+              });
+            },
+            child: const Text('Chụp ảnh'),
+          ),
+          CupertinoActionSheetAction(
+            onPressed: () async {
+              Navigator.pop(context);
+              final ImagePicker picker = ImagePicker();
+              _avatarSelected = await picker.pickImage(
+                source: ImageSource.gallery,
+              );
+              setState(() {});
+            },
+            child: const Text('Chọn từ thư viện'),
+          ),
+          CupertinoActionSheetAction(
+            onPressed: () {
+              Navigator.pop(context);
+              _viewAvatar();
+            },
+            child: const Text('Xem ảnh'),
+          ),
+        ],
+        cancelButton: CupertinoActionSheetAction(
+          isDestructiveAction: true,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text('Hủy'),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _handleUpdateProfile() async {
     if (_formKey.currentState!.validate()) {
       await _cubit.updateProfile(
         UpdateProfileRequest(
           username: _usernameController.text,
           fullName: _fullNameController.text,
           signature: _signatureController.text,
+          avatar: _avatarSelected != null ? File(_avatarSelected!.path) : null,
         ),
       );
     }
   }
 
-  bool hasUnsavedChanges() {
+  bool _hasUnsavedChanges() {
+    if (_avatarSelected != null) {
+      return true;
+    }
     return _usernameController.text != widget.user.username ||
         _fullNameController.text != widget.user.fullName ||
         _signatureController.text != (widget.user.signature ?? '');
   }
 
   Future<bool> _onWillPop() async {
-    if (hasUnsavedChanges()) {
+    if (_hasUnsavedChanges()) {
       final result = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
@@ -135,7 +218,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
               ),
               actions: [
                 GestureDetector(
-                  onTap: handleUpdateProfile,
+                  onTap: _handleUpdateProfile,
                   child: Text('Lưu', style: AppStyle.bold17black),
                 ),
               ],
@@ -147,8 +230,34 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 child: Column(
                   children: [
                     GestureDetector(
-                      onTap: _updateAvatar,
-                      child: ProfileAvatar(avatar: widget.user.avatar),
+                      onTap: _handleUploadAvatar,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          _avatarSelected != null
+                              ? CircleAvatar(
+                                  backgroundColor: AppColors.grayF5,
+                                  radius: 50.w,
+                                  backgroundImage: FileImage(
+                                    File(_avatarSelected!.path),
+                                  ),
+                                )
+                              : ProfileAvatar(avatar: widget.user.avatar),
+                          Container(
+                            width: 100.w,
+                            height: 100.w,
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.25),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.camera_alt_outlined,
+                              color: Colors.white,
+                              size: 32,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     SizedBox(height: 40.h),
                     // username

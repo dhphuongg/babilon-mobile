@@ -3,7 +3,6 @@ import 'package:babilon/core/application/models/request/auth/register.dart';
 import 'package:babilon/core/application/models/request/auth/reset_password.dart';
 import 'package:babilon/core/application/models/request/otp/request.dart';
 import 'package:babilon/core/application/models/request/otp/verify.dart';
-import 'package:babilon/core/application/models/request/user/update_profile.request.dart';
 import 'package:babilon/core/application/models/response/otp/verify.dart';
 import 'package:babilon/core/application/models/response/user/user_profile.dart';
 import 'package:dio/dio.dart';
@@ -52,6 +51,6 @@ abstract class ApiClient {
   // ========================== User ==========================
   @PATCH('/user')
   Future<ObjectResponse<UserProfile>> updateProfile(
-    @Body() UpdateProfileRequest body,
+    @Body() FormData body,
   );
 }
