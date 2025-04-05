@@ -12,9 +12,7 @@ part 'user_state.dart';
 class UserCubit extends Cubit<UserState> {
   final UserRepository userRepository;
 
-  UserCubit({required this.userRepository}) : super(const UserState()) {
-    loadUserProfile();
-  }
+  UserCubit({required this.userRepository}) : super(const UserState());
 
   Future<void> loadUserProfile() async {
     try {
@@ -23,16 +21,7 @@ class UserCubit extends Cubit<UserState> {
       final response = await userRepository.getUserProfile();
       if (response.success && response.data != null) {
         UserProfile userProfile = response.data!;
-        final user = UserEntity(
-          id: userProfile.id,
-          username: userProfile.username,
-          fullName: userProfile.fullName,
-          avatar: userProfile.avatar,
-          signature: userProfile.signature,
-          email: userProfile.email,
-          followers: userProfile.count.followers,
-          followings: userProfile.count.followings,
-        );
+        final user = UserEntity.fromUserProfile(userProfile);
         emit(
           state.copyWith(
             getProfileStatus: LoadStatus.SUCCESS,
@@ -78,7 +67,7 @@ class UserCubit extends Cubit<UserState> {
       emit(state.copyWith(updateStatus: LoadStatus.LOADING, error: ''));
 
       final response = await userRepository.updateProfile(body);
-      if (response.success) {
+      if (response.success && response.data != null) {
         emit(state.copyWith(
           updateStatus: LoadStatus.SUCCESS,
           error: '',

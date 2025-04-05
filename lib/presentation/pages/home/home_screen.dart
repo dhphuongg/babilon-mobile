@@ -11,7 +11,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final List<String> videoUrls = [
     'https://www.viivue.com/wp-content/uploads/2022/05/ViiVue-ShowReel-thumbnail-1.mp4',
-    'https://res.cloudinary.com/dhp1xcch9/video/upload/v1742291900/test.mp4',
+    'https://www.viivue.com/wp-content/uploads/2022/05/ViiVue-ShowReel-thumbnail-1.mp4',
+    'https://www.viivue.com/wp-content/uploads/2022/05/ViiVue-ShowReel-thumbnail-1.mp4',
+    // 'https://res.cloudinary.com/dhp1xcch9/video/upload/v1742291900/test.mp4',
   ];
 
   @override

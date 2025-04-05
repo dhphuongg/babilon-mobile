@@ -9,13 +9,26 @@ class BaseObjectResponse<T, E extends String> {
   final T? data;
   final E? error;
 
-  factory BaseObjectResponse.fromJson(Map<String, dynamic> json,
-          T Function(Object? json) fromJsonT, E Function(Object?) fromJsonE) =>
-      _$BaseObjectResponseFromJson(json, fromJsonT, fromJsonE);
+  factory BaseObjectResponse.fromJson(
+    Map<String, dynamic> json,
+    T Function(Object? json) fromJsonT,
+    E Function(Object?) fromJsonE,
+  ) =>
+      _$BaseObjectResponseFromJson(
+        json,
+        fromJsonT,
+        fromJsonE,
+      );
 
-  Map<String, dynamic> toJson(Object? Function(T value) toJsonT,
-          Object? Function(E value) toJsonE) =>
-      _$BaseObjectResponseToJson(this, toJsonT, toJsonE);
+  Map<String, dynamic> toJson(
+    Object? Function(T value) toJsonT,
+    Object? Function(E value) toJsonE,
+  ) =>
+      _$BaseObjectResponseToJson(
+        this,
+        toJsonT,
+        toJsonE,
+      );
 
   BaseObjectResponse copyWith({
     final bool? success,

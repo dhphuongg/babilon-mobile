@@ -1,3 +1,4 @@
+import 'package:babilon/core/application/common/widgets/app_page_widget.dart';
 import 'package:babilon/core/application/common/widgets/app_snack_bar.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/core/domain/enum/load_status.dart';
@@ -22,7 +23,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     _cubit = BlocProvider.of<UserCubit>(context);
-    // _cubit.loadUserProfile();
+    _cubit.loadUserProfile();
   }
 
   @override
@@ -44,18 +45,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         }
       },
       builder: (context, state) {
-        if (state.getProfileStatus == LoadStatus.LOADING) {
-          return const Scaffold(
-            backgroundColor: Colors.white,
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-        }
-
-        return Scaffold(
-          backgroundColor: Colors.white,
-          appBar: AppBar(
+        return AppPageWidget(
+          isLoading: state.getProfileStatus == LoadStatus.LOADING,
+          appbar: AppBar(
             backgroundColor: Colors.white,
             elevation: 0,
             actions: [
@@ -88,12 +80,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const SizedBox(width: 8),
                     GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(
+                      onTap: () async {
+                        final result = await Navigator.pushNamed(
                           context,
                           RouteName.updateProfile,
                           arguments: state.user,
                         );
+                        if (result == true) {
+                          await _cubit.loadUserProfile();
+                        }
                       },
                       child: Container(
                         decoration: BoxDecoration(

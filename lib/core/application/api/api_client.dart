@@ -50,7 +50,7 @@ abstract class ApiClient {
   Future<ObjectResponse<VerifyOtpResponse>> verifyOtp(@Body() VerifyOtp body);
 
   // ========================== User ==========================
-  @POST('/user')
+  @PATCH('/user')
   Future<ObjectResponse<UserProfile>> updateProfile(
     @Body() UpdateProfileRequest body,
   );
