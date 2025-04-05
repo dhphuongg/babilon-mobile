@@ -153,17 +153,21 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
           CupertinoActionSheetAction(
             onPressed: () async {
               Navigator.pop(context);
-              final ImagePicker picker = ImagePicker();
-              final XFile? image = await picker.pickImage(
-                source: ImageSource.gallery,
-              );
-              if (image != null) {
-                final File? croppedImagePath = await _cropImage(image.path);
-                if (croppedImagePath != null && mounted) {
-                  _avatarSelected = croppedImagePath;
-                  setState(() {});
+
+              // check gallery permission
+              PermissionUtil.requestGalleryPermission(() async {
+                final ImagePicker picker = ImagePicker();
+                final XFile? image = await picker.pickImage(
+                  source: ImageSource.gallery,
+                );
+                if (image != null) {
+                  final File? croppedImagePath = await _cropImage(image.path);
+                  if (croppedImagePath != null && mounted) {
+                    _avatarSelected = croppedImagePath;
+                    setState(() {});
+                  }
                 }
-              }
+              });
             },
             child: const Text('Chọn từ thư viện'),
           ),

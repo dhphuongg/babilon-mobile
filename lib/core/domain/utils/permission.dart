@@ -20,4 +20,27 @@ class PermissionUtil {
       }
     }
   }
+
+  static Future<void> requestGalleryPermission(Function? function) async {
+    final photosStatus = await Permission.photos.status;
+    final storageStatus = await Permission.storage.status;
+    if (photosStatus.isDenied || storageStatus.isDenied) {
+      // Request permission
+      final result = await Permission.photos.request();
+      final storageResult = await Permission.storage.request();
+      if (result.isGranted && storageResult.isGranted) {
+        if (function != null) {
+          function();
+        }
+      } else if (result.isPermanentlyDenied ||
+          storageResult.isPermanentlyDenied) {
+        // Open app settings
+        openAppSettings();
+      }
+    } else if (photosStatus.isGranted && storageStatus.isGranted) {
+      if (function != null) {
+        function();
+      }
+    }
+  }
 }
