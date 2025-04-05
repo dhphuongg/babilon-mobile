@@ -23,6 +23,7 @@ class _SettingScreenState extends State<SettingScreen> {
     super.initState();
     _autCubit = BlocProvider.of<AuthCubit>(context);
     _userCubit = BlocProvider.of<UserCubit>(context);
+    _userCubit.loadUserProfile();
   }
 
   @override
@@ -47,11 +48,7 @@ class _SettingScreenState extends State<SettingScreen> {
               icon: Icons.person_outline,
               title: 'Tài khoản',
               onTap: () {
-                Navigator.pushNamed(
-                  context,
-                  RouteName.updateProfile,
-                  arguments: _userCubit.state.user,
-                );
+                // TODO: Account settings
               },
             ),
             _buildSettingItem(
@@ -76,16 +73,10 @@ class _SettingScreenState extends State<SettingScreen> {
                 final bool? confirm = await showDialog<bool>(
                   context: context,
                   builder: (BuildContext context) => AlertDialog(
-                    title: const Text(
-                      'Đăng xuất',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    backgroundColor: AppColors.white,
+                    title: const Text('Đăng xuất'),
                     content: const Text(
                       'Bạn có chắc chắn muốn đăng xuất không?',
-                      style: TextStyle(fontSize: 16),
                     ),
                     actions: [
                       TextButton(
@@ -100,11 +91,11 @@ class _SettingScreenState extends State<SettingScreen> {
                       ),
                       TextButton(
                         onPressed: () => Navigator.of(context).pop(true),
-                        child: Text(
+                        child: const Text(
                           'Đăng xuất',
                           style: TextStyle(
                             fontSize: 16,
-                            color: Colors.red[700],
+                            color: Colors.red,
                           ),
                         ),
                       ),
