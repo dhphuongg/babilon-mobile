@@ -85,7 +85,7 @@ class UserCubit extends Cubit<UserState> {
             'avatar',
             await MultipartFile.fromFile(
               body.avatar!.path,
-              contentType: MediaType('image', 'jpeg'),
+              contentType: MediaType('image', 'png'),
             ),
           ),
         );

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:babilon/core/application/common/widgets/app_page_widget.dart';
 import 'package:babilon/core/application/common/widgets/app_snack_bar.dart';
 import 'package:babilon/core/application/common/widgets/input/app_text_field.dart';
@@ -18,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
   final UserEntity user;
@@ -34,7 +34,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final _usernameController = TextEditingController();
   final _fullNameController = TextEditingController();
   final _signatureController = TextEditingController();
-  XFile? _avatarSelected;
+  File? _avatarSelected;
 
   @override
   void initState() {
@@ -54,6 +54,38 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     _fullNameController.dispose();
     _signatureController.dispose();
     _cubit.close();
+  }
+
+  Future<File?> _cropImage(String imagePath) async {
+    final croppedFile = await ImageCropper().cropImage(
+      sourcePath: imagePath,
+      compressFormat: ImageCompressFormat.png,
+      compressQuality: 100,
+      aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: 'Chỉnh sửa ảnh',
+          cropStyle: CropStyle.circle,
+          toolbarColor: AppColors.white,
+          toolbarWidgetColor: Colors.black,
+          initAspectRatio: CropAspectRatioPreset.square,
+          lockAspectRatio: true,
+          hideBottomControls: false,
+          showCropGrid: true,
+        ),
+        IOSUiSettings(
+          title: 'Chỉnh sửa ảnh',
+          cropStyle: CropStyle.circle,
+          doneButtonTitle: 'Xong',
+          cancelButtonTitle: 'Hủy',
+          aspectRatioLockEnabled: true,
+          resetAspectRatioEnabled: false,
+          aspectRatioPickerButtonHidden: true,
+          minimumAspectRatio: 1.0,
+        ),
+      ],
+    );
+    return croppedFile != null ? File(croppedFile.path) : null;
   }
 
   void _viewAvatar() {
@@ -100,13 +132,20 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
           CupertinoActionSheetAction(
             onPressed: () async {
               Navigator.pop(context);
-              // Check camera permission
-              await PermissionUtil.checkCameraPermission(() async {
+
+              // check camera permission
+              PermissionUtil.checkCameraPermission(() async {
                 final ImagePicker picker = ImagePicker();
-                _avatarSelected = await picker.pickImage(
+                final XFile? image = await picker.pickImage(
                   source: ImageSource.camera,
                 );
-                setState(() {});
+                if (image != null) {
+                  final File? croppedImagePath = await _cropImage(image.path);
+                  if (croppedImagePath != null && mounted) {
+                    _avatarSelected = croppedImagePath;
+                    setState(() {});
+                  }
+                }
               });
             },
             child: const Text('Chụp ảnh'),
@@ -115,10 +154,16 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
             onPressed: () async {
               Navigator.pop(context);
               final ImagePicker picker = ImagePicker();
-              _avatarSelected = await picker.pickImage(
+              final XFile? image = await picker.pickImage(
                 source: ImageSource.gallery,
               );
-              setState(() {});
+              if (image != null) {
+                final File? croppedImagePath = await _cropImage(image.path);
+                if (croppedImagePath != null && mounted) {
+                  _avatarSelected = croppedImagePath;
+                  setState(() {});
+                }
+              }
             },
             child: const Text('Chọn từ thư viện'),
           ),
@@ -148,7 +193,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
           username: _usernameController.text,
           fullName: _fullNameController.text,
           signature: _signatureController.text,
-          avatar: _avatarSelected != null ? File(_avatarSelected!.path) : null,
+          avatar: _avatarSelected,
         ),
       );
     }
@@ -238,9 +283,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                               ? CircleAvatar(
                                   backgroundColor: AppColors.grayF5,
                                   radius: 50.w,
-                                  backgroundImage: FileImage(
-                                    File(_avatarSelected!.path),
-                                  ),
+                                  backgroundImage: FileImage(_avatarSelected!),
                                 )
                               : ProfileAvatar(avatar: widget.user.avatar),
                           Container(
