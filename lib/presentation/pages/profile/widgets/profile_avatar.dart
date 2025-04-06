@@ -2,11 +2,16 @@ import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/core/domain/utils/string.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProfileAvatar extends StatefulWidget {
   final String? avatar;
-  const ProfileAvatar({Key? key, this.avatar}) : super(key: key);
+  final double size;
+
+  const ProfileAvatar({
+    Key? key,
+    this.avatar,
+    this.size = 50,
+  }) : super(key: key);
 
   @override
   State<ProfileAvatar> createState() => _ProfileAvatarState();
@@ -17,14 +22,14 @@ class _ProfileAvatarState extends State<ProfileAvatar> {
   Widget build(BuildContext context) {
     return CircleAvatar(
       backgroundColor: AppColors.grayF5,
-      radius: 50.w,
+      radius: widget.size,
       backgroundImage: widget.avatar != null && widget.avatar!.isNotEmpty
           ? CachedNetworkImageProvider(StringUtils.getImgUrl(widget.avatar!))
           : null,
       child: widget.avatar == null || widget.avatar!.isEmpty
           ? Icon(
               Icons.person,
-              size: 50.w,
+              size: widget.size * 1.5,
               color: AppColors.black,
             )
           : null,

@@ -289,7 +289,10 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                   radius: 50.w,
                                   backgroundImage: FileImage(_avatarSelected!),
                                 )
-                              : ProfileAvatar(avatar: widget.user.avatar),
+                              : ProfileAvatar(
+                                  avatar: widget.user.avatar,
+                                  size: 50.w,
+                                ),
                           Container(
                             width: 100.w,
                             height: 100.w,

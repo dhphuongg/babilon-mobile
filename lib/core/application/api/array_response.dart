@@ -3,43 +3,44 @@ import 'package:json_annotation/json_annotation.dart';
 part 'array_response.g.dart';
 
 @JsonSerializable(genericArgumentFactories: true)
-class BaseArrayResponse<T, E extends String> {
-  final bool success;
-  final int statusCode;
-  final E? error;
-  final List<T>? result;
+class ArrayResponse<T> {
+  final List<T>? items;
+  final int? total;
+  final int? page;
+  final int? limit;
 
-  factory BaseArrayResponse.fromJson(
+  factory ArrayResponse.fromJson(
     Map<String, dynamic> json,
     T Function(Object? json) fromJsonT,
-    E Function(Object?) fromJsonE,
   ) =>
-      _$BaseArrayResponseFromJson(json, fromJsonT, fromJsonE);
+      _$ArrayResponseFromJson(json, fromJsonT);
 
   Map<String, dynamic> toJson(
-          Object? Function(T value) toJsonT, Object? Function(E) toJsonE) =>
-      _$BaseArrayResponseToJson(this, toJsonT, toJsonE);
+    Object? Function(T value) toJsonT,
+  ) =>
+      _$ArrayResponseToJson(
+        this,
+        toJsonT,
+      );
 
-  BaseArrayResponse copyWith({
-    final bool? success,
-    final int? statusCode,
-    final E? error,
-    final List<T>? result,
+  ArrayResponse copyWith({
+    final List<T>? items,
+    final int? total,
+    final int? page,
+    final int? limit,
   }) {
-    return BaseArrayResponse(
-      success: success ?? this.success,
-      statusCode: statusCode ?? this.statusCode,
-      error: error ?? this.error,
-      result: result ?? this.result,
+    return ArrayResponse(
+      items: items ?? this.items,
+      total: total ?? this.total,
+      page: page ?? this.page,
+      limit: limit ?? this.limit,
     );
   }
 
-  const BaseArrayResponse({
-    required this.success,
-    required this.statusCode,
-    this.error,
-    this.result,
+  const ArrayResponse({
+    this.items,
+    this.total,
+    this.page,
+    this.limit,
   });
 }
-
-typedef ArrayResponse<T> = BaseArrayResponse<T, String>;

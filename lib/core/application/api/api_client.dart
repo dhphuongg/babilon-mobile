@@ -1,3 +1,4 @@
+import 'package:babilon/core/application/api/array_response.dart';
 import 'package:babilon/core/application/models/request/auth/change_password.dart';
 import 'package:babilon/core/application/models/request/auth/register.dart';
 import 'package:babilon/core/application/models/request/auth/reset_password.dart';
@@ -5,6 +6,7 @@ import 'package:babilon/core/application/models/request/otp/request.dart';
 import 'package:babilon/core/application/models/request/otp/verify.dart';
 import 'package:babilon/core/application/models/response/otp/verify.dart';
 import 'package:babilon/core/application/models/response/user/user_profile.dart';
+import 'package:babilon/core/application/models/response/user/user_public.dart';
 import 'package:dio/dio.dart';
 import 'package:babilon/core/application/models/request/auth/login_request.dart';
 import 'package:babilon/core/application/models/response/login/login.dart';
@@ -52,5 +54,15 @@ abstract class ApiClient {
   @PATCH('/user')
   Future<ObjectResponse<UserProfile>> updateProfile(
     @Body() FormData body,
+  );
+
+  @GET('/user/followers/{userId}')
+  Future<ObjectResponse<ArrayResponse<UserPublic>>> getFollowers(
+    @Path('userId') String userId,
+  );
+
+  @GET('/user/followings/{userId}')
+  Future<ObjectResponse<ArrayResponse<UserPublic>>> getFollowings(
+    @Path('userId') String userId,
   );
 }
