@@ -39,14 +39,21 @@ class _SocialGraphScreenState extends State<SocialGraphScreen>
       vsync: this,
       initialIndex: widget.initialTabIndex,
     );
+    _tabController.addListener(_loadSocialGraph);
   }
 
-  @override
-  void dispose() {
-    super.dispose();
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  //   _cubit.clearSocialGraph();
+  //   _cubit.close();
+  //   _tabController.dispose();
+  //   _tabController.removeListener(_loadSocialGraph);
+  // }
+
+  Future<void> _loadSocialGraph() async {
     _cubit.clearSocialGraph();
-    _cubit.close();
-    _tabController.dispose();
+    await _cubit.loadSocialGraph(widget.user.id);
   }
 
   @override
@@ -60,55 +67,63 @@ class _SocialGraphScreenState extends State<SocialGraphScreen>
         if (state.getSocialGraphStatus == LoadStatus.FAILURE) {
           AppSnackBar.showError(state.error!);
         }
-        if (state.getSocialGraphStatus == LoadStatus.SUCCESS) {
-          setState(() {});
-        }
       },
-      builder: (context, state) => AppPageWidget(
-        isLoading: state.getSocialGraphStatus == LoadStatus.LOADING,
-        appbar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          title: Text(
-            widget.user.username,
-            style: const TextStyle(
-              color: Colors.black,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+      builder: (context, state) {
+        return AppPageWidget(
+          isLoading: state.getSocialGraphStatus == LoadStatus.LOADING,
+          appbar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(
+                Icons.chevron_left_rounded,
+                size: 36,
+              ),
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+            ),
+            title: Text(
+              widget.user.username,
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            bottom: TabBar(
+              controller: _tabController,
+              labelColor: Colors.black,
+              unselectedLabelColor: Colors.grey,
+              indicatorColor: AppColors.black,
+              tabs: const <Widget>[
+                Tab(text: 'Đã follow'),
+                Tab(text: 'Follower'),
+                // Tab(text: 'Bạn bè'),
+              ],
             ),
           ),
-          bottom: TabBar(
+          body: TabBarView(
             controller: _tabController,
-            labelColor: Colors.black,
-            unselectedLabelColor: Colors.grey,
-            indicatorColor: AppColors.black,
-            tabs: [
-              Tab(text: 'Đã follow ${widget.user.followingCount}'),
-              Tab(text: 'Follower ${widget.user.followerCount}'),
-              // Tab(text: 'Bạn bè'),
+            children: [
+              state.followings != null
+                  ? _UserList(
+                      type: SocialGraphType.following,
+                      users: state.followings!,
+                      total: state.followings!.length,
+                    )
+                  : const SizedBox.shrink(),
+              state.followers != null
+                  ? _UserList(
+                      type: SocialGraphType.followers,
+                      users: state.followers!,
+                      total: state.followers!.length,
+                    )
+                  : const SizedBox.shrink(),
             ],
           ),
-        ),
-        body: TabBarView(
-          controller: _tabController,
-          children: [
-            state.followings != null
-                ? _UserList(
-                    type: SocialGraphType.following,
-                    users: state.followings!,
-                    total: widget.user.followingCount,
-                  )
-                : const SizedBox.shrink(),
-            state.followers != null
-                ? _UserList(
-                    type: SocialGraphType.followers,
-                    users: state.followers!,
-                    total: widget.user.followerCount,
-                  )
-                : const SizedBox.shrink(),
-          ],
-        ),
-      ),
+        );
+      },
     );
   }
 }

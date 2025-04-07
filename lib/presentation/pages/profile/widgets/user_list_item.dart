@@ -1,7 +1,10 @@
 import 'package:babilon/core/application/models/response/user/user_public.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
+import 'package:babilon/core/domain/enum/load_status.dart';
+import 'package:babilon/presentation/pages/profile/cubit/user_cubit.dart';
 import 'package:babilon/presentation/pages/profile/widgets/profile_avatar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class UserListItem extends StatefulWidget {
@@ -19,21 +22,50 @@ class UserListItem extends StatefulWidget {
 }
 
 class _UserListItemState extends State<UserListItem> {
+  late bool isFollowing = false;
+  late bool isFollower = false;
+  late UserCubit _cubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _cubit = BlocProvider.of<UserCubit>(context);
+    isFollowing = widget.user.isFollowing;
+    isFollower = widget.user.isFollower;
+  }
+
+  Future<void> _onFollowTap() async {
+    if (_cubit.state.followStatus == LoadStatus.LOADING) {
+      return;
+    }
+    if (isFollowing) {
+      await _cubit.unfollowUserById(widget.user.id);
+      setState(() {
+        isFollowing = false;
+      });
+    } else {
+      await _cubit.followUserById(widget.user.id);
+      setState(() {
+        isFollowing = true;
+      });
+    }
+  }
+
   Widget _buildFollowButton() {
     if (widget.user.isMe) {
       return const SizedBox.shrink();
-    } else if (widget.user.isFollowing && widget.user.isFollower) {
+    } else if (isFollowing) {
       return GestureDetector(
-        onTap: widget.onFollowTap,
+        onTap: _onFollowTap,
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
           decoration: BoxDecoration(
             color: AppColors.grayF5,
             borderRadius: BorderRadius.circular(20.r),
           ),
-          child: const Text(
-            'Bạn bè',
-            style: TextStyle(
+          child: Text(
+            isFollower ? 'Bạn bè' : 'Đã theo dõi',
+            style: const TextStyle(
               color: Colors.black,
               fontSize: 14,
               fontWeight: FontWeight.w500,
@@ -41,28 +73,10 @@ class _UserListItemState extends State<UserListItem> {
           ),
         ),
       );
-    } else if (widget.user.isFollowing) {
-      return GestureDetector(
-        onTap: widget.onFollowTap,
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-          decoration: BoxDecoration(
-            color: AppColors.grayF5,
-            borderRadius: BorderRadius.circular(20.r),
-          ),
-          child: const Text(
-            'Đang theo dõi',
-            style: TextStyle(
-              color: AppColors.black,
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ),
-      );
     }
+
     return GestureDetector(
-      onTap: widget.onFollowTap,
+      onTap: _onFollowTap,
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
         decoration: BoxDecoration(

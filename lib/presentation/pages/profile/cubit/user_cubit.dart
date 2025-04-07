@@ -151,4 +151,54 @@ class UserCubit extends Cubit<UserState> {
       followings: null,
     ));
   }
+
+  Future<void> followUserById(String userId) async {
+    try {
+      emit(state.copyWith(error: '', followStatus: LoadStatus.LOADING));
+
+      final response = await _userRepository.followUser(userId);
+
+      if (response.success) {
+        emit(state.copyWith(
+          error: '',
+          followStatus: LoadStatus.SUCCESS,
+        ));
+      } else {
+        emit(state.copyWith(
+          error: response.error ?? 'Failed to follow user',
+          followStatus: LoadStatus.FAILURE,
+        ));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+        error: 'Failed to follow user: ${e.toString()}',
+        followStatus: LoadStatus.FAILURE,
+      ));
+    }
+  }
+
+  Future<void> unfollowUserById(String userId) async {
+    try {
+      emit(state.copyWith(error: '', followStatus: LoadStatus.LOADING));
+
+      final response = await _userRepository.unfollowUser(userId);
+
+      if (response.success) {
+        emit(state.copyWith(
+          error: '',
+          followStatus: LoadStatus.SUCCESS,
+        ));
+      } else {
+        emit(state.copyWith(
+          error: response.error ?? 'Failed to unfollow user',
+          followStatus: LoadStatus.FAILURE,
+        ));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+        error: 'Failed to unfollow user: ${e.toString()}',
+        followStatus: LoadStatus.FAILURE,
+      ));
+    }
+  }
 }

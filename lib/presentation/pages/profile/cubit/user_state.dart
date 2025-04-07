@@ -10,6 +10,8 @@ class UserState extends Equatable {
   final LoadStatus? getProfileStatus;
   final LoadStatus? updateStatus;
   final LoadStatus? getSocialGraphStatus;
+  final LoadStatus? followStatus;
+  final LoadStatus? unfollowStatus;
 
   const UserState({
     this.user,
@@ -19,6 +21,8 @@ class UserState extends Equatable {
     this.updateStatus,
     this.getProfileStatus,
     this.getSocialGraphStatus,
+    this.followStatus,
+    this.unfollowStatus,
   });
 
   UserState copyWith({
@@ -29,6 +33,8 @@ class UserState extends Equatable {
     LoadStatus? updateStatus,
     LoadStatus? getProfileStatus,
     LoadStatus? getSocialGraphStatus,
+    LoadStatus? followStatus,
+    LoadStatus? unfollowStatus,
   }) {
     return UserState(
       user: user ?? this.user,
@@ -38,6 +44,8 @@ class UserState extends Equatable {
       updateStatus: updateStatus ?? this.updateStatus,
       getProfileStatus: getProfileStatus ?? this.getProfileStatus,
       getSocialGraphStatus: getSocialGraphStatus ?? this.getSocialGraphStatus,
+      followStatus: followStatus ?? this.followStatus,
+      unfollowStatus: unfollowStatus ?? this.unfollowStatus,
     );
   }
 
@@ -50,5 +58,7 @@ class UserState extends Equatable {
         updateStatus,
         getProfileStatus,
         getSocialGraphStatus,
+        followStatus,
+        unfollowStatus,
       ];
 }

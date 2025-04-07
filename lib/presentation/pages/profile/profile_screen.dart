@@ -168,11 +168,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildStatColumn(
       UserEntity user, String label, String count, SocialGraphType type) {
     return GestureDetector(
-      onTap: () {
-        Navigator.pushNamed(context, RouteName.socialGraph, arguments: {
-          'user': user,
-          'initialTabIndex': type == SocialGraphType.following ? 0 : 1,
-        });
+      onTap: () async {
+        final result = await Navigator.pushNamed(
+          context,
+          RouteName.socialGraph,
+          arguments: {
+            'user': user,
+            'initialTabIndex': type == SocialGraphType.following ? 0 : 1,
+          },
+        );
+        if (result == true) {
+          await _cubit.loadUserProfile();
+        }
       },
       child: Column(
         children: [

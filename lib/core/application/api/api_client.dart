@@ -56,6 +56,16 @@ abstract class ApiClient {
     @Body() FormData body,
   );
 
+  @POST('/user/follow/{userId}')
+  Future<ObjectResponse> followUserById(
+    @Path('userId') String userId,
+  );
+
+  @POST('/user/unfollow/{userId}')
+  Future<ObjectResponse> unfollowUserById(
+    @Path('userId') String userId,
+  );
+
   @GET('/user/followers/{userId}')
   Future<ObjectResponse<ArrayResponse<UserPublic>>> getFollowers(
     @Path('userId') String userId,

@@ -28,4 +28,14 @@ class UserRepositoryImpl implements UserRepository {
       String userId) {
     return RestClientProvider.apiClient!.getFollowings(userId);
   }
+
+  @override
+  Future<ObjectResponse> followUser(String userId) {
+    return RestClientProvider.apiClient!.followUserById(userId);
+  }
+
+  @override
+  Future<ObjectResponse> unfollowUser(String userId) {
+    return RestClientProvider.apiClient!.unfollowUserById(userId);
+  }
 }

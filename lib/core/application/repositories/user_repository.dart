@@ -9,8 +9,15 @@ abstract class UserRepository {
 
   Future<ObjectResponse<UserProfile>> updateProfile(FormData body);
 
-  Future<ObjectResponse<ArrayResponse<UserPublic>>> getFollowers(String userId);
+  Future<ObjectResponse<ArrayResponse<UserPublic>>> getFollowers(
+    String userId,
+  );
 
   Future<ObjectResponse<ArrayResponse<UserPublic>>> getFollowings(
-      String userId);
+    String userId,
+  );
+
+  Future<ObjectResponse> followUser(String userId);
+
+  Future<ObjectResponse> unfollowUser(String userId);
 }
