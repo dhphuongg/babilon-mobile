@@ -4,6 +4,7 @@ import 'package:babilon/presentation/pages/auth/change_password_screen.dart';
 import 'package:babilon/presentation/pages/auth/cubit/auth_cubit.dart';
 import 'package:babilon/presentation/pages/auth/register_screen.dart';
 import 'package:babilon/presentation/pages/auth/reset_password_screen.dart';
+import 'package:babilon/presentation/pages/profile/social_graph_screen.dart';
 import 'package:babilon/presentation/pages/root/root_screen.dart';
 import 'package:babilon/presentation/pages/setting/setting_screen.dart';
 import 'package:babilon/presentation/pages/profile/cubit/user_cubit.dart';
@@ -92,6 +93,24 @@ class AppRoutes {
             return UserCubit(userRepository: getIt());
           },
           child: UpdateProfileScreen(user: user),
+        );
+        break;
+
+      // social graph
+      case RouteName.socialGraph:
+        final args = routeSettings.arguments as Map<String, dynamic>;
+
+        final user = args['user'] as UserEntity;
+        final initialTabIndex = args['initialTabIndex'] as int;
+
+        routeWidget = BlocProvider(
+          create: (context) {
+            return UserCubit(userRepository: getIt());
+          },
+          child: SocialGraphScreen(
+            user: user,
+            initialTabIndex: initialTabIndex,
+          ),
         );
         break;
 

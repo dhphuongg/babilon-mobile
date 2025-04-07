@@ -1,6 +1,7 @@
 import 'package:babilon/core/application/models/entities/user.entity.dart';
 import 'package:babilon/core/application/models/request/user/update_profile.request.dart';
 import 'package:babilon/core/application/models/response/user/user_profile.dart';
+import 'package:babilon/core/application/models/response/user/user_public.dart';
 import 'package:babilon/core/application/repositories/user_repository.dart';
 import 'package:babilon/core/domain/enum/load_status.dart';
 import 'package:babilon/core/domain/utils/share_preferences.dart';
@@ -12,15 +13,17 @@ import 'package:http_parser/http_parser.dart';
 part 'user_state.dart';
 
 class UserCubit extends Cubit<UserState> {
-  final UserRepository userRepository;
+  final UserRepository _userRepository;
 
-  UserCubit({required this.userRepository}) : super(const UserState());
+  UserCubit({required UserRepository userRepository})
+      : _userRepository = userRepository,
+        super(const UserState());
 
   Future<void> loadUserProfile() async {
     try {
       emit(state.copyWith(getProfileStatus: LoadStatus.LOADING, error: ''));
 
-      final response = await userRepository.getUserProfile();
+      final response = await _userRepository.getUserProfile();
       if (response.success && response.data != null) {
         UserProfile userProfile = response.data!;
         final user = UserEntity.fromUserProfile(userProfile);
@@ -47,7 +50,7 @@ class UserCubit extends Cubit<UserState> {
 
   Future<void> logout() async {
     try {
-      emit(state.copyWith(isLoading: true, error: ''));
+      emit(state.copyWith(error: ''));
 
       await SharedPreferencesHelper.removeByKey(
           SharedPreferencesHelper.ACCESS_TOKEN);
@@ -58,7 +61,6 @@ class UserCubit extends Cubit<UserState> {
       // This will be implemented when repository is ready
     } catch (e) {
       emit(state.copyWith(
-        isLoading: false,
         error: 'Failed to logout: ${e.toString()}',
       ));
     }
@@ -91,7 +93,7 @@ class UserCubit extends Cubit<UserState> {
         );
       }
 
-      final response = await userRepository.updateProfile(formData);
+      final response = await _userRepository.updateProfile(formData);
 
       if (response.success && response.data != null) {
         emit(state.copyWith(
@@ -110,5 +112,43 @@ class UserCubit extends Cubit<UserState> {
         error: 'Failed to update profile: ${e.toString()}',
       ));
     }
+  }
+
+  Future<void> loadSocialGraph(String userId) async {
+    try {
+      emit(state.copyWith(getSocialGraphStatus: LoadStatus.LOADING, error: ''));
+
+      final followersResponse = await _userRepository.getFollowers(userId);
+      final followingsResponse = await _userRepository.getFollowings(userId);
+
+      if (followersResponse.success &&
+          followersResponse.data != null &&
+          followingsResponse.success &&
+          followingsResponse.data != null) {
+        emit(state.copyWith(
+          getSocialGraphStatus: LoadStatus.SUCCESS,
+          followers: followersResponse.data!.items,
+          followings: followingsResponse.data!.items,
+          error: '',
+        ));
+      } else {
+        emit(state.copyWith(
+          getSocialGraphStatus: LoadStatus.FAILURE,
+          error: followersResponse.error ?? 'Failed to load followers',
+        ));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+        getSocialGraphStatus: LoadStatus.FAILURE,
+        error: 'Failed to load followers: ${e.toString()}',
+      ));
+    }
+  }
+
+  void clearSocialGraph() {
+    emit(state.copyWith(
+      followers: null,
+      followings: null,
+    ));
   }
 }

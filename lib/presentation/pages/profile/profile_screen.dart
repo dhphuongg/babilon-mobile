@@ -1,5 +1,6 @@
 import 'package:babilon/core/application/common/widgets/app_page_widget.dart';
 import 'package:babilon/core/application/common/widgets/app_snack_bar.dart';
+import 'package:babilon/core/application/models/entities/user.entity.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/core/domain/enum/load_status.dart';
 import 'package:babilon/presentation/pages/profile/cubit/user_cubit.dart';
@@ -62,91 +63,98 @@ class _ProfileScreenState extends State<ProfileScreen> {
           body: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
-              children: [
-                // Avatar Section
-                ProfileAvatar(avatar: state.user?.avatar),
-                const SizedBox(height: 16),
-
-                // User Info Section
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      state.user?.fullName ?? '',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+              children: state.user != null
+                  ? <Widget>[
+                      // Avatar Section
+                      ProfileAvatar(
+                        avatar: state.user!.avatar,
+                        size: 50.w,
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    GestureDetector(
-                      onTap: () async {
-                        final result = await Navigator.pushNamed(
-                          context,
-                          RouteName.updateProfile,
-                          arguments: state.user,
-                        );
-                        if (result == true) {
-                          await _cubit.loadUserProfile();
-                        }
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.grayF5,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 15,
-                          vertical: 4,
-                        ),
-                        child: Icon(
-                          Icons.edit_sharp,
-                          size: 16.w,
+                      const SizedBox(height: 16),
+
+                      // User Info Section
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            state.user!.fullName,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          GestureDetector(
+                            onTap: () async {
+                              final result = await Navigator.pushNamed(
+                                context,
+                                RouteName.updateProfile,
+                                arguments: state.user,
+                              );
+                              if (result == true) {
+                                await _cubit.loadUserProfile();
+                              }
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: AppColors.grayF5,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 15,
+                                vertical: 4,
+                              ),
+                              child: Icon(
+                                Icons.edit_sharp,
+                                size: 16.w,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      // Username
+                      Text(
+                        '@${state.user!.username}',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey,
                         ),
                       ),
-                    ),
-                  ],
-                ),
+                      const SizedBox(height: 12),
+                      Text(
+                        state.user!.signature ?? '',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
 
-                // Username
-                Text(
-                  '@${state.user?.username}',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  state.user?.signature ?? '',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(height: 12),
-
-                // Stats Section
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildStatColumn(
-                      'Đã theo dõi',
-                      state.user?.followings.toString() ?? '',
-                    ),
-                    Container(
-                      height: 25.h,
-                      width: 1,
-                      color: Colors.grey.withOpacity(0.3),
-                      margin: const EdgeInsets.symmetric(horizontal: 24),
-                    ),
-                    _buildStatColumn(
-                      'Người theo dõi',
-                      state.user?.followers.toString() ?? '',
-                    ),
-                  ],
-                ),
-              ],
+                      // Stats Section
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _buildStatColumn(
+                            state.user!,
+                            'Đã theo dõi',
+                            state.user!.followings.toString(),
+                          ),
+                          Container(
+                            height: 25.h,
+                            width: 1,
+                            color: Colors.grey.withOpacity(0.3),
+                            margin: const EdgeInsets.symmetric(horizontal: 24),
+                          ),
+                          _buildStatColumn(
+                            state.user!,
+                            'Người theo dõi',
+                            state.user!.followers.toString(),
+                          ),
+                        ],
+                      ),
+                    ]
+                  : [],
             ),
           ),
         );
@@ -154,24 +162,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildStatColumn(String label, String count) {
-    return Column(
-      children: [
-        Text(
-          count,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+  Widget _buildStatColumn(UserEntity user, String label, String count) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, RouteName.socialGraph, arguments: {
+          'user': user,
+          'initialTabIndex': label == 'Đã theo dõi' ? 0 : 1,
+        });
+      },
+      child: Column(
+        children: [
+          Text(
+            count,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 16,
-            color: Colors.grey,
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 16,
+              color: Colors.grey,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
