@@ -6,13 +6,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class UserListItem extends StatefulWidget {
   final UserPublic user;
-  final bool isFollowing;
   final VoidCallback? onFollowTap;
 
   const UserListItem({
     Key? key,
     required this.user,
-    this.isFollowing = false,
     this.onFollowTap,
   }) : super(key: key);
 
@@ -21,6 +19,68 @@ class UserListItem extends StatefulWidget {
 }
 
 class _UserListItemState extends State<UserListItem> {
+  Widget _buildFollowButton() {
+    if (widget.user.isMe) {
+      return const SizedBox.shrink();
+    } else if (widget.user.isFollowing && widget.user.isFollower) {
+      return GestureDetector(
+        onTap: widget.onFollowTap,
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+          decoration: BoxDecoration(
+            color: AppColors.grayF5,
+            borderRadius: BorderRadius.circular(20.r),
+          ),
+          child: const Text(
+            'Bạn bè',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+      );
+    } else if (widget.user.isFollowing) {
+      return GestureDetector(
+        onTap: widget.onFollowTap,
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+          decoration: BoxDecoration(
+            color: AppColors.grayF5,
+            borderRadius: BorderRadius.circular(20.r),
+          ),
+          child: const Text(
+            'Đang theo dõi',
+            style: TextStyle(
+              color: AppColors.black,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+      );
+    }
+    return GestureDetector(
+      onTap: widget.onFollowTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+        decoration: BoxDecoration(
+          color: AppColors.main,
+          borderRadius: BorderRadius.circular(20.r),
+        ),
+        child: const Text(
+          'Theo dõi',
+          style: TextStyle(
+            color: AppColors.white,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -56,24 +116,7 @@ class _UserListItemState extends State<UserListItem> {
             ),
           ),
           // Follow button
-          GestureDetector(
-            onTap: widget.onFollowTap,
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-              decoration: BoxDecoration(
-                color: widget.isFollowing ? AppColors.grayF5 : AppColors.main,
-                borderRadius: BorderRadius.circular(20.r),
-              ),
-              child: Text(
-                widget.isFollowing ? 'Đang theo dõi' : 'Theo dõi',
-                style: TextStyle(
-                  color: widget.isFollowing ? Colors.black : Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ),
+          _buildFollowButton(),
         ],
       ),
     );

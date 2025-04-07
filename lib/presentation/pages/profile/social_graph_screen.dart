@@ -4,6 +4,7 @@ import 'package:babilon/core/application/models/entities/user.entity.dart';
 import 'package:babilon/core/application/models/response/user/user_public.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/core/domain/enum/load_status.dart';
+import 'package:babilon/core/domain/enum/user.dart';
 import 'package:babilon/presentation/pages/profile/cubit/user_cubit.dart';
 import 'package:babilon/presentation/pages/profile/widgets/user_list_item.dart';
 import 'package:flutter/material.dart';
@@ -93,14 +94,14 @@ class _SocialGraphScreenState extends State<SocialGraphScreen>
           children: [
             state.followings != null
                 ? _UserList(
-                    type: UserListType.following,
+                    type: SocialGraphType.following,
                     users: state.followings!,
                     total: widget.user.followings,
                   )
                 : const SizedBox.shrink(),
             state.followers != null
                 ? _UserList(
-                    type: UserListType.followers,
+                    type: SocialGraphType.followers,
                     users: state.followers!,
                     total: widget.user.followers,
                   )
@@ -112,12 +113,10 @@ class _SocialGraphScreenState extends State<SocialGraphScreen>
   }
 }
 
-enum UserListType { following, followers, friends }
-
 class _UserList extends StatefulWidget {
-  final UserListType type;
   final int total;
   final List<UserPublic> users;
+  final SocialGraphType type;
 
   const _UserList({
     Key? key,
@@ -136,14 +135,7 @@ class _UserListState extends State<_UserList> {
     return ListView.builder(
       itemCount: widget.total,
       itemBuilder: (context, index) {
-        return UserListItem(
-          user: widget.users[index],
-          isFollowing: widget.type == UserListType.following ||
-              widget.type == UserListType.friends,
-          onFollowTap: () {
-            // TODO: Implement follow/unfollow action
-          },
-        );
+        return UserListItem(user: widget.users[index]);
       },
     );
   }

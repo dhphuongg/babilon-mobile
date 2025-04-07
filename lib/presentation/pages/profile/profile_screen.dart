@@ -3,6 +3,7 @@ import 'package:babilon/core/application/common/widgets/app_snack_bar.dart';
 import 'package:babilon/core/application/models/entities/user.entity.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/core/domain/enum/load_status.dart';
+import 'package:babilon/core/domain/enum/user.dart';
 import 'package:babilon/presentation/pages/profile/cubit/user_cubit.dart';
 import 'package:babilon/presentation/pages/profile/widgets/profile_avatar.dart';
 import 'package:babilon/presentation/routes/route_name.dart';
@@ -139,6 +140,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             state.user!,
                             'Đã theo dõi',
                             state.user!.followings.toString(),
+                            SocialGraphType.following,
                           ),
                           Container(
                             height: 25.h,
@@ -150,6 +152,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             state.user!,
                             'Người theo dõi',
                             state.user!.followers.toString(),
+                            SocialGraphType.followers,
                           ),
                         ],
                       ),
@@ -162,12 +165,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildStatColumn(UserEntity user, String label, String count) {
+  Widget _buildStatColumn(
+      UserEntity user, String label, String count, SocialGraphType type) {
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, RouteName.socialGraph, arguments: {
           'user': user,
-          'initialTabIndex': label == 'Đã theo dõi' ? 0 : 1,
+          'initialTabIndex': type == SocialGraphType.following ? 0 : 1,
         });
       },
       child: Column(

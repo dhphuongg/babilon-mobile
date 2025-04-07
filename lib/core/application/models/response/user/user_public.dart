@@ -4,33 +4,45 @@ part 'user_public.g.dart';
 
 @JsonSerializable()
 class UserPublic {
-  String id;
-  String username;
-  String? avatar;
-  String? signature;
-  String fullName;
+  final String id;
+  final String username;
+  final String fullName;
+  final String? avatar;
+  final String? signature;
+  final bool isMe;
+  final bool isFollower;
+  final bool isFollowing;
 
   UserPublic({
     required this.id,
     required this.username,
-    required this.avatar,
-    required this.signature,
     required this.fullName,
+    this.avatar,
+    this.signature,
+    this.isMe = false,
+    this.isFollower = false,
+    this.isFollowing = false,
   });
 
   UserPublic copyWith({
     String? id,
     String? username,
+    String? fullName,
     String? avatar,
     String? signature,
-    String? fullName,
+    bool? isMe,
+    bool? isFollower,
+    bool? isFollowing,
   }) =>
       UserPublic(
         id: id ?? this.id,
         username: username ?? this.username,
+        fullName: fullName ?? this.fullName,
         avatar: avatar ?? this.avatar,
         signature: signature ?? this.signature,
-        fullName: fullName ?? this.fullName,
+        isMe: isMe ?? this.isMe,
+        isFollower: isFollower ?? this.isFollower,
+        isFollowing: isFollowing ?? this.isFollowing,
       );
 
   factory UserPublic.fromJson(Map<String, dynamic> json) =>

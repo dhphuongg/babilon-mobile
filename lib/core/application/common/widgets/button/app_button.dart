@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class AppButton extends StatelessWidget {
   final String text;
   final bool disable;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final Color color;
   final Color? borderColor;
   final TextStyle? textStyle;
@@ -38,8 +38,8 @@ class AppButton extends StatelessWidget {
                 ? BorderSide(color: borderColor ?? AppColors.main, width: 2)
                 : null),
         onPressed: () {
-          if (disable) return;
-          onPressed();
+          if (onPressed == null || disable) return;
+          onPressed!();
         },
         child: Center(
           child: Row(
