@@ -139,7 +139,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           _buildStatColumn(
                             state.user!,
                             'Đã theo dõi',
-                            state.user!.followings.toString(),
+                            state.user!.followingCount.toString(),
                             SocialGraphType.following,
                           ),
                           Container(
@@ -151,7 +151,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           _buildStatColumn(
                             state.user!,
                             'Người theo dõi',
-                            state.user!.followers.toString(),
+                            state.user!.followerCount.toString(),
                             SocialGraphType.followers,
                           ),
                         ],

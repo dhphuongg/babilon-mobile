@@ -7,8 +7,8 @@ class UserEntity {
   final String email;
   final String? avatar;
   final String? signature;
-  final int followers;
-  final int followings;
+  final int followerCount;
+  final int followingCount;
 
   UserEntity({
     required this.id,
@@ -17,8 +17,8 @@ class UserEntity {
     required this.email,
     this.avatar,
     this.signature,
-    this.followers = 0,
-    this.followings = 0,
+    this.followerCount = 0,
+    this.followingCount = 0,
   });
 
   factory UserEntity.fromJson(Map<String, dynamic> json) {
@@ -29,8 +29,8 @@ class UserEntity {
       email: json['email'],
       avatar: json['avatar'],
       signature: json['signature'],
-      followers: json['followers'],
-      followings: json['followings'],
+      followerCount: json['followerCount'],
+      followingCount: json['followingCount'],
     );
   }
 
@@ -42,8 +42,8 @@ class UserEntity {
       email: userProfile.email,
       avatar: userProfile.avatar,
       signature: userProfile.signature,
-      followers: userProfile.count.followers,
-      followings: userProfile.count.followings,
+      followerCount: userProfile.stats.followerCount,
+      followingCount: userProfile.stats.followingCount,
     );
   }
 }

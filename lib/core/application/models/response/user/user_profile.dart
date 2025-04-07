@@ -10,7 +10,7 @@ class UserProfile {
   String email;
   String? avatar;
   String? signature;
-  UserProfileCount count;
+  UserProfileStats stats;
 
   UserProfile({
     required this.id,
@@ -19,7 +19,7 @@ class UserProfile {
     required this.email,
     this.avatar,
     this.signature,
-    required this.count,
+    required this.stats,
   });
 
   UserProfile copyWith({
@@ -32,7 +32,7 @@ class UserProfile {
     dynamic signature,
     DateTime? createdAt,
     DateTime? updatedAt,
-    UserProfileCount? count,
+    UserProfileStats? stats,
   }) =>
       UserProfile(
         id: id ?? this.id,
@@ -41,7 +41,7 @@ class UserProfile {
         email: email ?? this.email,
         avatar: avatar ?? this.avatar,
         signature: signature ?? this.signature,
-        count: count ?? this.count,
+        stats: stats ?? this.stats,
       );
 
   factory UserProfile.fromJson(Map<String, dynamic> json) =>
@@ -51,26 +51,26 @@ class UserProfile {
 }
 
 @JsonSerializable()
-class UserProfileCount {
-  int followers;
-  int followings;
+class UserProfileStats {
+  int followerCount;
+  int followingCount;
 
-  UserProfileCount({
-    required this.followers,
-    required this.followings,
+  UserProfileStats({
+    required this.followerCount,
+    required this.followingCount,
   });
 
-  UserProfileCount copyWith({
-    int? followers,
-    int? followings,
+  UserProfileStats copyWith({
+    int? followerCount,
+    int? followingCount,
   }) =>
-      UserProfileCount(
-        followers: followers ?? this.followers,
-        followings: followings ?? this.followings,
+      UserProfileStats(
+        followerCount: followerCount ?? this.followerCount,
+        followingCount: followingCount ?? this.followingCount,
       );
 
-  factory UserProfileCount.fromJson(Map<String, dynamic> json) =>
-      _$UserProfileCountFromJson(json);
+  factory UserProfileStats.fromJson(Map<String, dynamic> json) =>
+      _$UserProfileStatsFromJson(json);
 
-  Map<String, dynamic> toJson() => _$UserProfileCountToJson(this);
+  Map<String, dynamic> toJson() => _$UserProfileStatsToJson(this);
 }

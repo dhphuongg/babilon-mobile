@@ -83,8 +83,8 @@ class _SocialGraphScreenState extends State<SocialGraphScreen>
             unselectedLabelColor: Colors.grey,
             indicatorColor: AppColors.black,
             tabs: [
-              Tab(text: 'Đã follow ${widget.user.followings}'),
-              Tab(text: 'Follower ${widget.user.followers}'),
+              Tab(text: 'Đã follow ${widget.user.followingCount}'),
+              Tab(text: 'Follower ${widget.user.followerCount}'),
               // Tab(text: 'Bạn bè'),
             ],
           ),
@@ -96,14 +96,14 @@ class _SocialGraphScreenState extends State<SocialGraphScreen>
                 ? _UserList(
                     type: SocialGraphType.following,
                     users: state.followings!,
-                    total: widget.user.followings,
+                    total: widget.user.followingCount,
                   )
                 : const SizedBox.shrink(),
             state.followers != null
                 ? _UserList(
                     type: SocialGraphType.followers,
                     users: state.followers!,
-                    total: widget.user.followers,
+                    total: widget.user.followerCount,
                   )
                 : const SizedBox.shrink(),
           ],
