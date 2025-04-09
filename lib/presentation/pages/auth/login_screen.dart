@@ -94,102 +94,107 @@ class _LoginScreenState extends State<LoginScreen> {
       },
       builder: (context, state) {
         return AppPageWidget(
-            body: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppPadding.horizontal),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: <Widget>[
-                  Image.asset(Images.logoImage, fit: BoxFit.fill),
-                  SizedBox(height: 16.h),
-                  Text(
-                    'Đăng nhập',
-                    style: AppStyle.medium24black,
-                  ),
-                  SizedBox(height: 40.h),
-                  AppTextField(
-                    label: 'Tên người dùng hoặc email',
-                    hintText: 'Nhập tên người dùng hoặc email',
-                    isRequired: true,
-                    controller: _emailOrUsernameController,
-                    keyboardType: TextInputType.text,
-                  ),
-                  SizedBox(height: AppPadding.input),
-                  AppTextField(
-                    label: "Mật khẩu",
-                    hintText: "Nhập mật khẩu",
-                    isRequired: true,
-                    keyboardType: TextInputType.visiblePassword,
-                    controller: _passwordController,
-                    suffixIcon: IconButton(
-                      onPressed: _onToggleShowPass,
-                      icon: Icon(
-                        !showPass ? Icons.visibility : Icons.visibility_off,
-                        color: AppColors.gray,
+          body: SafeArea(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppPadding.horizontal,
+                ),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: <Widget>[
+                      Image.asset(Images.logoImage, fit: BoxFit.fill),
+                      SizedBox(height: 16.h),
+                      Text(
+                        'Đăng nhập',
+                        style: AppStyle.medium24black,
                       ),
-                    ),
-                    obscureText: !showPass,
-                  ),
-                  SizedBox(height: AppPadding.input),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      GestureDetector(
-                        child: Text(
-                          'Quên mật khẩu?',
-                          style: AppStyle.regular14black.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.main,
+                      SizedBox(height: 40.h),
+                      AppTextField(
+                        label: 'Tên người dùng hoặc email',
+                        hintText: 'Nhập tên người dùng hoặc email',
+                        isRequired: true,
+                        controller: _emailOrUsernameController,
+                        keyboardType: TextInputType.text,
+                      ),
+                      SizedBox(height: AppPadding.input),
+                      AppTextField(
+                        label: "Mật khẩu",
+                        hintText: "Nhập mật khẩu",
+                        isRequired: true,
+                        keyboardType: TextInputType.visiblePassword,
+                        controller: _passwordController,
+                        suffixIcon: IconButton(
+                          onPressed: _onToggleShowPass,
+                          icon: Icon(
+                            !showPass ? Icons.visibility : Icons.visibility_off,
+                            color: AppColors.gray,
                           ),
                         ),
-                        onTap: () {
-                          Navigator.of(context)
-                              .pushNamed(RouteName.resetPassword);
+                        obscureText: !showPass,
+                      ),
+                      SizedBox(height: AppPadding.input),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          GestureDetector(
+                            child: Text(
+                              'Quên mật khẩu?',
+                              style: AppStyle.regular14black.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.main,
+                              ),
+                            ),
+                            onTap: () {
+                              Navigator.of(context)
+                                  .pushNamed(RouteName.resetPassword);
+                            },
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 40.h),
+                      BlocBuilder<AuthCubit, AuthState>(
+                        builder: (_, state) {
+                          return SizedBox(
+                            height: AppSpacing.buttonHeight,
+                            child: AppButton(
+                              text: 'Đăng nhập',
+                              disable: state.loginStatus == LoadStatus.LOADING,
+                              onPressed: handleLogin,
+                              textStyle: AppStyle.semiBold18white,
+                            ),
+                          );
                         },
+                      ),
+                      SizedBox(height: 20.h),
+                      RichText(
+                        text: TextSpan(
+                          text: "Bạn chưa có tài khoản? ",
+                          style: AppStyle.regular14black,
+                          children: [
+                            TextSpan(
+                              text: 'Đăng ký',
+                              style: AppStyle.regular14black.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.main,
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.of(context).pushNamedAndRemoveUntil(
+                                      RouteName.register, (route) => false);
+                                },
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 40.h),
-                  BlocBuilder<AuthCubit, AuthState>(
-                    builder: (_, state) {
-                      return SizedBox(
-                        height: AppSpacing.buttonHeight,
-                        child: AppButton(
-                          text: 'Đăng nhập',
-                          disable: state.loginStatus == LoadStatus.LOADING,
-                          onPressed: handleLogin,
-                          textStyle: AppStyle.semiBold18white,
-                        ),
-                      );
-                    },
-                  ),
-                  SizedBox(height: 20.h),
-                  RichText(
-                    text: TextSpan(
-                      text: "Bạn chưa có tài khoản? ",
-                      style: AppStyle.regular14black,
-                      children: [
-                        TextSpan(
-                          text: 'Đăng ký',
-                          style: AppStyle.regular14black.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.main,
-                          ),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              Navigator.of(context).pushNamedAndRemoveUntil(
-                                  RouteName.register, (route) => false);
-                            },
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
           ),
-        ));
+        );
       },
     );
   }
