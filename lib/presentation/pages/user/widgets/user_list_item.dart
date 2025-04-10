@@ -99,12 +99,15 @@ class _UserListItemState extends State<UserListItem> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.pushNamed(
+      onTap: () async {
+        final result = await Navigator.pushNamed(
           context,
           RouteName.user,
           arguments: widget.user.id,
         );
+        if (result == true) {
+          await _cubit.loadUserProfile();
+        }
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),

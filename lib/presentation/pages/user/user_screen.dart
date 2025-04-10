@@ -1,6 +1,5 @@
 import 'package:babilon/core/application/common/widgets/app_page_widget.dart';
 import 'package:babilon/core/application/common/widgets/app_snack_bar.dart';
-import 'package:babilon/core/application/models/response/user/user.entity.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/core/domain/constants/app_padding.dart';
 import 'package:babilon/core/domain/enum/load_status.dart';
@@ -20,7 +19,6 @@ class UserScreen extends StatefulWidget {
 
 class _UserScreenState extends State<UserScreen> {
   late UserCubit _cubit;
-  late UserEntity user;
 
   @override
   void initState() {
@@ -40,15 +38,21 @@ class _UserScreenState extends State<UserScreen> {
         if (state.getUserStatus == LoadStatus.FAILURE) {
           AppSnackBar.showError(state.error!);
         }
-        // if (state.getUserStatus == LoadStatus.SUCCESS) {
-        //   user = state.user!;
-        // }
       },
       builder: (context, state) {
         return AppPageWidget(
           isLoading: state.getUserStatus == LoadStatus.LOADING,
           appbar: AppBar(
             backgroundColor: AppColors.white,
+            leading: IconButton(
+              icon: const Icon(
+                Icons.chevron_left_rounded,
+                size: 36,
+              ),
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+            ),
           ),
           body: SafeArea(
             child: SingleChildScrollView(
