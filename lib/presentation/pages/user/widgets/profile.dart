@@ -1,8 +1,8 @@
 import 'package:babilon/core/application/models/response/user/user.entity.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
-import 'package:babilon/presentation/pages/profile/cubit/user_cubit.dart';
-import 'package:babilon/presentation/pages/profile/widgets/profile_avatar.dart';
-import 'package:babilon/presentation/pages/profile/widgets/profile_stats.dart';
+import 'package:babilon/presentation/pages/user/cubit/user_cubit.dart';
+import 'package:babilon/presentation/pages/user/widgets/profile_avatar.dart';
+import 'package:babilon/presentation/pages/user/widgets/profile_stats.dart';
 import 'package:babilon/presentation/routes/route_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

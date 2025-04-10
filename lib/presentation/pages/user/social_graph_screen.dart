@@ -4,8 +4,8 @@ import 'package:babilon/core/application/models/response/user/user.entity.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/core/domain/enum/load_status.dart';
 import 'package:babilon/core/domain/enum/user.dart';
-import 'package:babilon/presentation/pages/profile/cubit/user_cubit.dart';
-import 'package:babilon/presentation/pages/profile/widgets/user_list_item.dart';
+import 'package:babilon/presentation/pages/user/cubit/user_cubit.dart';
+import 'package:babilon/presentation/pages/user/widgets/user_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
