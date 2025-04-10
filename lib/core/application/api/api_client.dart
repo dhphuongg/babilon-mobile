@@ -5,8 +5,7 @@ import 'package:babilon/core/application/models/request/auth/reset_password.dart
 import 'package:babilon/core/application/models/request/otp/request.dart';
 import 'package:babilon/core/application/models/request/otp/verify.dart';
 import 'package:babilon/core/application/models/response/otp/verify.dart';
-import 'package:babilon/core/application/models/response/user/user_profile.dart';
-import 'package:babilon/core/application/models/response/user/user_public.dart';
+import 'package:babilon/core/application/models/response/user/user.entity.dart';
 import 'package:dio/dio.dart';
 import 'package:babilon/core/application/models/request/auth/login_request.dart';
 import 'package:babilon/core/application/models/response/login/login.dart';
@@ -36,7 +35,7 @@ abstract class ApiClient {
   Future<ObjectResponse<dynamic>> resetPassword(@Body() ResetPassword body);
 
   @GET('/auth/profile')
-  Future<ObjectResponse<UserProfile>> getUserProfile();
+  Future<ObjectResponse<UserEntity>> getUserProfile();
 
   @POST('/auth/change-password')
   Future<ObjectResponse<dynamic>> changePassword(
@@ -52,12 +51,12 @@ abstract class ApiClient {
 
   // ========================== User ==========================
   @PATCH('/user')
-  Future<ObjectResponse<UserProfile>> updateProfile(
+  Future<ObjectResponse<UserEntity>> updateProfile(
     @Body() FormData body,
   );
 
   @GET('/user/{userId}')
-  Future<ObjectResponse<UserPublic>> getUserById(
+  Future<ObjectResponse<UserEntity>> getUserById(
     @Path('userId') String userId,
   );
 
@@ -72,12 +71,12 @@ abstract class ApiClient {
   );
 
   @GET('/user/followers/{userId}')
-  Future<ObjectResponse<ArrayResponse<UserPublic>>> getFollowers(
+  Future<ObjectResponse<ArrayResponse<UserEntity>>> getFollowers(
     @Path('userId') String userId,
   );
 
   @GET('/user/followings/{userId}')
-  Future<ObjectResponse<ArrayResponse<UserPublic>>> getFollowings(
+  Future<ObjectResponse<ArrayResponse<UserEntity>>> getFollowings(
     @Path('userId') String userId,
   );
 }

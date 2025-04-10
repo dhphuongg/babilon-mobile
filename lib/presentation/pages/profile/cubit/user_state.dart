@@ -4,8 +4,8 @@ class UserState extends Equatable {
   final UserEntity? user;
   final String? error;
 
-  final List<UserPublic>? followers;
-  final List<UserPublic>? followings;
+  final List<UserEntity>? followers;
+  final List<UserEntity>? followings;
 
   final LoadStatus? getUserStatus;
   final LoadStatus? updateStatus;
@@ -27,8 +27,8 @@ class UserState extends Equatable {
 
   UserState copyWith({
     UserEntity? user,
-    List<UserPublic>? followers,
-    List<UserPublic>? followings,
+    List<UserEntity>? followers,
+    List<UserEntity>? followings,
     String? error,
     LoadStatus? updateStatus,
     LoadStatus? getUserStatus,

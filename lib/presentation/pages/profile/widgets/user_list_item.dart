@@ -1,4 +1,4 @@
-import 'package:babilon/core/application/models/response/user/user_public.dart';
+import 'package:babilon/core/application/models/response/user/user.entity.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/core/domain/enum/load_status.dart';
 import 'package:babilon/presentation/pages/profile/cubit/user_cubit.dart';
@@ -9,7 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class UserListItem extends StatefulWidget {
-  final UserPublic user;
+  final UserEntity user;
   final VoidCallback? onFollowTap;
 
   const UserListItem({

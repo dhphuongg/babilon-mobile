@@ -1,4 +1,4 @@
-import 'package:babilon/core/application/models/entities/user.entity.dart';
+import 'package:babilon/core/application/models/response/user/user.entity.dart';
 import 'package:babilon/presentation/pages/app/app_screen.dart';
 import 'package:babilon/presentation/pages/auth/change_password_screen.dart';
 import 'package:babilon/presentation/pages/auth/cubit/auth_cubit.dart';

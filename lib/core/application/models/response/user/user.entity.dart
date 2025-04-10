@@ -1,5 +1,3 @@
-import 'package:babilon/core/application/models/response/user/user_profile.dart';
-
 class UserEntity {
   final String id;
   final String username;
@@ -8,6 +6,9 @@ class UserEntity {
   final String? signature;
   final int followerCount;
   final int followingCount;
+  final bool isMe;
+  final bool isFollower;
+  final bool isFollowing;
 
   UserEntity({
     required this.id,
@@ -17,6 +18,9 @@ class UserEntity {
     this.signature,
     this.followerCount = 0,
     this.followingCount = 0,
+    this.isMe = false,
+    this.isFollower = false,
+    this.isFollowing = false,
   });
 
   factory UserEntity.fromJson(Map<String, dynamic> json) {
@@ -28,6 +32,9 @@ class UserEntity {
       signature: json['signature'],
       followerCount: json['followerCount'],
       followingCount: json['followingCount'],
+      isMe: json['isMe'] ?? false,
+      isFollower: json['isFollower'] ?? false,
+      isFollowing: json['isFollowing'] ?? false,
     );
   }
 
@@ -40,18 +47,9 @@ class UserEntity {
       'signature': signature,
       'followerCount': followerCount,
       'followingCount': followingCount,
+      'isMe': isMe,
+      'isFollower': isFollower,
+      'isFollowing': isFollowing,
     };
-  }
-
-  static UserEntity fromUserProfile(UserProfile userProfile) {
-    return UserEntity(
-      id: userProfile.id,
-      username: userProfile.username,
-      fullName: userProfile.fullName,
-      avatar: userProfile.avatar,
-      signature: userProfile.signature,
-      followerCount: userProfile.stats.followerCount,
-      followingCount: userProfile.stats.followingCount,
-    );
   }
 }

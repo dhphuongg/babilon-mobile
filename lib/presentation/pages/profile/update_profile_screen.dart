@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:babilon/core/application/common/widgets/app_page_widget.dart';
 import 'package:babilon/core/application/common/widgets/app_snack_bar.dart';
 import 'package:babilon/core/application/common/widgets/input/app_text_field.dart';
-import 'package:babilon/core/application/models/entities/user.entity.dart';
+import 'package:babilon/core/application/models/response/user/user.entity.dart';
 import 'package:babilon/core/application/models/request/user/update_profile.request.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/core/domain/constants/app_padding.dart';

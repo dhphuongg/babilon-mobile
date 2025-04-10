@@ -1,21 +1,20 @@
 import 'package:babilon/core/application/api/array_response.dart';
 import 'package:babilon/core/application/api/object_response.dart';
-import 'package:babilon/core/application/models/response/user/user_profile.dart';
-import 'package:babilon/core/application/models/response/user/user_public.dart';
+import 'package:babilon/core/application/models/response/user/user.entity.dart';
 import 'package:dio/dio.dart';
 
 abstract class UserRepository {
-  Future<ObjectResponse<UserProfile>> getUserProfile();
+  Future<ObjectResponse<UserEntity>> getUserProfile();
 
-  Future<ObjectResponse<UserProfile>> updateProfile(FormData body);
+  Future<ObjectResponse<UserEntity>> updateProfile(FormData body);
 
-  Future<ObjectResponse<UserPublic>> getUserById(String userId);
+  Future<ObjectResponse<UserEntity>> getUserById(String userId);
 
-  Future<ObjectResponse<ArrayResponse<UserPublic>>> getFollowers(
+  Future<ObjectResponse<ArrayResponse<UserEntity>>> getFollowers(
     String userId,
   );
 
-  Future<ObjectResponse<ArrayResponse<UserPublic>>> getFollowings(
+  Future<ObjectResponse<ArrayResponse<UserEntity>>> getFollowings(
     String userId,
   );
 

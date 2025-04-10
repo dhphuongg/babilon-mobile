@@ -1,4 +1,4 @@
-import 'package:babilon/core/application/models/entities/user.entity.dart';
+import 'package:babilon/core/application/models/response/user/user.entity.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/presentation/pages/profile/cubit/user_cubit.dart';
 import 'package:babilon/presentation/pages/profile/widgets/profile_avatar.dart';

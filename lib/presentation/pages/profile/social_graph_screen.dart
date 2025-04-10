@@ -1,7 +1,6 @@
 import 'package:babilon/core/application/common/widgets/app_page_widget.dart';
 import 'package:babilon/core/application/common/widgets/app_snack_bar.dart';
-import 'package:babilon/core/application/models/entities/user.entity.dart';
-import 'package:babilon/core/application/models/response/user/user_public.dart';
+import 'package:babilon/core/application/models/response/user/user.entity.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/core/domain/enum/load_status.dart';
 import 'package:babilon/core/domain/enum/user.dart';
@@ -130,7 +129,7 @@ class _SocialGraphScreenState extends State<SocialGraphScreen>
 
 class _UserList extends StatefulWidget {
   final int total;
-  final List<UserPublic> users;
+  final List<UserEntity> users;
   final SocialGraphType type;
 
   const _UserList({

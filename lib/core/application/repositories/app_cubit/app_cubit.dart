@@ -1,4 +1,4 @@
-import 'package:babilon/core/application/models/response/user/user_profile.dart';
+import 'package:babilon/core/application/models/response/user/user.entity.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -19,7 +19,7 @@ class AppCubit extends Cubit<AppState> {
     ));
   }
 
-  Future<void> saveUserProfile(UserProfile userProfile) async {
+  Future<void> saveUserProfile(UserEntity userProfile) async {
     emit(state.copyWith(
       userProfile: userProfile,
     ));

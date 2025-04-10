@@ -1,7 +1,7 @@
 part of 'app_cubit.dart';
 
 class AppState extends Equatable {
-  final UserProfile? userProfile;
+  final UserEntity? userProfile;
   final bool? isVideoPlaying;
 
   const AppState({
@@ -10,7 +10,7 @@ class AppState extends Equatable {
   });
 
   AppState copyWith({
-    UserProfile? userProfile,
+    UserEntity? userProfile,
     bool? isVideoPlaying,
   }) {
     return AppState(

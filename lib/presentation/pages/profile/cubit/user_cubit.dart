@@ -1,7 +1,5 @@
-import 'package:babilon/core/application/models/entities/user.entity.dart';
+import 'package:babilon/core/application/models/response/user/user.entity.dart';
 import 'package:babilon/core/application/models/request/user/update_profile.request.dart';
-import 'package:babilon/core/application/models/response/user/user_profile.dart';
-import 'package:babilon/core/application/models/response/user/user_public.dart';
 import 'package:babilon/core/application/repositories/user_repository.dart';
 import 'package:babilon/core/domain/enum/load_status.dart';
 import 'package:babilon/core/domain/utils/share_preferences.dart';
@@ -25,12 +23,10 @@ class UserCubit extends Cubit<UserState> {
 
       final response = await _userRepository.getUserProfile();
       if (response.success && response.data != null) {
-        UserProfile userProfile = response.data!;
-        final user = UserEntity.fromUserProfile(userProfile);
         emit(
           state.copyWith(
             getUserStatus: LoadStatus.SUCCESS,
-            user: user,
+            user: response.data,
             error: '',
           ),
         );
