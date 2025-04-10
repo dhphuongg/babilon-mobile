@@ -7,7 +7,7 @@ class UserState extends Equatable {
   final List<UserPublic>? followers;
   final List<UserPublic>? followings;
 
-  final LoadStatus? getProfileStatus;
+  final LoadStatus? getUserStatus;
   final LoadStatus? updateStatus;
   final LoadStatus? getSocialGraphStatus;
   final LoadStatus? followStatus;
@@ -19,7 +19,7 @@ class UserState extends Equatable {
     this.followings,
     this.error,
     this.updateStatus,
-    this.getProfileStatus,
+    this.getUserStatus,
     this.getSocialGraphStatus,
     this.followStatus,
     this.unfollowStatus,
@@ -31,7 +31,7 @@ class UserState extends Equatable {
     List<UserPublic>? followings,
     String? error,
     LoadStatus? updateStatus,
-    LoadStatus? getProfileStatus,
+    LoadStatus? getUserStatus,
     LoadStatus? getSocialGraphStatus,
     LoadStatus? followStatus,
     LoadStatus? unfollowStatus,
@@ -42,7 +42,7 @@ class UserState extends Equatable {
       followings: followings ?? this.followings,
       error: error ?? this.error,
       updateStatus: updateStatus ?? this.updateStatus,
-      getProfileStatus: getProfileStatus ?? this.getProfileStatus,
+      getUserStatus: getUserStatus ?? this.getUserStatus,
       getSocialGraphStatus: getSocialGraphStatus ?? this.getSocialGraphStatus,
       followStatus: followStatus ?? this.followStatus,
       unfollowStatus: unfollowStatus ?? this.unfollowStatus,
@@ -56,7 +56,7 @@ class UserState extends Equatable {
         followings,
         error,
         updateStatus,
-        getProfileStatus,
+        getUserStatus,
         getSocialGraphStatus,
         followStatus,
         unfollowStatus,

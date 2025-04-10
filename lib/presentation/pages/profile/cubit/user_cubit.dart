@@ -21,7 +21,7 @@ class UserCubit extends Cubit<UserState> {
 
   Future<void> loadUserProfile() async {
     try {
-      emit(state.copyWith(getProfileStatus: LoadStatus.LOADING, error: ''));
+      emit(state.copyWith(getUserStatus: LoadStatus.LOADING, error: ''));
 
       final response = await _userRepository.getUserProfile();
       if (response.success && response.data != null) {
@@ -29,20 +29,20 @@ class UserCubit extends Cubit<UserState> {
         final user = UserEntity.fromUserProfile(userProfile);
         emit(
           state.copyWith(
-            getProfileStatus: LoadStatus.SUCCESS,
+            getUserStatus: LoadStatus.SUCCESS,
             user: user,
             error: '',
           ),
         );
       } else {
         emit(state.copyWith(
-          getProfileStatus: LoadStatus.FAILURE,
+          getUserStatus: LoadStatus.FAILURE,
           error: response.error ?? 'Failed to load profile',
         ));
       }
     } catch (e) {
       emit(state.copyWith(
-        getProfileStatus: LoadStatus.FAILURE,
+        getUserStatus: LoadStatus.FAILURE,
         error: 'Failed to load profile: ${e.toString()}',
       ));
     }

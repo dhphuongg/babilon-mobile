@@ -35,17 +35,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<UserCubit, UserState>(
       buildWhen: (previous, current) =>
-          previous.getProfileStatus != current.getProfileStatus,
+          previous.getUserStatus != current.getUserStatus,
       listenWhen: (previous, current) =>
-          previous.getProfileStatus != current.getProfileStatus,
+          previous.getUserStatus != current.getUserStatus,
       listener: (context, state) {
-        if (state.getProfileStatus == LoadStatus.FAILURE) {
+        if (state.getUserStatus == LoadStatus.FAILURE) {
           AppSnackBar.showError(state.error!);
         }
       },
       builder: (context, state) {
         return AppPageWidget(
-          isLoading: state.getProfileStatus == LoadStatus.LOADING,
+          isLoading: state.getUserStatus == LoadStatus.LOADING,
           appbar: AppBar(
             backgroundColor: Colors.white,
             elevation: 0,
