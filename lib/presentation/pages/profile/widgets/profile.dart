@@ -36,14 +36,17 @@ class _ProfileState extends State<Profile> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              widget.user.fullName,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+            SizedBox(width: 32.w),
+            Expanded(
+              child: Text(
+                widget.user.fullName,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
               ),
             ),
-            const SizedBox(width: 8),
             GestureDetector(
               onTap: () async {
                 final result = await Navigator.pushNamed(
@@ -70,6 +73,7 @@ class _ProfileState extends State<Profile> {
                 ),
               ),
             ),
+            SizedBox(width: 32.w),
           ],
         ),
 

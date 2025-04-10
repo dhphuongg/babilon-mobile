@@ -9,6 +9,7 @@ import 'package:babilon/presentation/pages/root/root_screen.dart';
 import 'package:babilon/presentation/pages/setting/setting_screen.dart';
 import 'package:babilon/presentation/pages/profile/cubit/user_cubit.dart';
 import 'package:babilon/presentation/pages/profile/update_profile_screen.dart';
+import 'package:babilon/presentation/pages/user/user_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:babilon/di.dart';
 import 'package:babilon/presentation/pages/auth/login_screen.dart';
@@ -111,6 +112,18 @@ class AppRoutes {
             user: user,
             initialTabIndex: initialTabIndex,
           ),
+        );
+        break;
+
+      // user
+      case RouteName.user:
+        final userId = routeSettings.arguments as String;
+
+        routeWidget = BlocProvider(
+          create: (context) {
+            return UserCubit(userRepository: getIt());
+          },
+          child: UserScreen(userId: userId),
         );
         break;
 

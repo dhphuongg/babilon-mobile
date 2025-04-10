@@ -114,6 +114,31 @@ class UserCubit extends Cubit<UserState> {
     }
   }
 
+  Future<void> getUserById(String userId) async {
+    try {
+      emit(state.copyWith(getUserStatus: LoadStatus.LOADING, error: ''));
+
+      final response = await _userRepository.getUserById(userId);
+      if (response.success && response.data != null) {
+        emit(state.copyWith(
+          getUserStatus: LoadStatus.SUCCESS,
+          user: response.data,
+          error: '',
+        ));
+      } else {
+        emit(state.copyWith(
+          getUserStatus: LoadStatus.FAILURE,
+          error: response.error ?? 'Failed to load user',
+        ));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+        getUserStatus: LoadStatus.FAILURE,
+        error: 'Failed to load user: ${e.toString()}',
+      ));
+    }
+  }
+
   Future<void> loadSocialGraph(String userId) async {
     try {
       emit(state.copyWith(getSocialGraphStatus: LoadStatus.LOADING, error: ''));

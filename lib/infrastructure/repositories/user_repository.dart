@@ -18,6 +18,11 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
+  Future<ObjectResponse<UserPublic>> getUserById(String userId) {
+    return RestClientProvider.apiClient!.getUserById(userId);
+  }
+
+  @override
   Future<ObjectResponse<ArrayResponse<UserPublic>>> getFollowers(
       String userId) {
     return RestClientProvider.apiClient!.getFollowers(userId);

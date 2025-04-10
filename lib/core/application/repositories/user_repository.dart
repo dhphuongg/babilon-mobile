@@ -9,6 +9,8 @@ abstract class UserRepository {
 
   Future<ObjectResponse<UserProfile>> updateProfile(FormData body);
 
+  Future<ObjectResponse<UserPublic>> getUserById(String userId);
+
   Future<ObjectResponse<ArrayResponse<UserPublic>>> getFollowers(
     String userId,
   );
