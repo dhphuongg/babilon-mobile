@@ -1,8 +1,11 @@
 import 'package:babilon/core/application/models/response/video/video.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
+import 'package:babilon/di.dart';
 import 'package:babilon/presentation/pages/home/widgets/video_side_button.dart';
 import 'package:babilon/presentation/pages/home/widgets/video_info_overlay.dart';
+import 'package:babilon/presentation/pages/user/cubit/user_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -125,7 +128,12 @@ class _AppVideoState extends State<AppVideo>
                         ),
                       ),
                     ),
-                  VideoSideButton(video: widget.video),
+                  BlocProvider(
+                    create: (context) {
+                      return UserCubit(userRepository: getIt());
+                    },
+                    child: VideoSideButton(video: widget.video),
+                  ),
                   VideoInfoOverlay(video: widget.video),
                 ],
               )

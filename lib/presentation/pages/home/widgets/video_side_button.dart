@@ -1,7 +1,11 @@
+import 'package:babilon/core/application/common/widgets/app_snack_bar.dart';
 import 'package:babilon/core/application/models/response/video/video.dart';
+import 'package:babilon/core/domain/enum/load_status.dart';
 import 'package:babilon/core/domain/utils/string.dart';
+import 'package:babilon/presentation/pages/user/cubit/user_cubit.dart';
 import 'package:babilon/presentation/routes/route_name.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class VideoSideButton extends StatefulWidget {
@@ -17,13 +21,18 @@ class _VideoSideButtonState extends State<VideoSideButton>
   late AnimationController _likeController;
   bool _isLiked = false;
 
+  late UserCubit _userCubit;
+  bool _isFollowing = false;
+
   @override
   void initState() {
     super.initState();
+    _userCubit = BlocProvider.of<UserCubit>(context);
     _likeController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),
     );
+    _isFollowing = !widget.video.user.isMe && widget.video.user.isFollowing;
   }
 
   void _handleLikePressed() async {
@@ -142,35 +151,53 @@ class _VideoSideButtonState extends State<VideoSideButton>
                     ),
                   ),
                 ),
-                if (!widget.video.user.isMe && !widget.video.user.isFollowing)
-                  Positioned(
-                    bottom: -10.h,
-                    left: 0,
-                    right: 0,
-                    child: GestureDetector(
-                      onTap: () {
-                        // TODO: Implement follow function
-                        print('Follow user: ${widget.video.user.id}');
-                      },
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Container(
-                          width: 20.w,
-                          height: 20.w,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.pink,
-                            border: Border.all(color: Colors.white, width: 1.5),
-                          ),
-                          child: Icon(
-                            Icons.add,
-                            color: Colors.white,
-                            size: 16.w,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                BlocConsumer<UserCubit, UserState>(
+                  listenWhen: (previous, current) =>
+                      previous.followStatus != current.followStatus,
+                  buildWhen: (previous, current) =>
+                      previous.followStatus != current.followStatus,
+                  listener: (context, state) {
+                    if (state.followStatus == LoadStatus.SUCCESS) {
+                      // Handle success
+                      AppSnackBar.showSuccess('Followed successfully');
+                      _isFollowing = true;
+                    }
+                  },
+                  builder: (context, state) {
+                    return !_isFollowing
+                        ? Positioned(
+                            bottom: -10.h,
+                            left: 0,
+                            right: 0,
+                            child: GestureDetector(
+                              onTap: () {
+                                // TODO: Implement follow function
+                                print('Follow user: ${widget.video.user.id}');
+                                _userCubit.followUserById(widget.video.user.id);
+                              },
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: Container(
+                                  width: 20.w,
+                                  height: 20.w,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.pink,
+                                    border: Border.all(
+                                        color: Colors.white, width: 1.5),
+                                  ),
+                                  child: Icon(
+                                    Icons.add,
+                                    color: Colors.white,
+                                    size: 16.w,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                        : const SizedBox.shrink();
+                  },
+                ),
               ],
             ),
           ),
