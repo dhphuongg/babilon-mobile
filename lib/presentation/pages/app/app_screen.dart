@@ -37,7 +37,6 @@ class _AppScreenState extends State<AppScreen> {
       ],
       child: const HomeScreen(),
     ),
-    const HomeScreen(),
     const FriendsScreen(),
     const CreateVideoScreen(), // Placeholder for FAB
     const NotificationsScreen(),

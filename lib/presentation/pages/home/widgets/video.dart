@@ -1,6 +1,7 @@
 import 'package:babilon/core/application/models/response/video/video.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/presentation/pages/home/widgets/video_side_button.dart';
+import 'package:babilon/presentation/pages/home/widgets/video_info_overlay.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:video_player/video_player.dart';
@@ -125,6 +126,7 @@ class _AppVideoState extends State<AppVideo>
                       ),
                     ),
                   VideoSideButton(video: widget.video),
+                  VideoInfoOverlay(video: widget.video),
                 ],
               )
             : const Center(

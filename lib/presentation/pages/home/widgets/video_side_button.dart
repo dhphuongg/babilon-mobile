@@ -133,10 +133,11 @@ class _VideoSideButtonState extends State<VideoSideButton>
             icon: Icons.comment_rounded,
             onTap: () {},
           ),
-          _buildActionButton(
-            icon: Icons.share,
-            onTap: () {},
-          ),
+          // _buildActionButton(
+          //   icon: Icons.share,
+          //   onTap: () {},
+          // ),
+          SizedBox(height: 75.h)
         ],
       ),
     );
