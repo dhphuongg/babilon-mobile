@@ -6,6 +6,7 @@ import 'package:babilon/core/application/models/request/otp/request.dart';
 import 'package:babilon/core/application/models/request/otp/verify.dart';
 import 'package:babilon/core/application/models/response/otp/verify.dart';
 import 'package:babilon/core/application/models/response/user/user.entity.dart';
+import 'package:babilon/core/application/models/response/video/video.dart';
 import 'package:dio/dio.dart';
 import 'package:babilon/core/application/models/request/auth/login_request.dart';
 import 'package:babilon/core/application/models/response/login/login.dart';
@@ -79,4 +80,8 @@ abstract class ApiClient {
   Future<ObjectResponse<ArrayResponse<UserEntity>>> getFollowings(
     @Path('userId') String userId,
   );
+
+  // ========================== Video ==========================
+  @GET('/video/trending')
+  Future<ObjectResponse<ArrayResponse<Video>>> getTrendingVideos();
 }

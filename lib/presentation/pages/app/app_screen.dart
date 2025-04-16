@@ -4,6 +4,7 @@ import 'package:babilon/core/application/repositories/app_cubit/app_cubit.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/di.dart';
 import 'package:babilon/presentation/pages/friends/friends_screen.dart';
+import 'package:babilon/presentation/pages/home/cubit/video_cubit.dart';
 import 'package:babilon/presentation/pages/home/home_screen.dart';
 import 'package:babilon/presentation/pages/create_video/create_video_screen.dart';
 import 'package:babilon/presentation/pages/notifications/notifications_screen.dart';
@@ -26,6 +27,16 @@ class _AppScreenState extends State<AppScreen> {
   late PageController pageController;
 
   final List<Widget> _screens = [
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) {
+            return VideoCubit(videoRepository: getIt());
+          },
+        ),
+      ],
+      child: const HomeScreen(),
+    ),
     const HomeScreen(),
     const FriendsScreen(),
     const CreateVideoScreen(), // Placeholder for FAB

@@ -1,9 +1,11 @@
+import 'package:babilon/core/application/models/response/video/video.dart';
 import 'package:babilon/core/domain/utils/string.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class VideoSideButton extends StatefulWidget {
-  const VideoSideButton({super.key});
+  final Video video;
+  const VideoSideButton({super.key, required this.video});
 
   @override
   State<VideoSideButton> createState() => _VideoSideButtonState();
@@ -112,8 +114,10 @@ class _VideoSideButtonState extends State<VideoSideButton>
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(color: Colors.white, width: 2),
-              image: const DecorationImage(
-                image: NetworkImage('https://picsum.photos/200'),
+              image: DecorationImage(
+                image: NetworkImage(
+                  widget.video.user.avatar ?? 'https://picsum.photos/200',
+                ),
                 fit: BoxFit.cover,
               ),
             ),
@@ -121,14 +125,13 @@ class _VideoSideButtonState extends State<VideoSideButton>
           _buildActionButton(
             icon: _isLiked ? Icons.favorite : Icons.favorite,
             onTap: _handleLikePressed,
-            label: StringUtils.formatNumber(123000),
+            label: StringUtils.formatNumber(widget.video.likesCount),
             iconColor: _isLiked ? Colors.red : Colors.white,
             isLikeButton: true,
           ),
           _buildActionButton(
             icon: Icons.comment_rounded,
             onTap: () {},
-            label: StringUtils.formatNumber(1234),
           ),
           _buildActionButton(
             icon: Icons.share,

@@ -1,3 +1,4 @@
+import 'package:babilon/core/application/models/response/video/video.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/presentation/pages/home/widgets/video_side_button.dart';
 import 'package:flutter/material.dart';
@@ -6,10 +7,11 @@ import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class AppVideo extends StatefulWidget {
-  final String videoUrl;
-  final String videoId;
-  const AppVideo({Key? key, required this.videoUrl, required this.videoId})
-      : super(key: key);
+  final Video video;
+  const AppVideo({
+    Key? key,
+    required this.video,
+  }) : super(key: key);
 
   @override
   State<AppVideo> createState() => _AppVideoState();
@@ -29,7 +31,7 @@ class _AppVideoState extends State<AppVideo>
 
   void _initializeVideo() {
     _vidController =
-        VideoPlayerController.network(Uri.parse(widget.videoUrl).toString())
+        VideoPlayerController.network(Uri.parse(widget.video.hlsUrl).toString())
           ..initialize().then((_) {
             setState(() {});
           }).catchError((error) {
@@ -82,7 +84,7 @@ class _AppVideoState extends State<AppVideo>
   Widget build(BuildContext context) {
     super.build(context);
     return VisibilityDetector(
-      key: Key(widget.videoId),
+      key: Key(widget.video.id),
       onVisibilityChanged: _handleVisibilityChanged,
       child: Container(
         height: 1.sh - kBottomNavigationBarHeight.h,
@@ -122,7 +124,7 @@ class _AppVideoState extends State<AppVideo>
                         ),
                       ),
                     ),
-                  const VideoSideButton(),
+                  VideoSideButton(video: widget.video),
                 ],
               )
             : const Center(
