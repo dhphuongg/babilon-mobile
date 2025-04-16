@@ -1,5 +1,6 @@
 import 'package:babilon/core/application/models/response/video/video.dart';
 import 'package:babilon/core/domain/utils/string.dart';
+import 'package:babilon/presentation/routes/route_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -111,15 +112,66 @@ class _VideoSideButtonState extends State<VideoSideButton>
             width: 50.w,
             height: 50.w,
             margin: EdgeInsets.only(bottom: 20.h),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.white, width: 2),
-              image: DecorationImage(
-                image: NetworkImage(
-                  widget.video.user.avatar ?? 'https://picsum.photos/200',
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                GestureDetector(
+                  onTap: () async {
+                    final result = await Navigator.pushNamed(
+                      context,
+                      RouteName.user,
+                      arguments: widget.video.user.id,
+                    );
+                    if (result == true) {
+                      // await _cubit.loadUserProfile();
+                    }
+                  },
+                  child: Container(
+                    width: 50.w,
+                    height: 50.w,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 2),
+                      image: DecorationImage(
+                        image: NetworkImage(
+                          widget.video.user.avatar ??
+                              'https://picsum.photos/200',
+                        ),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
                 ),
-                fit: BoxFit.cover,
-              ),
+                if (!widget.video.user.isMe && !widget.video.user.isFollowing)
+                  Positioned(
+                    bottom: -10.h,
+                    left: 0,
+                    right: 0,
+                    child: GestureDetector(
+                      onTap: () {
+                        // TODO: Implement follow function
+                        print('Follow user: ${widget.video.user.id}');
+                      },
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Container(
+                          width: 20.w,
+                          height: 20.w,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.pink,
+                            border: Border.all(color: Colors.white, width: 1.5),
+                          ),
+                          child: Icon(
+                            Icons.add,
+                            color: Colors.white,
+                            size: 16.w,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
           _buildActionButton(

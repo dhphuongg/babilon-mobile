@@ -24,7 +24,8 @@ class _ProfileAvatarState extends State<ProfileAvatar> {
       backgroundColor: AppColors.grayF5,
       radius: widget.size,
       backgroundImage: widget.avatar != null && widget.avatar!.isNotEmpty
-          ? CachedNetworkImageProvider(StringUtils.getImgUrl(widget.avatar!))
+          // ? CachedNetworkImageProvider(StringUtils.getImgUrl(widget.avatar!))
+          ? CachedNetworkImageProvider(widget.avatar!)
           : null,
       child: widget.avatar == null || widget.avatar!.isEmpty
           ? Icon(
