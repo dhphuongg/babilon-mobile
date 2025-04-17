@@ -132,7 +132,10 @@ class _VideoSideButtonState extends State<VideoSideButton>
                       arguments: widget.video.user.id,
                     );
                     if (result == true) {
-                      // await _cubit.loadUserProfile();
+                      await _userCubit.getUserById(widget.video.user.id);
+                      _isFollowing = !_userCubit.state.user!.isMe &&
+                          _userCubit.state.user!.isFollowing;
+                      setState(() {});
                     }
                   },
                   child: Container(
@@ -171,8 +174,6 @@ class _VideoSideButtonState extends State<VideoSideButton>
                             right: 0,
                             child: GestureDetector(
                               onTap: () {
-                                // TODO: Implement follow function
-                                print('Follow user: ${widget.video.user.id}');
                                 _userCubit.followUserById(widget.video.user.id);
                               },
                               child: Align(
