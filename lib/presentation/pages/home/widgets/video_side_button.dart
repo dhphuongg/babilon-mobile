@@ -2,6 +2,7 @@ import 'package:babilon/core/application/common/widgets/app_snack_bar.dart';
 import 'package:babilon/core/application/models/response/video/video.dart';
 import 'package:babilon/core/domain/enum/load_status.dart';
 import 'package:babilon/core/domain/utils/string.dart';
+import 'package:babilon/presentation/pages/home/cubit/video_cubit.dart';
 import 'package:babilon/presentation/pages/user/cubit/user_cubit.dart';
 import 'package:babilon/presentation/routes/route_name.dart';
 import 'package:flutter/material.dart';
@@ -20,14 +21,21 @@ class _VideoSideButtonState extends State<VideoSideButton>
     with SingleTickerProviderStateMixin {
   late AnimationController _likeController;
   bool _isLiked = false;
+  int _likesCount = 0;
 
   late UserCubit _userCubit;
+  late VideoCubit _videoCubit;
   bool _isFollowing = false;
 
   @override
   void initState() {
     super.initState();
     _userCubit = BlocProvider.of<UserCubit>(context);
+    _videoCubit = BlocProvider.of<VideoCubit>(context);
+
+    _isLiked = widget.video.isLiked;
+    _likesCount = widget.video.likesCount;
+
     _likeController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),
@@ -36,12 +44,21 @@ class _VideoSideButtonState extends State<VideoSideButton>
   }
 
   void _handleLikePressed() async {
-    setState(() => _isLiked = !_isLiked);
+    _isLiked = !_isLiked;
     if (_isLiked) {
+      _likesCount++;
       _likeController.forward(from: 0.0);
       await Future.delayed(const Duration(milliseconds: 100));
       _likeController.reverse();
+      _videoCubit.likeVideoById(widget.video.id);
+    } else {
+      _likesCount--;
+      _likeController.forward(from: 0.0);
+      await Future.delayed(const Duration(milliseconds: 100));
+      _likeController.reverse();
+      _videoCubit.unlikeVideoById(widget.video.id);
     }
+    setState(() {});
   }
 
   Widget _buildActionButton({
@@ -205,7 +222,7 @@ class _VideoSideButtonState extends State<VideoSideButton>
           _buildActionButton(
             icon: _isLiked ? Icons.favorite : Icons.favorite,
             onTap: _handleLikePressed,
-            label: StringUtils.formatNumber(widget.video.likesCount),
+            label: StringUtils.formatNumber(_likesCount),
             iconColor: _isLiked ? Colors.red : Colors.white,
             isLikeButton: true,
           ),

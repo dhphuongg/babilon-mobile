@@ -9,4 +9,14 @@ class VideoRepositoryImpl implements VideoRepository {
   Future<ObjectResponse<ArrayResponse<Video>>> getTrendingVideos() {
     return RestClientProvider.apiClient!.getTrendingVideos();
   }
+
+  @override
+  Future<ObjectResponse> likeVideoById(String videoId) {
+    return RestClientProvider.apiClient!.likeVideoById(videoId);
+  }
+
+  @override
+  Future<ObjectResponse> unlikeVideoById(String videoId) {
+    return RestClientProvider.apiClient!.unlikeVideoById(videoId);
+  }
 }

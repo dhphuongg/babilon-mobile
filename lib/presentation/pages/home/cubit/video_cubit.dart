@@ -37,4 +37,32 @@ class VideoCubit extends Cubit<VideoState> {
       ));
     }
   }
+
+  Future<void> likeVideoById(String videoId) async {
+    try {
+      emit(state.copyWith(likeVideoStatus: LoadStatus.LOADING));
+      final response = await _videoRepository.likeVideoById(videoId);
+      if (response.success) {
+        emit(state.copyWith(likeVideoStatus: LoadStatus.SUCCESS));
+      } else {
+        emit(state.copyWith(likeVideoStatus: LoadStatus.FAILURE));
+      }
+    } catch (e) {
+      emit(state.copyWith(likeVideoStatus: LoadStatus.FAILURE));
+    }
+  }
+
+  Future<void> unlikeVideoById(String videoId) async {
+    try {
+      emit(state.copyWith(unlikeVideoStatus: LoadStatus.LOADING));
+      final response = await _videoRepository.unlikeVideoById(videoId);
+      if (response.success) {
+        emit(state.copyWith(unlikeVideoStatus: LoadStatus.SUCCESS));
+      } else {
+        emit(state.copyWith(unlikeVideoStatus: LoadStatus.FAILURE));
+      }
+    } catch (e) {
+      emit(state.copyWith(unlikeVideoStatus: LoadStatus.FAILURE));
+    }
+  }
 }

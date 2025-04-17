@@ -9,9 +9,10 @@ class Video {
   int height;
   bool commentable;
   DateTime createdAt;
-  UserInVideo user;
   int likesCount;
   int commentsCount;
+  bool isLiked;
+  UserInVideo user;
 
   Video({
     required this.id,
@@ -24,9 +25,10 @@ class Video {
     required this.height,
     required this.commentable,
     required this.createdAt,
-    required this.user,
     required this.likesCount,
     required this.commentsCount,
+    required this.isLiked,
+    required this.user,
   });
 
   factory Video.fromJson(Map<String, dynamic> json) => Video(
@@ -40,9 +42,10 @@ class Video {
         height: json['height'] as int,
         commentable: json['commentable'] as bool,
         createdAt: DateTime.parse(json['createdAt'] as String),
-        user: UserInVideo.fromJson(json['user'] as Map<String, dynamic>),
         likesCount: json['likesCount'] as int,
         commentsCount: json['commentsCount'] as int,
+        isLiked: json['isLiked'] as bool,
+        user: UserInVideo.fromJson(json['user'] as Map<String, dynamic>),
       );
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -55,9 +58,10 @@ class Video {
         'height': height,
         'commentable': commentable,
         'createdAt': createdAt.toIso8601String(),
-        'user': user.toJson(),
         'likesCount': likesCount,
         'commentsCount': commentsCount,
+        'isLiked': isLiked,
+        'user': user.toJson(),
       };
 }
 

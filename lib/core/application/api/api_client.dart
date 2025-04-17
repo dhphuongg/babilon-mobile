@@ -84,4 +84,14 @@ abstract class ApiClient {
   // ========================== Video ==========================
   @GET('/video/trending')
   Future<ObjectResponse<ArrayResponse<Video>>> getTrendingVideos();
+
+  @POST('/video/{videoId}/like')
+  Future<ObjectResponse> likeVideoById(
+    @Path('videoId') String videoId,
+  );
+
+  @DELETE('/video/{videoId}/like')
+  Future<ObjectResponse> unlikeVideoById(
+    @Path('videoId') String videoId,
+  );
 }
