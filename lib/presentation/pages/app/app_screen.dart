@@ -34,6 +34,11 @@ class _AppScreenState extends State<AppScreen> {
             return VideoCubit(videoRepository: getIt());
           },
         ),
+        BlocProvider(
+          create: (context) {
+            return UserCubit(userRepository: getIt());
+          },
+        ),
       ],
       child: const HomeScreen(),
     ),
