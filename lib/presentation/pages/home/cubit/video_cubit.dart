@@ -1,3 +1,4 @@
+import 'package:babilon/core/application/models/response/video/comment.dart';
 import 'package:babilon/core/application/models/response/video/video.dart';
 import 'package:babilon/core/application/repositories/video_repository.dart';
 import 'package:babilon/core/domain/enum/load_status.dart';
@@ -63,6 +64,34 @@ class VideoCubit extends Cubit<VideoState> {
       }
     } catch (e) {
       emit(state.copyWith(unlikeVideoStatus: LoadStatus.FAILURE));
+    }
+  }
+
+  Future<void> getCommentsByVideoId(String videoId) async {
+    try {
+      emit(state.copyWith(
+        error: '',
+        getCommentsStatus: LoadStatus.LOADING,
+      ));
+      final response = await _videoRepository.getCommentsByVideoId(videoId);
+      if (response.success && response.data != null) {
+        emit(state.copyWith(
+          comments: response.data?.items,
+          commentsTotal: response.data?.total,
+          error: '',
+          getCommentsStatus: LoadStatus.SUCCESS,
+        ));
+      } else {
+        emit(state.copyWith(
+          error: response.error,
+          getCommentsStatus: LoadStatus.FAILURE,
+        ));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+        error: e.toString(),
+        getCommentsStatus: LoadStatus.FAILURE,
+      ));
     }
   }
 }

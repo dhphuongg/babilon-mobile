@@ -6,6 +6,7 @@ import 'package:babilon/core/application/models/request/otp/request.dart';
 import 'package:babilon/core/application/models/request/otp/verify.dart';
 import 'package:babilon/core/application/models/response/otp/verify.dart';
 import 'package:babilon/core/application/models/response/user/user.entity.dart';
+import 'package:babilon/core/application/models/response/video/comment.dart';
 import 'package:babilon/core/application/models/response/video/video.dart';
 import 'package:dio/dio.dart';
 import 'package:babilon/core/application/models/request/auth/login_request.dart';
@@ -92,6 +93,11 @@ abstract class ApiClient {
 
   @DELETE('/video/{videoId}/like')
   Future<ObjectResponse> unlikeVideoById(
+    @Path('videoId') String videoId,
+  );
+
+  @GET('/video/{videoId}/comment')
+  Future<ObjectResponse<ArrayResponse<Comment>>> getCommentsByVideoId(
     @Path('videoId') String videoId,
   );
 }

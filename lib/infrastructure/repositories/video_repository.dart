@@ -1,5 +1,6 @@
 import 'package:babilon/core/application/api/array_response.dart';
 import 'package:babilon/core/application/api/object_response.dart';
+import 'package:babilon/core/application/models/response/video/comment.dart';
 import 'package:babilon/core/application/models/response/video/video.dart';
 import 'package:babilon/core/application/repositories/video_repository.dart';
 import 'package:babilon/core/domain/resources/client_provider.dart';
@@ -18,5 +19,12 @@ class VideoRepositoryImpl implements VideoRepository {
   @override
   Future<ObjectResponse> unlikeVideoById(String videoId) {
     return RestClientProvider.apiClient!.unlikeVideoById(videoId);
+  }
+
+  @override
+  Future<ObjectResponse<ArrayResponse<Comment>>> getCommentsByVideoId(
+    String videoId,
+  ) {
+    return RestClientProvider.apiClient!.getCommentsByVideoId(videoId);
   }
 }

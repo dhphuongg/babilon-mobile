@@ -1,5 +1,6 @@
 import 'package:babilon/core/application/api/array_response.dart';
 import 'package:babilon/core/application/api/object_response.dart';
+import 'package:babilon/core/application/models/response/video/comment.dart';
 import 'package:babilon/core/application/models/response/video/video.dart';
 
 abstract class VideoRepository {
@@ -8,4 +9,8 @@ abstract class VideoRepository {
   Future<ObjectResponse> likeVideoById(String videoId);
 
   Future<ObjectResponse> unlikeVideoById(String videoId);
+
+  Future<ObjectResponse<ArrayResponse<Comment>>> getCommentsByVideoId(
+    String videoId,
+  );
 }
