@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:babilon/core/application/repositories/app_cubit/app_cubit.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/di.dart';
-import 'package:babilon/presentation/pages/friends/friends_screen.dart';
+import 'package:babilon/presentation/pages/search/search_screen.dart';
 import 'package:babilon/presentation/pages/home/cubit/video_cubit.dart';
 import 'package:babilon/presentation/pages/home/home_screen.dart';
 import 'package:babilon/presentation/pages/create_video/create_video_screen.dart';
@@ -37,7 +37,7 @@ class _AppScreenState extends State<AppScreen> {
       ],
       child: const HomeScreen(),
     ),
-    const FriendsScreen(),
+    const SearchScreen(),
     const CreateVideoScreen(), // Placeholder for FAB
     const NotificationsScreen(),
     BlocProvider(
@@ -103,7 +103,7 @@ class _AppScreenState extends State<AppScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _buildNavItem(0, Icons.home, 'Trang chủ'),
-            _buildNavItem(1, Icons.people, 'Theo dõi'),
+            _buildNavItem(1, Icons.search_outlined, 'Tìm kiếm'),
             Container(
               width: 60.w,
               height: 35.h,
