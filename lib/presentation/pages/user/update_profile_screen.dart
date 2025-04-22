@@ -9,7 +9,6 @@ import 'package:babilon/core/domain/constants/app_padding.dart';
 import 'package:babilon/core/domain/constants/app_text_styles.dart';
 import 'package:babilon/core/domain/enum/load_status.dart';
 import 'package:babilon/core/domain/utils/permission.dart';
-import 'package:babilon/core/domain/utils/string.dart';
 import 'package:babilon/presentation/pages/user/cubit/user_cubit.dart';
 import 'package:babilon/presentation/pages/user/widgets/profile_avatar.dart';
 import 'package:flutter/cupertino.dart';
@@ -163,8 +162,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 if (image != null) {
                   final File? croppedImagePath = await _cropImage(image.path);
                   if (croppedImagePath != null && mounted) {
-                    _avatarSelected = croppedImagePath;
-                    setState(() {});
+                    setState(() {
+                      _avatarSelected = croppedImagePath;
+                    });
                   }
                 }
               });
@@ -197,7 +197,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
           username: _usernameController.text,
           fullName: _fullNameController.text,
           signature: _signatureController.text,
-          avatar: _avatarSelected,
+          avatar: _avatarSelected?.path,
         ),
       );
     }

@@ -1,10 +1,8 @@
-import 'dart:io';
-
 class UpdateProfileRequest {
   String? username;
   String? fullName;
   String? signature;
-  File? avatar;
+  String? avatar;
 
   UpdateProfileRequest({
     this.username,

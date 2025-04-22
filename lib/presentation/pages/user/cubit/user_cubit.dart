@@ -82,8 +82,8 @@ class UserCubit extends Cubit<UserState> {
           MapEntry(
             'avatar',
             await MultipartFile.fromFile(
-              body.avatar!.path,
-              contentType: MediaType('image', 'png'),
+              body.avatar ?? '',
+              contentType: MediaType('image', 'jpeg'),
             ),
           ),
         );
