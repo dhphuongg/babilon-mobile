@@ -7,6 +7,7 @@ import 'package:babilon/core/domain/utils/string.dart';
 import 'package:babilon/presentation/pages/home/cubit/video_cubit.dart';
 import 'package:babilon/presentation/pages/home/widgets/video_comments.dart';
 import 'package:babilon/presentation/pages/user/cubit/user_cubit.dart';
+import 'package:babilon/presentation/pages/user/widgets/profile_avatar.dart';
 import 'package:babilon/presentation/routes/route_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -158,20 +159,9 @@ class _VideoSideButtonState extends State<VideoSideButton>
                       setState(() {});
                     }
                   },
-                  child: Container(
-                    width: 50.w,
-                    height: 50.w,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 2),
-                      image: DecorationImage(
-                        image: NetworkImage(
-                          widget.video.user.avatar ??
-                              'https://picsum.photos/200',
-                        ),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                  child: ProfileAvatar(
+                    avatar: widget.video.user.avatar,
+                    size: 50.w,
                   ),
                 ),
                 BlocConsumer<UserCubit, UserState>(
