@@ -1,3 +1,4 @@
+import 'package:babilon/core/application/models/request/video/create_comment.dart';
 import 'package:babilon/core/application/models/response/video/comment.dart';
 import 'package:babilon/core/application/models/response/video/video.dart';
 import 'package:babilon/core/application/repositories/video_repository.dart';
@@ -92,6 +93,21 @@ class VideoCubit extends Cubit<VideoState> {
         error: e.toString(),
         getCommentsStatus: LoadStatus.FAILURE,
       ));
+    }
+  }
+
+  Future<void> createComment(String videoId, String comment) async {
+    try {
+      emit(state.copyWith(createCommentStatus: LoadStatus.LOADING));
+      final body = CreateComment(comment: comment);
+      final response = await _videoRepository.createComment(videoId, body);
+      if (response.success) {
+        emit(state.copyWith(createCommentStatus: LoadStatus.SUCCESS));
+      } else {
+        emit(state.copyWith(createCommentStatus: LoadStatus.FAILURE));
+      }
+    } catch (e) {
+      emit(state.copyWith(createCommentStatus: LoadStatus.FAILURE));
     }
   }
 }

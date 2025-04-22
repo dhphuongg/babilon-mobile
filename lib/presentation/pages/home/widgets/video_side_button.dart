@@ -1,8 +1,11 @@
 import 'package:babilon/core/application/common/widgets/app_snack_bar.dart';
+import 'package:babilon/core/domain/constants/app_colors.dart';
+import 'package:babilon/di.dart';
 import 'package:babilon/core/application/models/response/video/video.dart';
 import 'package:babilon/core/domain/enum/load_status.dart';
 import 'package:babilon/core/domain/utils/string.dart';
 import 'package:babilon/presentation/pages/home/cubit/video_cubit.dart';
+import 'package:babilon/presentation/pages/home/widgets/video_comments.dart';
 import 'package:babilon/presentation/pages/user/cubit/user_cubit.dart';
 import 'package:babilon/presentation/routes/route_name.dart';
 import 'package:flutter/material.dart';
@@ -228,7 +231,22 @@ class _VideoSideButtonState extends State<VideoSideButton>
           ),
           _buildActionButton(
             icon: Icons.comment_rounded,
-            onTap: () {},
+            onTap: () {
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: AppColors.transparent,
+                useSafeArea: true,
+                builder: (context) {
+                  return BlocProvider(
+                    create: (context) {
+                      return VideoCubit(videoRepository: getIt());
+                    },
+                    child: VideoComments(video: widget.video),
+                  );
+                },
+              );
+            },
           ),
           // _buildActionButton(
           //   icon: Icons.share,

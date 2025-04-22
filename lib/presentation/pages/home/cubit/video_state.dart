@@ -10,6 +10,7 @@ class VideoState extends Equatable {
   final LoadStatus? likeVideoStatus;
   final LoadStatus? unlikeVideoStatus;
   final LoadStatus? getCommentsStatus;
+  final LoadStatus? createCommentStatus;
 
   const VideoState({
     this.videos,
@@ -21,6 +22,7 @@ class VideoState extends Equatable {
     this.likeVideoStatus,
     this.unlikeVideoStatus,
     this.getCommentsStatus,
+    this.createCommentStatus,
   });
 
   VideoState copyWith({
@@ -33,6 +35,7 @@ class VideoState extends Equatable {
     LoadStatus? likeVideoStatus,
     LoadStatus? unlikeVideoStatus,
     LoadStatus? getCommentsStatus,
+    LoadStatus? createCommentStatus,
   }) {
     return VideoState(
       videos: videos ?? this.videos,
@@ -45,6 +48,7 @@ class VideoState extends Equatable {
       likeVideoStatus: likeVideoStatus ?? this.likeVideoStatus,
       unlikeVideoStatus: unlikeVideoStatus ?? this.unlikeVideoStatus,
       getCommentsStatus: getCommentsStatus ?? this.getCommentsStatus,
+      createCommentStatus: createCommentStatus ?? this.createCommentStatus,
     );
   }
 
@@ -59,5 +63,6 @@ class VideoState extends Equatable {
         likeVideoStatus,
         unlikeVideoStatus,
         getCommentsStatus,
+        createCommentStatus,
       ];
 }

@@ -60,3 +60,26 @@ String convertTime(String dateTime, String beginFormat, String toFormat) {
 
 String formatTime(DateTime? datetime) =>
     datetime != null ? DateFormat(HOUR_FORMAT).format(datetime) : '';
+
+String getTimeAgo(DateTime datetime) {
+  final now = DateTime.now();
+  final difference = now.difference(datetime);
+  final minutes = difference.inMinutes;
+  final hours = difference.inHours;
+
+  if (minutes < 1) {
+    return 'vài giây trước';
+  } else if (minutes < 60) {
+    return '$minutes phút trước';
+  }
+  if (hours < 1) {
+    return 'vài phút trước';
+  } else if (hours == 1) {
+    return '1 giờ trước';
+  } else if (hours < 24) {
+    return '$hours giờ trước';
+  } else {
+    final days = (hours / 24).floor();
+    return '$days ngày trước';
+  }
+}

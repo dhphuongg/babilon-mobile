@@ -99,7 +99,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 Center(
                   child: InteractiveViewer(
                     child: Image.network(
-                      StringUtils.getImgUrl(widget.user.avatar!),
+                      widget.user.avatar!,
                       errorBuilder: (_, __, ___) => const Icon(
                         Icons.person,
                         size: 150,

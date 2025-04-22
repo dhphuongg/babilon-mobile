@@ -1,4 +1,5 @@
 import 'package:babilon/core/application/models/response/video/video.dart';
+import 'package:babilon/core/domain/utils/date.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -9,29 +10,6 @@ class VideoInfoOverlay extends StatelessWidget {
     Key? key,
     required this.video,
   }) : super(key: key);
-
-  String _getTimeAgo() {
-    final now = DateTime.now();
-    final difference = now.difference(video.createdAt);
-    final minutes = difference.inMinutes;
-    final hours = difference.inHours;
-
-    if (minutes < 1) {
-      return 'vài giây trước';
-    } else if (minutes < 60) {
-      return '$minutes phút trước';
-    }
-    if (hours < 1) {
-      return 'vài phút trước';
-    } else if (hours == 1) {
-      return '1 giờ trước';
-    } else if (hours < 24) {
-      return '$hours giờ trước';
-    } else {
-      final days = (hours / 24).floor();
-      return '$days ngày trước';
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +59,7 @@ class VideoInfoOverlay extends StatelessWidget {
                 ),
                 SizedBox(width: 10.w),
                 Text(
-                  _getTimeAgo(),
+                  getTimeAgo(video.createdAt),
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.8),
                     fontSize: 12.sp,
