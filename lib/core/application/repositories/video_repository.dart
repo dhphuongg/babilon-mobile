@@ -16,4 +16,6 @@ abstract class VideoRepository {
   );
 
   Future createComment(String videoId, CreateComment body);
+
+  Future createView(String videoId);
 }

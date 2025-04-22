@@ -110,4 +110,8 @@ class VideoCubit extends Cubit<VideoState> {
       emit(state.copyWith(createCommentStatus: LoadStatus.FAILURE));
     }
   }
+
+  Future<void> createView(String videoId) async {
+    await _videoRepository.createView(videoId);
+  }
 }

@@ -33,4 +33,9 @@ class VideoRepositoryImpl implements VideoRepository {
   Future createComment(String videoId, CreateComment body) {
     return RestClientProvider.apiClient!.createComment(videoId, body);
   }
+
+  @override
+  Future createView(String videoId) {
+    return RestClientProvider.apiClient!.createView(videoId);
+  }
 }

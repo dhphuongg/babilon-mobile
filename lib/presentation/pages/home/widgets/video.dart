@@ -1,8 +1,10 @@
 import 'package:babilon/core/application/models/response/video/video.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
+import 'package:babilon/presentation/pages/home/cubit/video_cubit.dart';
 import 'package:babilon/presentation/pages/home/widgets/video_side_button.dart';
 import 'package:babilon/presentation/pages/home/widgets/video_info_overlay.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -20,6 +22,7 @@ class AppVideo extends StatefulWidget {
 
 class _AppVideoState extends State<AppVideo>
     with AutomaticKeepAliveClientMixin {
+  late VideoCubit _videoCubit;
   late VideoPlayerController _vidController;
   bool _isVisible = false;
   bool _showPlayIcon = false;
@@ -27,6 +30,8 @@ class _AppVideoState extends State<AppVideo>
   @override
   void initState() {
     super.initState();
+    _videoCubit = BlocProvider.of<VideoCubit>(context);
+    _videoCubit.createView(widget.video.id);
     _initializeVideo();
   }
 

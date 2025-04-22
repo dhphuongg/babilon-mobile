@@ -108,4 +108,10 @@ abstract class ApiClient {
     @Path('videoId') String videoId,
     @Body() CreateComment body,
   );
+
+  // create view
+  @POST('/video/{videoId}/view')
+  Future<ObjectResponse<dynamic>> createView(
+    @Path('videoId') String videoId,
+  );
 }
