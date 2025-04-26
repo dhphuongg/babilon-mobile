@@ -6,7 +6,7 @@ import 'package:babilon/di.dart';
 import 'package:babilon/presentation/pages/search/search_screen.dart';
 import 'package:babilon/presentation/pages/home/cubit/video_cubit.dart';
 import 'package:babilon/presentation/pages/home/home_screen.dart';
-import 'package:babilon/presentation/pages/create_video/create_video_screen.dart';
+import 'package:babilon/presentation/pages/record_video/record_video_screen.dart';
 import 'package:babilon/presentation/pages/notifications/notifications_screen.dart';
 import 'package:babilon/presentation/pages/user/cubit/user_cubit.dart';
 import 'package:babilon/presentation/pages/user/profile_screen.dart';
@@ -23,7 +23,7 @@ class AppScreen extends StatefulWidget {
 
 class _AppScreenState extends State<AppScreen> {
   late AppCubit _appCubit;
-  ValueNotifier<int> _currentPageIndex = ValueNotifier<int>(0);
+  final ValueNotifier<int> _currentPageIndex = ValueNotifier<int>(0);
   late PageController pageController;
 
   final List<Widget> _screens = [
@@ -43,7 +43,7 @@ class _AppScreenState extends State<AppScreen> {
       child: const HomeScreen(),
     ),
     const SearchScreen(),
-    const CreateVideoScreen(), // Placeholder for FAB
+    const RecordVideoScreen(), // Placeholder for FAB
     const NotificationsScreen(),
     BlocProvider(
       create: (context) {
