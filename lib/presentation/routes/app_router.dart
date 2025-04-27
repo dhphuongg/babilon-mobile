@@ -4,6 +4,7 @@ import 'package:babilon/presentation/pages/auth/change_password_screen.dart';
 import 'package:babilon/presentation/pages/auth/cubit/auth_cubit.dart';
 import 'package:babilon/presentation/pages/auth/register_screen.dart';
 import 'package:babilon/presentation/pages/auth/reset_password_screen.dart';
+import 'package:babilon/presentation/pages/record_video/record_video_screen.dart';
 import 'package:babilon/presentation/pages/user/social_graph_screen.dart';
 import 'package:babilon/presentation/pages/root/root_screen.dart';
 import 'package:babilon/presentation/pages/setting/setting_screen.dart';
@@ -125,6 +126,11 @@ class AppRoutes {
           },
           child: UserScreen(userId: userId),
         );
+        break;
+
+      // record video
+      case RouteName.recordVideo:
+        routeWidget = const RecordVideoScreen();
         break;
 
       case RouteName.app:

@@ -1,7 +1,7 @@
 import 'package:permission_handler/permission_handler.dart';
 
 class PermissionUtil {
-  static Future<void> checkCameraPermission(Function? function) async {
+  static Future<void> checkCameraPermission([Function? function]) async {
     final status = await Permission.camera.status;
     if (status.isDenied) {
       // Request permission
@@ -17,6 +17,26 @@ class PermissionUtil {
     } else if (status.isGranted) {
       if (function != null) {
         function();
+      }
+    }
+  }
+
+  static Future<void> checkMicrophonePermission([Function? function]) async {
+    final status = await Permission.microphone.status;
+    if (status.isDenied) {
+      // Request permission
+      final result = await Permission.microphone.request();
+      if (result.isGranted) {
+        if (function != null) {
+          function();
+        }
+      } else if (result.isPermanentlyDenied) {
+        // Open app settings
+        openAppSettings();
+      }
+    } else if (status.isGranted) {
+      if (function != null) {
+        await function();
       }
     }
   }

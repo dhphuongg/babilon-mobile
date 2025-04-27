@@ -11,6 +11,6 @@ class RouteName {
   static const String user = "user";
   static const String updateProfile = "updateProfile";
   static const String socialGraph = "socialGraph";
-  static const String newVideo = "newVideo";
+  static const String recordVideo = "recordVideo";
   static const String setting = "setting";
 }

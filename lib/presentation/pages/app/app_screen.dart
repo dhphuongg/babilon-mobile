@@ -6,10 +6,10 @@ import 'package:babilon/di.dart';
 import 'package:babilon/presentation/pages/search/search_screen.dart';
 import 'package:babilon/presentation/pages/home/cubit/video_cubit.dart';
 import 'package:babilon/presentation/pages/home/home_screen.dart';
-import 'package:babilon/presentation/pages/record_video/record_video_screen.dart';
 import 'package:babilon/presentation/pages/notifications/notifications_screen.dart';
 import 'package:babilon/presentation/pages/user/cubit/user_cubit.dart';
 import 'package:babilon/presentation/pages/user/profile_screen.dart';
+import 'package:babilon/presentation/routes/route_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -43,7 +43,7 @@ class _AppScreenState extends State<AppScreen> {
       child: const HomeScreen(),
     ),
     const SearchScreen(),
-    const RecordVideoScreen(), // Placeholder for FAB
+    // const RecordVideoScreen(), // Placeholder for FAB
     const NotificationsScreen(),
     BlocProvider(
       create: (context) {
@@ -119,8 +119,8 @@ class _AppScreenState extends State<AppScreen> {
               ),
               child: GestureDetector(
                 onTap: () {
-                  _currentPageIndex.value = 2;
-                  // Navigator.pushNamed(context, RouteName.newVideo);
+                  // _currentPageIndex.value = 2;
+                  Navigator.pushNamed(context, RouteName.recordVideo);
                 },
                 child: const Icon(
                   Icons.add,
@@ -129,8 +129,8 @@ class _AppScreenState extends State<AppScreen> {
                 ), // Icon ở giữa
               ),
             ),
-            _buildNavItem(3, Icons.notifications, 'Thông báo'),
-            _buildNavItem(4, Icons.person, 'Hồ sơ'),
+            _buildNavItem(2, Icons.notifications, 'Thông báo'),
+            _buildNavItem(3, Icons.person, 'Hồ sơ'),
           ],
         ),
       ),
