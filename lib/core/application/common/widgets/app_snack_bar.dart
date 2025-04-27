@@ -66,8 +66,7 @@ class AppSnackBar {
   }
 
   static void showError(
-    String title,
-    String? content, {
+    String title, {
     FlushbarPosition position = FlushbarPosition.TOP,
   }) {
     bool isPressed = false;
@@ -82,27 +81,13 @@ class AppSnackBar {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           SizedBox(
-            width: 230.w,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: AppStyle.semi14black,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 100,
-                ),
-                content != null
-                    ? Text(
-                        content,
-                        style: AppStyle.medium13black,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 5,
-                      )
-                    : const SizedBox(),
-              ],
-            ),
-          ),
+              width: 230.w,
+              child: Text(
+                title,
+                style: AppStyle.medium13black,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 5,
+              )),
           GestureDetector(
             onTap: () {
               if (!isPressed) {
@@ -128,7 +113,7 @@ class AppSnackBar {
           blurRadius: 10.w,
         )
       ],
-      duration: const Duration(seconds: 100),
+      duration: const Duration(seconds: 3),
       margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 3.h),
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
       borderRadius: BorderRadius.circular(8),

@@ -1,33 +1,27 @@
-import 'package:babilon/core/application/api/error_response.dart';
-import 'package:babilon/core/application/models/response/user/user_profile.dart';
-import 'package:babilon/core/domain/enum/load_status.dart';
+import 'package:babilon/core/application/models/response/user/user.entity.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:multi_dropdown/multi_dropdown.dart';
 
 part 'app_state.dart';
 
 class AppCubit extends Cubit<AppState> {
   AppCubit() : super(const AppState());
 
-  Future<void> saveUserProfile(UserProfile userProfile) async {
+  void pauseVideo() {
     emit(state.copyWith(
-      userProfile: userProfile,
-      selectedProjectId: userProfile.projectId,
-      selectedProspectId: userProfile.prospectId,
+      isVideoPlaying: false,
     ));
   }
 
-  void onSelectProject(String? projectId) {
-    if (projectId != null) {
-      emit(state.copyWith(
-          selectedProjectId: int.parse(projectId), selectedProspectId: -1));
-    }
+  void playVideo() {
+    emit(state.copyWith(
+      isVideoPlaying: true,
+    ));
   }
 
-  void onSelectProspect(String? prospectId) {
-    if (prospectId != null) {
-      emit(state.copyWith(selectedProspectId: int.parse(prospectId)));
-    }
+  Future<void> saveUserProfile(UserEntity userProfile) async {
+    emit(state.copyWith(
+      userProfile: userProfile,
+    ));
   }
 }

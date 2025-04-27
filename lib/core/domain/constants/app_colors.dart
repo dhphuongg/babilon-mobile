@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
+  static const Color button = Color(0xFF071750);
   static const Color main = Color(0xFF2D669B);
   static const Color secondary = Color(0xFFA5C2DB);
 
@@ -14,5 +15,8 @@ class AppColors {
   static const Color disable = Color(0xFFE0E0E0);
   static const Color buttonCancel = Color(0xFF94A3B8);
   static const Color red = Color(0xffEF3E3E);
+  static const Color orange = Color(0xffFFA500);
   static const Color redD0 = Color(0xffd0011b);
+  static const Color wet = Color(0xff1da2eb);
+  static const Color dry = Color(0xff1CA3EC);
 }

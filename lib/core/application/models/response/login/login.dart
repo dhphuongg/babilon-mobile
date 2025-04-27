@@ -1,3 +1,4 @@
+import 'package:babilon/core/domain/enum/role.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'login.g.dart';
@@ -5,30 +6,17 @@ part 'login.g.dart';
 @JsonSerializable()
 class LoginResponse {
   final String? accessToken;
-  final String? encryptedAccessToken;
-  final int? expireInSeconds;
-  final int? userId;
-  final List<String?>? roleName;
-  String? companyName;
-  int? projectId;
-  int? prospectId;
-  String? firstName;
-  String? lastName;
+  final String? refreshToken;
+  final Role? role;
 
   LoginResponse({
     this.accessToken,
-    this.encryptedAccessToken,
-    this.expireInSeconds,
-    this.userId,
-    this.roleName,
-    this.companyName,
-    this.projectId,
-    this.prospectId,
-    this.firstName,
-    this.lastName,
+    this.refreshToken,
+    this.role,
   });
 
-  factory LoginResponse.fromJson(Map<String, dynamic> json) => _$LoginResponseFromJson(json);
+  factory LoginResponse.fromJson(Map<String, dynamic> json) =>
+      _$LoginResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$LoginResponseToJson(this);
 }

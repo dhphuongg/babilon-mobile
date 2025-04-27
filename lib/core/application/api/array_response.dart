@@ -1,37 +1,46 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import 'error_response.dart';
-
 part 'array_response.g.dart';
 
 @JsonSerializable(genericArgumentFactories: true)
 class ArrayResponse<T> {
-  final bool? success;
-  final ErrorResponse? error;
-  final List<T>? result;
+  final List<T>? items;
+  final int? total;
+  final int? page;
+  final int? limit;
 
   factory ArrayResponse.fromJson(
-          Map<String, dynamic> json, T Function(Object? json) fromJsonT) =>
+    Map<String, dynamic> json,
+    T Function(Object? json) fromJsonT,
+  ) =>
       _$ArrayResponseFromJson(json, fromJsonT);
 
-  Map<String, dynamic> toJson(Object? Function(T value) toJsonT) =>
-      _$ArrayResponseToJson(this, toJsonT);
+  Map<String, dynamic> toJson(
+    Object? Function(T value) toJsonT,
+  ) =>
+      _$ArrayResponseToJson(
+        this,
+        toJsonT,
+      );
 
   ArrayResponse copyWith({
-    final bool? success,
-    final ErrorResponse? error,
-    final List<T>? result,
+    final List<T>? items,
+    final int? total,
+    final int? page,
+    final int? limit,
   }) {
     return ArrayResponse(
-      success: success ?? this.success,
-      error: error ?? this.error,
-      result: result ?? this.result,
+      items: items ?? this.items,
+      total: total ?? this.total,
+      page: page ?? this.page,
+      limit: limit ?? this.limit,
     );
   }
 
   const ArrayResponse({
-    this.success,
-    this.error,
-    this.result,
+    this.items,
+    this.total,
+    this.page,
+    this.limit,
   });
 }

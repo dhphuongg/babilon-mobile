@@ -1,5 +1,8 @@
 plugins {
     id "com.android.application"
+    // START: FlutterFire Configuration
+    id 'com.google.gms.google-services'
+    // END: FlutterFire Configuration
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
 }
@@ -29,9 +32,12 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    compileSdkVersion 34
+    compileSdkVersion 35
+
+    namespace 'com.babilon.mobile'
 
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -58,15 +64,15 @@ android {
     productFlavors {
         Dev {
             dimension 'default'
-            resValue 'string', 'app_name', 'Fast Geo Dev'
-            applicationId 'com.babilon.mobile.dev'
-            resValue 'string', 'scheme', 'hedumdev'
+            resValue 'string', 'app_name', 'Babilon'
+            applicationId 'com.babilon.mobile'
+            resValue 'string', 'scheme', 'babilondev'
         }
         Staging {
             dimension 'default'
-            resValue 'string', 'app_name', 'Fast Geo'
+            resValue 'string', 'app_name', 'Babilon'
             applicationId 'com.babilon.mobile.staging'
-            resValue 'string', 'scheme', 'hedum'
+            resValue 'string', 'scheme', 'babilon'
         }
     }
 
@@ -74,7 +80,8 @@ android {
         release {
             keyAlias keystoreProperties['keyAlias']
             keyPassword keystoreProperties['keyPassword']
-            storeFile file(keystoreProperties['storeFile'])
+            // storeFile file(keystoreProperties['storeFile'])
+            storeFile file("key.jks")
             storePassword keystoreProperties['storePassword']
         }
     }
@@ -93,5 +100,7 @@ flutter {
 }
 
 dependencies {
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'// use compatible version e.g 2.1.4
+
 //    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

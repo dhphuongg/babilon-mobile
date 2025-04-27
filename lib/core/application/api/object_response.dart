@@ -1,37 +1,55 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import 'error_response.dart';
-
 part 'object_response.g.dart';
 
 @JsonSerializable(genericArgumentFactories: true)
-class ObjectResponse<T> {
-  final bool? success;
-  final ErrorResponse? error;
-  final T? result;
+class BaseObjectResponse<T, E extends String> {
+  final bool success;
+  final int statusCode;
+  final T? data;
+  final E? error;
 
-  factory ObjectResponse.fromJson(
-          Map<String, dynamic> json, T Function(Object? json) fromJsonT) =>
-      _$ObjectResponseFromJson(json, fromJsonT);
+  factory BaseObjectResponse.fromJson(
+    Map<String, dynamic> json,
+    T Function(Object? json) fromJsonT,
+    E Function(Object?) fromJsonE,
+  ) =>
+      _$BaseObjectResponseFromJson(
+        json,
+        fromJsonT,
+        fromJsonE,
+      );
 
-  Map<String, dynamic> toJson(Object? Function(T value) toJsonT) =>
-      _$ObjectResponseToJson(this, toJsonT);
+  Map<String, dynamic> toJson(
+    Object? Function(T value) toJsonT,
+    Object? Function(E value) toJsonE,
+  ) =>
+      _$BaseObjectResponseToJson(
+        this,
+        toJsonT,
+        toJsonE,
+      );
 
-  ObjectResponse copyWith({
+  BaseObjectResponse copyWith({
     final bool? success,
-    final ErrorResponse? error,
-    final T? result,
+    final int? statusCode,
+    final E? error,
+    final T? data,
   }) {
-    return ObjectResponse(
+    return BaseObjectResponse(
       success: success ?? this.success,
+      statusCode: statusCode ?? this.statusCode,
       error: error ?? this.error,
-      result: result ?? this.result,
+      data: data ?? this.data,
     );
   }
 
-  const ObjectResponse({
-    this.success,
-    this.error,
-    this.result,
-  });
+  const BaseObjectResponse({
+    required this.statusCode,
+    required this.success,
+    E? error,
+    this.data,
+  }) : error = error ?? '' as E;
 }
+
+typedef ObjectResponse<T> = BaseObjectResponse<T, String>;

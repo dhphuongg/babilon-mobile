@@ -1,10 +1,7 @@
-import 'package:babilon/core/application/models/response/user/user_profile.dart';
-import 'package:babilon/core/application/repositories/app_cubit/app_cubit.dart';
-import 'package:babilon/core/domain/constants/images.dart';
+import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/core/domain/storages/global_storages.dart';
 import 'package:babilon/core/domain/utils/check_connection_util.dart';
-import 'package:babilon/core/domain/utils/share_preferrences.dart';
-import 'package:babilon/di.dart';
+import 'package:babilon/core/domain/utils/share_preferences.dart';
 import 'package:babilon/presentation/routes/route_name.dart';
 import 'package:flutter/material.dart';
 
@@ -16,12 +13,10 @@ class RootScreen extends StatefulWidget {
 }
 
 class _RootScreenState extends State<RootScreen> {
-  late AppCubit _appCubit;
   @override
   initState() {
     // TODO: implement initState
     super.initState();
-    _appCubit = getIt<AppCubit>();
     _checkInternetConnect();
     _checkToken();
   }
@@ -35,21 +30,7 @@ class _RootScreenState extends State<RootScreen> {
         SharedPreferencesHelper.ACCESS_TOKEN);
     try {
       if (token.isNotEmpty) {
-        _appCubit.saveUserProfile(UserProfile(
-          userId: int.parse(await SharedPreferencesHelper.getStringValue(
-              SharedPreferencesHelper.USER_ID)),
-          companyName: await SharedPreferencesHelper.getStringValue(
-              SharedPreferencesHelper.COMPANY_NAME),
-          projectId: int.parse(await SharedPreferencesHelper.getStringValue(
-              SharedPreferencesHelper.PROJECT_ID)),
-          prospectId: int.parse(await SharedPreferencesHelper.getStringValue(
-              SharedPreferencesHelper.PROSPECT_ID)),
-          firstName: await SharedPreferencesHelper.getStringValue(
-              SharedPreferencesHelper.FIRST_NAME),
-          lastName: await SharedPreferencesHelper.getStringValue(
-              SharedPreferencesHelper.LAST_NAME),
-        ));
-        if (mounted) Navigator.popAndPushNamed(context, RouteName.home);
+        if (mounted) Navigator.popAndPushNamed(context, RouteName.app);
       } else {
         if (mounted) Navigator.popAndPushNamed(context, RouteName.login);
       }
@@ -60,9 +41,12 @@ class _RootScreenState extends State<RootScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
+      backgroundColor: AppColors.white,
       body: Center(
-        child: Image.asset(Images.logo, fit: BoxFit.fill),
+        child: Image(
+          image: AssetImage('assets/images/logo-image.png'),
+        ),
       ),
     );
   }
