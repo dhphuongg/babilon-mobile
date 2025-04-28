@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:babilon/core/application/common/widgets/dialog/custom_dialog.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/presentation/pages/edit_video/widgets/crop_page.dart';
 import 'package:flutter/material.dart';
@@ -53,17 +52,28 @@ class _EditVideoScreenState extends State<EditVideoScreen> {
     if (_controller.isTrimmed ||
         _controller.isRotated ||
         _controller.isCropping) {
-      final shouldPop = await showCustomDialog(
-        context,
-        title: 'Thay đổi chưa được lưu',
-        content: const Text('Bạn có chắc chắn muốn huỷ bỏ thay đổi không?'),
-        textPositive: 'Huỷ',
-        textNegative: 'Tiếp tục',
-        onPressPositive: () {
-          Navigator.of(context).pop(true); // Pop screen
-        },
-        onPressNegative: () {
-          Navigator.of(context).pop(false); // Do not pop screen
+      final shouldPop = await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Huỷ bỏ chỉnh sửa'),
+            content: const Text(
+              'Bạn có chắc chắn muốn huỷ bỏ chỉnh sửa không? Tất cả thay đổi sẽ không được lưu.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text(
+                  'Huỷ bỏ chỉnh sửa',
+                  style: TextStyle(color: AppColors.red),
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('Tiếp tục'),
+              ),
+            ],
+          );
         },
       );
 
@@ -146,35 +156,8 @@ class _EditVideoScreenState extends State<EditVideoScreen> {
             child: IconButton(
               onPressed: () async {
                 // Check the same conditions as in _onWillPop
-                if (_controller.isTrimmed ||
-                    _controller.isRotated ||
-                    _controller.isCropping) {
-                  // Show a dialog or feedback that changes need to be saved
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: const Text('Chưa lưu thay đổi'),
-                      content: const Text(
-                          'Bạn có chắc chắn muốn huỷ chỉnh sửa không?'),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: const Text('Tiếp tục chỉnh sửa'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop(); // Close dialog
-                            Navigator.of(context).pop(); // Pop screen
-                          },
-                          child: const Text(
-                            'Huỷ',
-                            style: TextStyle(color: AppColors.red),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                } else {
+                final shouldPop = await _onWillPop();
+                if (shouldPop) {
                   Navigator.of(context).pop();
                 }
               },

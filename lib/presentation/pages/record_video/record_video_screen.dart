@@ -9,7 +9,6 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 
 class RecordVideoScreen extends StatefulWidget {
   const RecordVideoScreen({super.key});
