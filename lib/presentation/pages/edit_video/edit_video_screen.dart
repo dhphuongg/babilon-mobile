@@ -201,12 +201,18 @@ class _EditVideoScreenState extends State<EditVideoScreen> {
           ),
           Expanded(
             child: IconButton(
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute<void>(
-                  builder: (context) => CropPage(controller: _controller),
-                ),
-              ),
+              onPressed: () async {
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute<bool>(
+                    builder: (context) => CropPage(controller: _controller),
+                  ),
+                );
+                // Force rebuild if returning from crop page
+                if (result == true) {
+                  setState(() {});
+                }
+              },
               icon: const Icon(Icons.crop),
               tooltip: 'Open crop screen',
               style: ButtonStyle(
@@ -219,12 +225,7 @@ class _EditVideoScreenState extends State<EditVideoScreen> {
           const VerticalDivider(endIndent: 22, indent: 22),
           Expanded(
             child: IconButton(
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute<void>(
-                  builder: (context) => CropPage(controller: _controller),
-                ),
-              ),
+              onPressed: () {},
               icon: const Icon(Icons.save),
               tooltip: 'Save',
               style: ButtonStyle(
