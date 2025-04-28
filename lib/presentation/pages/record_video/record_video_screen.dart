@@ -334,12 +334,6 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
 
   @override
   Widget build(BuildContext context) {
-    if (!_isCameraInitialized) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    }
-
     return Scaffold(
       backgroundColor: AppColors.black,
       body: SafeArea(
@@ -347,10 +341,14 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
           children: [
             // Camera preview
             Positioned.fill(
-              child: AspectRatio(
-                aspectRatio: _cameraController!.value.aspectRatio,
-                child: CameraPreview(_cameraController!),
-              ),
+              child: _isCameraInitialized
+                  ? AspectRatio(
+                      aspectRatio: _cameraController!.value.aspectRatio,
+                      child: CameraPreview(_cameraController!),
+                    )
+                  : const Center(
+                      child: CircularProgressIndicator(),
+                    ),
             ),
 
             // Close button (X) in the top-left corner
