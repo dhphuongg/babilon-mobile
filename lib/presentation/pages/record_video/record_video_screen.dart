@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/core/domain/constants/app_padding.dart';
 import 'package:babilon/core/domain/utils/permission.dart';
+import 'package:babilon/presentation/routes/route_name.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -159,7 +160,7 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
       });
 
       if (_recordingTime >= _selectedDuration) {
-        _stopRecording();
+        _completeRecording();
       }
     });
   }
@@ -190,12 +191,6 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
     } else {
       try {
         // Start new recording
-        final Directory appDir = await getTemporaryDirectory();
-        final String videoDirectory = '${appDir.path}/Videos';
-        await Directory(videoDirectory).create(recursive: true);
-        final String filePath =
-            '$videoDirectory/${DateTime.now().millisecondsSinceEpoch}.mp4';
-
         await _cameraController!.startVideoRecording();
         setState(() {
           _isStarted = true;
@@ -210,7 +205,7 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
     }
   }
 
-  Future<void> _stopRecording() async {
+  Future<void> _completeRecording() async {
     if (_cameraController == null ||
         !_cameraController!.value.isInitialized ||
         !_isRecording) {
@@ -221,6 +216,7 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
 
     try {
       final XFile videoFile = await _cameraController!.stopVideoRecording();
+      final String videoPath = videoFile.path;
       setState(() {
         _isStarted = false;
         _isRecording = false;
@@ -228,11 +224,27 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
         _pausedTime = 0; // Reset paused time when recording stops
       });
 
-      // Here you would navigate to video editing screen
+      // Set thumbnail
+      _latestVideoThumbnail = File(videoPath);
       debugPrint('Video saved to: ${videoFile.path}');
 
       // For now, we'll just update the thumbnail
       _latestVideoThumbnail = File(videoFile.path);
+      if (mounted) {
+        await Navigator.pushNamed(
+          context,
+          RouteName.editVideo,
+          arguments: {
+            'videoPath': videoPath,
+            'maxDuration': _selectedDuration,
+          },
+        );
+
+        // Reinitialize camera when returning from edit screen
+        if (mounted) {
+          _initCamera();
+        }
+      }
     } catch (e) {
       debugPrint('Error stopping video recording: $e');
     }
@@ -282,6 +294,33 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
         setState(() {
           _latestVideoThumbnail = File(video.path);
         });
+
+        // Temporarily dispose camera controller before navigation
+        final bool wasInitialized =
+            _cameraController?.value.isInitialized ?? false;
+        if (wasInitialized) {
+          await _cameraController?.dispose();
+          setState(() {
+            _isCameraInitialized = false;
+          });
+        }
+
+        // Navigate to edit video screen
+        if (mounted) {
+          await Navigator.pushNamed(
+            context,
+            RouteName.editVideo,
+            arguments: {
+              'videoPath': video.path,
+              'maxDuration': _selectedDuration,
+            },
+          );
+
+          // Reinitialize camera controller when returning from edit screen
+          if (mounted && wasInitialized) {
+            _initCamera();
+          }
+        }
       }
     } catch (e) {
       debugPrint('Error picking video: $e');
@@ -467,7 +506,7 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
                                   SizedBox(width: AppPadding.input),
                                   // Complete recording button
                                   GestureDetector(
-                                    onTap: _stopRecording,
+                                    onTap: _completeRecording,
                                     child: Container(
                                       width: 35.w,
                                       height: 35.w,
@@ -620,7 +659,7 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
 
     return Center(
       child: GestureDetector(
-        onTap: _stopRecording,
+        onTap: _completeRecording,
         child: Container(
           width: 35.w,
           height: 35.w,

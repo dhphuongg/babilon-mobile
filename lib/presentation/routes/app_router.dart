@@ -4,6 +4,7 @@ import 'package:babilon/presentation/pages/auth/change_password_screen.dart';
 import 'package:babilon/presentation/pages/auth/cubit/auth_cubit.dart';
 import 'package:babilon/presentation/pages/auth/register_screen.dart';
 import 'package:babilon/presentation/pages/auth/reset_password_screen.dart';
+import 'package:babilon/presentation/pages/edit_video/edit_video_screen.dart';
 import 'package:babilon/presentation/pages/record_video/record_video_screen.dart';
 import 'package:babilon/presentation/pages/user/social_graph_screen.dart';
 import 'package:babilon/presentation/pages/root/root_screen.dart';
@@ -131,6 +132,15 @@ class AppRoutes {
       // record video
       case RouteName.recordVideo:
         routeWidget = const RecordVideoScreen();
+        break;
+
+      // edit video
+      case RouteName.editVideo:
+        final args = routeSettings.arguments as Map<String, dynamic>;
+        routeWidget = EditVideoScreen(
+          videoPath: args['videoPath'],
+          maxDuration: args['maxDuration'],
+        );
         break;
 
       case RouteName.app:
