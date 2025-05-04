@@ -81,26 +81,34 @@ class _ProfileState extends State<Profile> {
         // Avatar Section
         ProfileAvatar(
           avatar: widget.user.avatar,
-          size: 50.w,
+          size: 45.w,
         ),
         const SizedBox(height: 16),
         // User Info Section
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(width: 32.w),
-            Expanded(
-              child: Text(
-                widget.user.fullName,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+            SizedBox(width: 48.w),
+            Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8.w),
+                child: Text(
+                  widget.user.fullName,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
               ),
             ),
-            if (widget.user.isMe) _buildEditButton(),
-            SizedBox(width: 32.w),
+            SizedBox(
+              width: 48.w,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: widget.user.isMe ? _buildEditButton() : null,
+              ),
+            ),
           ],
         ),
 
@@ -112,21 +120,19 @@ class _ProfileState extends State<Profile> {
             color: Colors.grey,
           ),
         ),
-        const SizedBox(height: 12),
         // Stats Section
         ProfileStats(cubit: widget.cubit, user: widget.user),
-        const SizedBox(height: 16),
         if (!widget.user.isMe)
           SizedBox(
             width: 140.w,
             child: _buildFollowButton(),
           ),
-        const SizedBox(height: 12),
         Text(
           widget.user.signature ?? '',
           textAlign: TextAlign.center,
           style: const TextStyle(fontSize: 16),
         ),
+        SizedBox(height: 16.h),
         Expanded(
           child: SingleChildScrollView(
             child: UserVideoList(videos: widget.videos),

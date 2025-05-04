@@ -1,5 +1,4 @@
 import 'package:babilon/core/domain/constants/app_colors.dart';
-import 'package:babilon/core/domain/utils/string.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 

@@ -25,8 +25,8 @@ class _UserVideoListState extends State<UserVideoList> {
       shrinkWrap: true,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-        crossAxisSpacing: 10.w,
-        mainAxisSpacing: 10.w,
+        crossAxisSpacing: 8.w,
+        mainAxisSpacing: 8.w,
         childAspectRatio: 9 / 16,
       ),
       itemCount: widget.videos.length,
