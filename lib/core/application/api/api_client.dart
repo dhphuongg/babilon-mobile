@@ -84,6 +84,11 @@ abstract class ApiClient {
   );
 
   // ========================== Video ==========================
+  @POST('/video')
+  Future<ObjectResponse> postVideo(
+    @Body() FormData body,
+  );
+
   @GET('/video/trending')
   Future<ObjectResponse<ArrayResponse<Video>>> getTrendingVideos();
 

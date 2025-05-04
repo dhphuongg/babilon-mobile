@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/presentation/pages/edit_video/widgets/crop_page.dart';
+import 'package:babilon/presentation/routes/route_name.dart';
 import 'package:flutter/material.dart';
 import 'package:video_editor/video_editor.dart';
 
@@ -223,7 +224,19 @@ class _EditVideoScreenState extends State<EditVideoScreen> {
           const VerticalDivider(endIndent: 22, indent: 22),
           Expanded(
             child: IconButton(
-              onPressed: () {},
+              onPressed: () async {
+                // stop playing
+                if (_controller.isPlaying) {
+                  _controller.video.pause();
+                }
+                final originalFile = File(widget.videoPath);
+                if (originalFile.existsSync()) {
+                  Navigator.of(context).pushNamed(
+                    RouteName.postVideo,
+                    arguments: {'videoPath': widget.videoPath},
+                  );
+                }
+              },
               icon: const Icon(Icons.save),
               tooltip: 'Save',
               style: ButtonStyle(
@@ -301,4 +314,6 @@ class _EditVideoScreenState extends State<EditVideoScreen> {
       )
     ];
   }
+
+  // This method is no longer needed as we're directly navigating to the post video screen
 }

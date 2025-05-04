@@ -13,5 +13,6 @@ class RouteName {
   static const String socialGraph = "socialGraph";
   static const String recordVideo = "recordVideo";
   static const String editVideo = "editVideo";
+  static const String postVideo = "postVideo";
   static const String setting = "setting";
 }
