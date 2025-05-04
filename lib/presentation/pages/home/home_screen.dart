@@ -36,7 +36,12 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       builder: (context, state) {
         return state.videos != null && state.videos!.isNotEmpty
-            ? VideoList(videos: state.videos!)
+            ? VideoList(
+                videos: state.videos!,
+                onPullDownRefresh: () => _cubit.getTrendingVideos(
+                  isRefresh: true,
+                ),
+              )
             : const Center(
                 child: CircularProgressIndicator(),
               );

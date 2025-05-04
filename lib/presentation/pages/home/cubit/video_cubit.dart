@@ -15,9 +15,12 @@ class VideoCubit extends Cubit<VideoState> {
       : _videoRepository = videoRepository,
         super(const VideoState());
 
-  Future<void> getTrendingVideos() async {
+  Future<void> getTrendingVideos({bool? isRefresh}) async {
     try {
-      emit(state.copyWith(getTrendingVideosStatus: LoadStatus.LOADING));
+      emit(state.copyWith(
+        getTrendingVideosStatus: LoadStatus.LOADING,
+        videos: isRefresh == true ? [] : state.videos,
+      ));
       final response = await _videoRepository.getTrendingVideos();
       if (response.success && response.data != null) {
         emit(state.copyWith(
