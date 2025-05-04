@@ -40,6 +40,7 @@ class _AppVideoState extends State<AppVideo>
         VideoPlayerController.network(Uri.parse(widget.video.hlsUrl).toString())
           ..initialize().then((_) {
             setState(() {});
+            _vidController.play(); // Tự động phát video sau khi khởi tạo xong
           }).catchError((error) {
             print('Failed to initialize video player: $error');
           });
