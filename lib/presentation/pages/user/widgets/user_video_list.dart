@@ -1,4 +1,5 @@
 import 'package:babilon/core/application/models/response/video/video.dart';
+import 'package:babilon/presentation/routes/route_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -40,7 +41,17 @@ class _UserVideoListState extends State<UserVideoList> {
   Widget _buildVideoItem(Video video) {
     return GestureDetector(
       onTap: () {
-        // TODO: Navigate to video detail or playback
+        // Get the index of the tapped video
+        final videoIndex = widget.videos.indexOf(video);
+
+        // Navigate to user videos screen
+        Navigator.of(context).pushNamed(
+          RouteName.userVideos,
+          arguments: {
+            'videos': widget.videos,
+            'initialVideoIndex': videoIndex,
+          },
+        );
       },
       child: Stack(
         fit: StackFit.expand,

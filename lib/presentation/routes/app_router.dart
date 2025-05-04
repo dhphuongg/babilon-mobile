@@ -1,10 +1,12 @@
 import 'package:babilon/core/application/models/response/user/user.entity.dart';
+import 'package:babilon/core/application/models/response/video/video.dart';
 import 'package:babilon/presentation/pages/app/app_screen.dart';
 import 'package:babilon/presentation/pages/auth/change_password_screen.dart';
 import 'package:babilon/presentation/pages/auth/cubit/auth_cubit.dart';
 import 'package:babilon/presentation/pages/auth/register_screen.dart';
 import 'package:babilon/presentation/pages/auth/reset_password_screen.dart';
 import 'package:babilon/presentation/pages/edit_video/edit_video_screen.dart';
+import 'package:babilon/presentation/pages/home/cubit/video_cubit.dart';
 import 'package:babilon/presentation/pages/post_video/cubit/post_video_cubit.dart';
 import 'package:babilon/presentation/pages/post_video/post_video_screen.dart';
 import 'package:babilon/presentation/pages/record_video/record_video_screen.dart';
@@ -14,6 +16,7 @@ import 'package:babilon/presentation/pages/setting/setting_screen.dart';
 import 'package:babilon/presentation/pages/user/cubit/user_cubit.dart';
 import 'package:babilon/presentation/pages/user/update_profile_screen.dart';
 import 'package:babilon/presentation/pages/user/user_screen.dart';
+import 'package:babilon/presentation/pages/user/user_videos_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:babilon/di.dart';
 import 'package:babilon/presentation/pages/auth/login_screen.dart';
@@ -176,6 +179,38 @@ class AppRoutes {
       case RouteName.app:
         routeWidget = const AppScreen();
         break;
+
+      // user videos
+      case RouteName.userVideos:
+        final args = routeSettings.arguments as Map<String, dynamic>;
+        final videos = args['videos'] as List<Video>;
+        final initialVideoIndex = args['initialVideoIndex'] as int? ?? 0;
+
+        routeWidget = MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) {
+                return VideoCubit(
+                  videoRepository: getIt(),
+                );
+              },
+            ),
+            BlocProvider(
+              create: (context) {
+                return UserCubit(
+                  userRepository: getIt(),
+                  videoRepository: getIt(),
+                );
+              },
+            ),
+          ],
+          child: UserVideosScreen(
+            videos: videos,
+            initialVideoIndex: initialVideoIndex,
+          ),
+        );
+        break;
+
       default:
         routeWidget;
         break;

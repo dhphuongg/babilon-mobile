@@ -39,8 +39,10 @@ class _AppVideoState extends State<AppVideo>
     _vidController =
         VideoPlayerController.network(Uri.parse(widget.video.hlsUrl).toString())
           ..initialize().then((_) {
-            setState(() {});
-            _vidController.play(); // Tự động phát video sau khi khởi tạo xong
+            if (mounted) {
+              setState(() {});
+              _vidController.play(); // Auto-play video after initialization
+            }
           }).catchError((error) {
             print('Failed to initialize video player: $error');
           });
@@ -50,21 +52,23 @@ class _AppVideoState extends State<AppVideo>
   }
 
   void _handleVisibilityChanged(VisibilityInfo info) {
-    if (info.visibleFraction > 0.8) {
-      if (!_isVisible) {
-        setState(() {
-          _isVisible = true;
-          _showPlayIcon = false;
-        });
-        _vidController.seekTo(Duration.zero);
-        _vidController.play();
-      }
-    } else {
-      if (_isVisible) {
-        setState(() {
-          _isVisible = false;
-        });
-        _vidController.pause();
+    if (mounted) {
+      if (info.visibleFraction > 0.8) {
+        if (!_isVisible) {
+          setState(() {
+            _isVisible = true;
+            _showPlayIcon = false;
+          });
+          _vidController.seekTo(Duration.zero);
+          _vidController.play();
+        }
+      } else {
+        if (mounted) {
+          setState(() {
+            _isVisible = false;
+          });
+          _vidController.pause();
+        }
       }
     }
   }
@@ -76,15 +80,17 @@ class _AppVideoState extends State<AppVideo>
   }
 
   void _togglePlayPause() {
-    setState(() {
-      if (_vidController.value.isPlaying) {
-        _vidController.pause();
-        _showPlayIcon = true;
-      } else {
-        _vidController.play();
-        _showPlayIcon = false;
-      }
-    });
+    if (mounted) {
+      setState(() {
+        if (_vidController.value.isPlaying) {
+          _vidController.pause();
+          _showPlayIcon = true;
+        } else {
+          _vidController.play();
+          _showPlayIcon = false;
+        }
+      });
+    }
   }
 
   @override
