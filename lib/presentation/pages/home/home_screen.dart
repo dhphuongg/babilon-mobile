@@ -1,7 +1,7 @@
 import 'package:babilon/core/application/common/widgets/app_snack_bar.dart';
 import 'package:babilon/core/domain/enum/load_status.dart';
 import 'package:babilon/presentation/pages/home/cubit/video_cubit.dart';
-import 'package:babilon/presentation/pages/home/widgets/video.dart';
+import 'package:babilon/presentation/pages/home/widgets/video_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -36,15 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       builder: (context, state) {
         return state.videos != null && state.videos!.isNotEmpty
-            ? PageView.builder(
-                scrollDirection: Axis.vertical,
-                itemCount: state.videos!.length,
-                itemBuilder: (context, index) {
-                  return AppVideo(
-                    video: state.videos![index],
-                  );
-                },
-              )
+            ? VideoList(videos: state.videos!)
             : const Center(
                 child: CircularProgressIndicator(),
               );
