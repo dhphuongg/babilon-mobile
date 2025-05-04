@@ -1,10 +1,12 @@
 import 'package:babilon/core/application/common/widgets/button/app_button.dart';
 import 'package:babilon/core/application/models/response/user/user.entity.dart';
+import 'package:babilon/core/application/models/response/video/video.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/core/domain/enum/load_status.dart';
 import 'package:babilon/presentation/pages/user/cubit/user_cubit.dart';
 import 'package:babilon/presentation/pages/user/widgets/profile_avatar.dart';
 import 'package:babilon/presentation/pages/user/widgets/profile_stats.dart';
+import 'package:babilon/presentation/pages/user/widgets/user_video_list.dart';
 import 'package:babilon/presentation/routes/route_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,10 +16,12 @@ class Profile extends StatefulWidget {
     super.key,
     required this.cubit,
     required this.user,
+    required this.videos,
   });
 
   final UserCubit cubit;
   final UserEntity user;
+  final List<Video> videos;
 
   @override
   State<Profile> createState() => _ProfileState();
@@ -122,6 +126,11 @@ class _ProfileState extends State<Profile> {
           widget.user.signature ?? '',
           textAlign: TextAlign.center,
           style: const TextStyle(fontSize: 16),
+        ),
+        Expanded(
+          child: SingleChildScrollView(
+            child: UserVideoList(videos: widget.videos),
+          ),
         ),
       ],
     );

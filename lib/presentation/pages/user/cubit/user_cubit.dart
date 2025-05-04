@@ -1,6 +1,8 @@
 import 'package:babilon/core/application/models/response/user/user.entity.dart';
 import 'package:babilon/core/application/models/request/user/update_profile.request.dart';
+import 'package:babilon/core/application/models/response/video/video.dart';
 import 'package:babilon/core/application/repositories/user_repository.dart';
+import 'package:babilon/core/application/repositories/video_repository.dart';
 import 'package:babilon/core/domain/enum/load_status.dart';
 import 'package:babilon/core/domain/utils/share_preferences.dart';
 import 'package:dio/dio.dart';
@@ -12,9 +14,13 @@ part 'user_state.dart';
 
 class UserCubit extends Cubit<UserState> {
   final UserRepository _userRepository;
+  final VideoRepository _videoRepository;
 
-  UserCubit({required UserRepository userRepository})
-      : _userRepository = userRepository,
+  UserCubit({
+    required UserRepository userRepository,
+    required VideoRepository videoRepository,
+  })  : _userRepository = userRepository,
+        _videoRepository = videoRepository,
         super(const UserState());
 
   Future<void> loadUserProfile() async {
@@ -219,6 +225,57 @@ class UserCubit extends Cubit<UserState> {
       emit(state.copyWith(
         error: 'Failed to unfollow user: ${e.toString()}',
         followStatus: LoadStatus.FAILURE,
+      ));
+    }
+  }
+
+  Future<void> loadUserVideos() async {
+    try {
+      emit(state.copyWith(getListVideoStatus: LoadStatus.LOADING, error: ''));
+      final response = await _videoRepository.getMyListVideo();
+      if (response.success && response.data != null) {
+        emit(state.copyWith(
+          videos: response.data?.items,
+          // total: response.data?.total,
+          error: '',
+          getListVideoStatus: LoadStatus.SUCCESS,
+        ));
+      } else {
+        emit(state.copyWith(
+          getListVideoStatus: LoadStatus.FAILURE,
+          error: response.error ?? 'Failed to load videos',
+        ));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+        getListVideoStatus: LoadStatus.FAILURE,
+        error: e.toString(),
+      ));
+    }
+  }
+
+  Future<void> getListVideoByUserId(String userId) async {
+    try {
+      emit(state.copyWith(getListVideoStatus: LoadStatus.LOADING, error: ''));
+
+      final response = await _videoRepository.getListVideoByUserId(userId);
+      if (response.success && response.data != null) {
+        emit(state.copyWith(
+          videos: response.data?.items,
+          // total: response.data?.total,
+          error: '',
+          getListVideoStatus: LoadStatus.SUCCESS,
+        ));
+      } else {
+        emit(state.copyWith(
+          getListVideoStatus: LoadStatus.FAILURE,
+          error: response.error ?? 'Failed to load videos',
+        ));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+        getListVideoStatus: LoadStatus.FAILURE,
+        error: e.toString(),
       ));
     }
   }

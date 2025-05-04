@@ -89,6 +89,14 @@ abstract class ApiClient {
     @Body() FormData body,
   );
 
+  @GET('/video')
+  Future<ObjectResponse<ArrayResponse<Video>>> getMyListVideo();
+
+  @GET('/video/user/{userId}')
+  Future<ObjectResponse<ArrayResponse<Video>>> getListVideoByUserId(
+    @Path('userId') String userId,
+  );
+
   @GET('/video/trending')
   Future<ObjectResponse<ArrayResponse<Video>>> getTrendingVideos();
 

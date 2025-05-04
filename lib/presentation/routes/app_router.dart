@@ -81,7 +81,10 @@ class AppRoutes {
             ),
             BlocProvider(
               create: (context) {
-                return UserCubit(userRepository: getIt());
+                return UserCubit(
+                  userRepository: getIt(),
+                  videoRepository: getIt(),
+                );
               },
             ),
           ],
@@ -95,7 +98,10 @@ class AppRoutes {
 
         routeWidget = BlocProvider(
           create: (context) {
-            return UserCubit(userRepository: getIt());
+            return UserCubit(
+              userRepository: getIt(),
+              videoRepository: getIt(),
+            );
           },
           child: UpdateProfileScreen(user: user),
         );
@@ -110,7 +116,10 @@ class AppRoutes {
 
         routeWidget = BlocProvider(
           create: (context) {
-            return UserCubit(userRepository: getIt());
+            return UserCubit(
+              userRepository: getIt(),
+              videoRepository: getIt(),
+            );
           },
           child: SocialGraphScreen(
             user: user,
@@ -123,10 +132,17 @@ class AppRoutes {
       case RouteName.user:
         final userId = routeSettings.arguments as String;
 
-        routeWidget = BlocProvider(
-          create: (context) {
-            return UserCubit(userRepository: getIt());
-          },
+        routeWidget = MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) {
+                return UserCubit(
+                  userRepository: getIt(),
+                  videoRepository: getIt(),
+                );
+              },
+            ),
+          ],
           child: UserScreen(userId: userId),
         );
         break;

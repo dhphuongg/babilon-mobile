@@ -36,7 +36,10 @@ class _AppScreenState extends State<AppScreen> {
         ),
         BlocProvider(
           create: (context) {
-            return UserCubit(userRepository: getIt());
+            return UserCubit(
+              userRepository: getIt(),
+              videoRepository: getIt(),
+            );
           },
         ),
       ],
@@ -45,12 +48,19 @@ class _AppScreenState extends State<AppScreen> {
     const SearchScreen(),
     // const RecordVideoScreen(), // Placeholder for FAB
     const NotificationsScreen(),
-    BlocProvider(
-      create: (context) {
-        return UserCubit(userRepository: getIt());
-      },
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) {
+            return UserCubit(
+              userRepository: getIt(),
+              videoRepository: getIt(),
+            );
+          },
+        ),
+      ],
       child: const ProfileScreen(),
-    )
+    ),
   ];
 
   void _onPageChanged() {

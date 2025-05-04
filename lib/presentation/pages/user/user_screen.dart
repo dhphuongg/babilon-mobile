@@ -25,15 +25,18 @@ class _UserScreenState extends State<UserScreen> {
     super.initState();
     _cubit = BlocProvider.of<UserCubit>(context);
     _cubit.getUserById(widget.userId);
+    _cubit.getListVideoByUserId(widget.userId);
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<UserCubit, UserState>(
       buildWhen: (previous, current) =>
-          previous.getUserStatus != current.getUserStatus,
+          previous.getUserStatus != current.getUserStatus ||
+          previous.getListVideoStatus != current.getListVideoStatus,
       listenWhen: (previous, current) =>
-          previous.getUserStatus != current.getUserStatus,
+          previous.getUserStatus != current.getUserStatus ||
+          previous.getListVideoStatus != current.getListVideoStatus,
       listener: (context, state) {
         if (state.getUserStatus == LoadStatus.FAILURE) {
           AppSnackBar.showError(state.error!);
@@ -54,15 +57,15 @@ class _UserScreenState extends State<UserScreen> {
               },
             ),
           ),
-          body: SafeArea(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(
-                horizontal: AppPadding.horizontal,
-              ),
-              child: _cubit.state.user != null
-                  ? Profile(cubit: _cubit, user: _cubit.state.user!)
-                  : const SizedBox.shrink(),
-            ),
+          body: Padding(
+            padding: EdgeInsets.symmetric(horizontal: AppPadding.horizontal),
+            child: state.user != null && state.videos != null
+                ? Profile(
+                    cubit: _cubit,
+                    user: state.user!,
+                    videos: state.videos!,
+                  )
+                : const SizedBox.shrink(),
           ),
         );
       },

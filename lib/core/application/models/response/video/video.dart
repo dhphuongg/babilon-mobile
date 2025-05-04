@@ -4,12 +4,15 @@ class Video {
   String url;
   String hlsUrl;
   String thumbnail;
-  int duration;
   int width;
   int height;
+  double duration;
+  double size;
   bool commentable;
   DateTime createdAt;
+  DateTime updatedAt;
   int likesCount;
+  int viewsCount;
   int commentsCount;
   bool isLiked;
   UserInVideo user;
@@ -20,12 +23,15 @@ class Video {
     required this.url,
     required this.hlsUrl,
     required this.thumbnail,
-    required this.duration,
     required this.width,
     required this.height,
+    required this.duration,
+    required this.size,
     required this.commentable,
     required this.createdAt,
+    required this.updatedAt,
     required this.likesCount,
+    required this.viewsCount,
     required this.commentsCount,
     required this.isLiked,
     required this.user,
@@ -37,12 +43,15 @@ class Video {
         url: json['url'] as String,
         hlsUrl: json['hlsUrl'] as String,
         thumbnail: json['thumbnail'] as String,
-        duration: json['duration'] as int,
         width: json['width'] as int,
         height: json['height'] as int,
+        duration: json['duration'] + 0.0,
+        size: json['size'] + 0.0,
         commentable: json['commentable'] as bool,
         createdAt: DateTime.parse(json['createdAt'] as String),
+        updatedAt: DateTime.parse(json['updatedAt'] as String),
         likesCount: json['likesCount'] as int,
+        viewsCount: json['viewsCount'] as int,
         commentsCount: json['commentsCount'] as int,
         isLiked: json['isLiked'] as bool,
         user: UserInVideo.fromJson(json['user'] as Map<String, dynamic>),
@@ -53,11 +62,13 @@ class Video {
         'url': url,
         'hlsUrl': hlsUrl,
         'thumbnail': thumbnail,
-        'duration': duration,
         'width': width,
         'height': height,
+        'duration': duration,
+        'size': size,
         'commentable': commentable,
         'createdAt': createdAt.toIso8601String(),
+        'updatedAt': updatedAt.toIso8601String(),
         'likesCount': likesCount,
         'commentsCount': commentsCount,
         'isLiked': isLiked,

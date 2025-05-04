@@ -23,6 +23,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
     _cubit = BlocProvider.of<UserCubit>(context);
     _cubit.loadUserProfile();
+    _cubit.loadUserVideos();
   }
 
   @override
@@ -35,9 +36,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<UserCubit, UserState>(
       buildWhen: (previous, current) =>
-          previous.getUserStatus != current.getUserStatus,
+          previous.getUserStatus != current.getUserStatus ||
+          previous.getListVideoStatus != current.getListVideoStatus,
       listenWhen: (previous, current) =>
-          previous.getUserStatus != current.getUserStatus,
+          previous.getUserStatus != current.getUserStatus ||
+          previous.getListVideoStatus != current.getListVideoStatus,
       listener: (context, state) {
         if (state.getUserStatus == LoadStatus.FAILURE) {
           AppSnackBar.showError(state.error!);
@@ -58,10 +61,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ],
           ),
-          body: SingleChildScrollView(
+          body: Padding(
             padding: EdgeInsets.symmetric(horizontal: AppPadding.horizontal),
-            child: state.user != null
-                ? Profile(cubit: _cubit, user: state.user!)
+            child: state.user != null && state.videos != null
+                ? Profile(
+                    cubit: _cubit,
+                    user: state.user!,
+                    videos: state.videos!,
+                  )
                 : const SizedBox.shrink(),
           ),
         );

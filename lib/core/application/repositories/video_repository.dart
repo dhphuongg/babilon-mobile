@@ -8,6 +8,12 @@ import 'package:dio/dio.dart';
 abstract class VideoRepository {
   Future<ObjectResponse> postVideo(FormData body);
 
+  Future<ObjectResponse<ArrayResponse<Video>>> getMyListVideo();
+
+  Future<ObjectResponse<ArrayResponse<Video>>> getListVideoByUserId(
+    String userId,
+  );
+
   Future<ObjectResponse<ArrayResponse<Video>>> getTrendingVideos();
 
   Future<ObjectResponse> likeVideoById(String videoId);
