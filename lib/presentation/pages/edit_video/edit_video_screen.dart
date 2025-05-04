@@ -20,7 +20,6 @@ class EditVideoScreen extends StatefulWidget {
 }
 
 class _EditVideoScreenState extends State<EditVideoScreen> {
-  final _exportingProgress = ValueNotifier<double>(0.0);
   final double height = 60;
 
   late final VideoEditorController _controller = VideoEditorController.file(
@@ -43,7 +42,6 @@ class _EditVideoScreenState extends State<EditVideoScreen> {
 
   @override
   void dispose() async {
-    _exportingProgress.dispose();
     _controller.dispose();
     super.dispose();
   }
