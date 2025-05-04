@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:babilon/core/application/repositories/app_cubit/app_cubit.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/di.dart';
 import 'package:babilon/presentation/pages/search/search_screen.dart';
@@ -22,7 +21,6 @@ class AppScreen extends StatefulWidget {
 }
 
 class _AppScreenState extends State<AppScreen> {
-  late AppCubit _appCubit;
   final ValueNotifier<int> _currentPageIndex = ValueNotifier<int>(0);
   late PageController pageController;
 
@@ -64,19 +62,12 @@ class _AppScreenState extends State<AppScreen> {
   ];
 
   void _onPageChanged() {
-    if (_currentPageIndex.value != 0) {
-      _appCubit.pauseVideo();
-    } else {
-      _appCubit.playVideo();
-    }
     pageController.jumpToPage(_currentPageIndex.value);
   }
 
   @override
   void initState() {
     super.initState();
-
-    _appCubit = getIt<AppCubit>();
     pageController = PageController(initialPage: 0);
     _currentPageIndex.addListener(_onPageChanged);
   }
@@ -84,6 +75,8 @@ class _AppScreenState extends State<AppScreen> {
   @override
   void dispose() {
     super.dispose();
+    _currentPageIndex.removeListener(_onPageChanged);
+    pageController.dispose();
   }
 
   @override
