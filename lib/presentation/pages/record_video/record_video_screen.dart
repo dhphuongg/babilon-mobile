@@ -545,44 +545,23 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
   }
 
   Widget _buildGalleryButton() {
-    if (!_isStarted) {
-      return Center(
-        child: GestureDetector(
-          onTap: _pickVideoFromGallery,
-          child: Container(
-            width: 50.w,
-            height: 60.h,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.white, width: 2),
-              // image: DecorationImage(
-              //     image: FileImage(_latestVideoThumbnail!),
-              //     fit: BoxFit.cover,
-              //   )
-            ),
-            child: const Icon(
-              Icons.photo_library,
-              color: Colors.white,
-            ),
-          ),
-        ),
-      );
-    }
-
     return Center(
       child: GestureDetector(
-        onTap: _completeRecording,
+        onTap: _pickVideoFromGallery,
         child: Container(
-          width: 35.w,
-          height: 35.w,
-          decoration: const BoxDecoration(
-            color: AppColors.main,
-            shape: BoxShape.circle,
+          width: 50.w,
+          height: 60.h,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Colors.white, width: 2),
+            // image: DecorationImage(
+            //     image: FileImage(_latestVideoThumbnail!),
+            //     fit: BoxFit.cover,
+            //   )
           ),
           child: const Icon(
-            Icons.check,
+            Icons.photo_library,
             color: Colors.white,
-            size: 24,
           ),
         ),
       ),
