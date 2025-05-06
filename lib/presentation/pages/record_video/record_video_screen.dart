@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/core/domain/constants/app_padding.dart';
@@ -38,7 +37,6 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
   Timer? _timer;
 
   // For gallery thumbnail
-  File? _latestVideoThumbnail;
   final ImagePicker _picker = ImagePicker();
 
   @override
@@ -222,12 +220,6 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
         _pausedTime = 0; // Reset paused time when recording stops
       });
 
-      // Set thumbnail
-      _latestVideoThumbnail = File(videoPath);
-      debugPrint('Video saved to: ${videoFile.path}');
-
-      // For now, we'll just update the thumbnail
-      _latestVideoThumbnail = File(videoFile.path);
       if (mounted) {
         await Navigator.pushNamed(
           context,
@@ -271,12 +263,6 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
     try {
       final video = await _picker.pickVideo(source: ImageSource.gallery);
       if (video != null) {
-        // Navigate to video editing screen with the selected video
-        debugPrint('Selected video: ${video.path}');
-        setState(() {
-          _latestVideoThumbnail = File(video.path);
-        });
-
         // Temporarily dispose camera controller before navigation
         final bool wasInitialized =
             _cameraController?.value.isInitialized ?? false;
@@ -569,19 +555,15 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: Colors.white, width: 2),
-              image: _latestVideoThumbnail != null
-                  ? DecorationImage(
-                      image: FileImage(_latestVideoThumbnail!),
-                      fit: BoxFit.cover,
-                    )
-                  : null,
+              // image: DecorationImage(
+              //     image: FileImage(_latestVideoThumbnail!),
+              //     fit: BoxFit.cover,
+              //   )
             ),
-            child: _latestVideoThumbnail == null
-                ? const Icon(
-                    Icons.photo_library,
-                    color: Colors.white,
-                  )
-                : null,
+            child: const Icon(
+              Icons.photo_library,
+              color: Colors.white,
+            ),
           ),
         ),
       );
