@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/core/domain/constants/app_padding.dart';
 import 'package:babilon/core/domain/utils/permission.dart';
+import 'package:babilon/presentation/pages/record_video/widgets/camera_setting.dart';
 import 'package:babilon/presentation/routes/route_name.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +25,7 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
   bool _isStarted = false;
   bool _isRecording = false;
   bool _isPaused = false;
-  bool _isBackCamera = true; // Track which camera is active
+  bool _isBackCamera = false; // Track which camera is active
   bool _isFlashOn = false; // Track flash status
 
   // Recording duration options
@@ -271,19 +272,6 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
     }
   }
 
-  Future<void> _loadLatestVideoThumbnail() async {
-    try {
-      final video = await _picker.pickVideo(source: ImageSource.gallery);
-      if (video != null) {
-        setState(() {
-          _latestVideoThumbnail = File(video.path);
-        });
-      }
-    } catch (e) {
-      debugPrint('Error loading latest video: $e');
-    }
-  }
-
   Future<void> _pickVideoFromGallery() async {
     try {
       final video = await _picker.pickVideo(source: ImageSource.gallery);
@@ -374,49 +362,17 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
             ),
 
             // Vertical toolbar in the top-right corner
-            Positioned(
-              top: 20.h,
-              right: 20.w,
-              child: Column(
-                children: [
-                  // Switch camera button
-                  GestureDetector(
-                    onTap: _switchCamera,
-                    child: Container(
-                      width: 36.w,
-                      height: 36.w,
-                      decoration: BoxDecoration(
-                        color: AppColors.black.withOpacity(0.6),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.flip_camera_ios,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 16.h),
-                  // Flash toggle button
-                  GestureDetector(
-                    onTap: _toggleFlash,
-                    child: Container(
-                      width: 36.w,
-                      height: 36.w,
-                      decoration: BoxDecoration(
-                        color: AppColors.black.withOpacity(0.6),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        _isFlashOn ? Icons.flash_on : Icons.flash_off,
-                        color: _isFlashOn ? AppColors.main : Colors.white,
-                        size: 20,
-                      ),
-                    ),
-                  ),
-                ],
+            if (!_isStarted)
+              Positioned(
+                top: 20.h,
+                right: 20.w,
+                child: CameraSetting(
+                  isBackCamera: _isBackCamera,
+                  isFlashOn: _isFlashOn,
+                  onSwitchCamera: _switchCamera,
+                  onToggleFlash: _toggleFlash,
+                ),
               ),
-            ),
 
             // Bottom controls
             Positioned(
