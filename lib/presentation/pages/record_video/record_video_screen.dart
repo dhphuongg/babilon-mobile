@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/core/domain/constants/app_padding.dart';
+import 'package:babilon/core/domain/utils/date.dart';
 import 'package:babilon/core/domain/utils/permission.dart';
 import 'package:babilon/presentation/pages/record_video/widgets/camera_setting.dart';
 import 'package:babilon/presentation/routes/route_name.dart';
@@ -24,7 +25,6 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
   bool _isCameraInitialized = false;
   bool _isStarted = false;
   bool _isRecording = false;
-  bool _isPaused = false;
   bool _isBackCamera = false; // Track which camera is active
   bool _isFlashOn = false; // Track flash status
 
@@ -170,23 +170,23 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
       return;
     }
 
-    if (_isRecording) {
-      if (_isPaused) {
-        // Resume recording
-        await _cameraController!.resumeVideoRecording();
-        setState(() {
-          _isPaused = false;
-        });
-        // Resume timer without resetting
-        _startTimer(reset: false);
-      } else {
+    if (_isStarted) {
+      if (_isRecording) {
         // Pause recording
         await _cameraController!.pauseVideoRecording();
         setState(() {
-          _isPaused = true;
+          _isRecording = false;
           _pausedTime = _recordingTime; // Store current recording time
         });
         _timer?.cancel(); // Pause timer
+      } else {
+        // Resume recording
+        await _cameraController!.resumeVideoRecording();
+        setState(() {
+          _isRecording = true;
+        });
+        // Resume timer without resetting
+        _startTimer(reset: false);
       }
     } else {
       try {
@@ -195,7 +195,6 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
         setState(() {
           _isStarted = true;
           _isRecording = true;
-          _isPaused = false;
           _pausedTime = 0; // Reset paused time for new recording
         });
         _startTimer(reset: true); // Explicitly reset timer for new recording
@@ -208,7 +207,7 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
   Future<void> _completeRecording() async {
     if (_cameraController == null ||
         !_cameraController!.value.isInitialized ||
-        !_isRecording) {
+        !_isStarted) {
       return;
     }
 
@@ -220,7 +219,6 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
       setState(() {
         _isStarted = false;
         _isRecording = false;
-        _isPaused = false;
         _pausedTime = 0; // Reset paused time when recording stops
       });
 
@@ -241,9 +239,7 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
         );
 
         // Reinitialize camera when returning from edit screen
-        if (mounted) {
-          _initCamera();
-        }
+        _initCamera();
       }
     } catch (e) {
       debugPrint('Error stopping video recording: $e');
@@ -253,7 +249,7 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
   Future<void> _cancelRecording() async {
     if (_cameraController == null ||
         !_cameraController!.value.isInitialized ||
-        !_isRecording) {
+        !_isStarted) {
       return;
     }
 
@@ -263,7 +259,6 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
       setState(() {
         _isStarted = false;
         _isRecording = false;
-        _isPaused = false;
         _recordingTime = 0;
         _pausedTime = 0; // Reset paused time when recording is cancelled
       });
@@ -312,12 +307,6 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
     } catch (e) {
       debugPrint('Error picking video: $e');
     }
-  }
-
-  String _formatDuration(int seconds) {
-    final minutes = seconds ~/ 60;
-    final remainingSeconds = seconds % 60;
-    return '${minutes.toString().padLeft(2, '0')}:${remainingSeconds.toString().padLeft(2, '0')}';
   }
 
   @override
@@ -382,43 +371,45 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
               child: Column(
                 children: [
                   // Duration selection or Recording time display
-                  _isRecording
-                      ? Container(
-                          decoration: BoxDecoration(
-                            // shadow in center
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
-                                blurRadius: 10,
-                                offset: const Offset(0, -2),
-                              ),
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
-                                blurRadius: 10,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
+                  if (_isStarted)
+                    Container(
+                      decoration: BoxDecoration(
+                        // shadow in center
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 10,
+                            offset: const Offset(0, -2),
+                          ),
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 10,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
 
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            _formatDuration(_recordingTime),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        )
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: _durationOptions
-                              .map((duration) => Padding(
-                                    padding: EdgeInsets.only(left: 8.w),
-                                    child: _buildDurationOption(duration),
-                                  ))
-                              .toList(),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        formatDuration(_recordingTime),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
                         ),
+                      ),
+                    )
+                  else
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: _durationOptions
+                          .map((duration) => Padding(
+                                padding: EdgeInsets.only(left: 8.w),
+                                child: _buildDurationOption(duration),
+                              ))
+                          .toList(),
+                    ),
+
                   SizedBox(height: AppPadding.input),
                   // Recording button
                   Row(
@@ -435,7 +426,7 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
                       // Gallery access or other controls based on recording state
                       Expanded(
                         flex: 1,
-                        child: _isPaused
+                        child: _isStarted
                             ? Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -518,13 +509,13 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
 
   Widget _buildRecordButton() {
     final double buttonSize = 70.w;
-    final double progressSize = buttonSize + 10;
+    final double progressSize = buttonSize + 10.w;
 
     return Stack(
       alignment: Alignment.center,
       children: [
         // Circular progress indicator for recording time
-        if (_isRecording && !_isPaused)
+        if (_isStarted)
           SizedBox(
             width: progressSize,
             height: progressSize,
@@ -544,16 +535,18 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
             height: buttonSize,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: _isRecording ? Colors.red : Colors.white,
+              color: _isStarted ? Colors.red : Colors.white,
               border: Border.all(
                 color: Colors.white,
                 width: 3,
               ),
             ),
             child: Center(
-              child: _isRecording
+              child: _isStarted
                   ? Icon(
-                      _isPaused ? null : Icons.stop_rounded,
+                      _isRecording
+                          ? Icons.pause_rounded
+                          : Icons.play_arrow_rounded,
                       color: Colors.white,
                       size: 30,
                     )
@@ -561,22 +554,6 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
             ),
           ),
         ),
-
-        // Space holder when recording (moved timer display to top)
-        if (_isRecording) SizedBox(height: progressSize + 10),
-
-        // Selected duration text when not recording
-        if (!_isRecording)
-          Positioned(
-            top: progressSize + 10,
-            child: Text(
-              '${_selectedDuration}s',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-              ),
-            ),
-          ),
       ],
     );
   }
