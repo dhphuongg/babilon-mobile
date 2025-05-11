@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:babilon/firebase_options.dart';
 import 'package:babilon/infrastructure/services/notification.service.dart';
+import 'package:babilon/infrastructure/services/socket_client.service.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -85,6 +86,7 @@ class _MyAppState extends State<MyApp> {
     // TODO: implement initState
     super.initState();
     initFirebase();
+    getIt<SocketClientService>().initialize();
   }
 
   // This widget is the root of your application.

@@ -46,30 +46,30 @@ Future<Dio> provideDio(
   final InterceptorsWrapper interceptorsWrapper = InterceptorsWrapper(
     onRequest:
         (RequestOptions options, RequestInterceptorHandler handler) async {
-      final bool isNetworkAvailable = await checkInternetConnection();
-      GlobalStorage.hasInternetConnect = isNetworkAvailable;
+      // final bool isNetworkAvailable = await checkInternetConnection();
+      // GlobalStorage.hasInternetConnect = isNetworkAvailable;
 
-      if (!isNetworkAvailable && !Platform.isWindows) {
-        // Không có mạng, load response từ cache
-        var cachedData = await loadCachedResponse(options.uri.toString());
+      // if (!isNetworkAvailable && !Platform.isWindows) {
+      //   // Không có mạng, load response từ cache
+      //   var cachedData = await loadCachedResponse(options.uri.toString());
 
-        if (cachedData != null) {
-          // Tạo response từ cache và gọi onResponse
-          return handler.resolve(Response(
-            requestOptions: options,
-            data: cachedData, // Dữ liệu lấy từ cache (chuỗi JSON hoặc bất kỳ)
-            statusCode: 200, // Đặt mã trạng thái tùy thích (ví dụ 200)
-            statusMessage: 'Offline data loaded',
-          ));
-        } else {
-          // Không có dữ liệu cache, gọi onError
-          return handler.reject(DioError(
-            requestOptions: options,
-            error: 'No internet and no cached data',
-            type: DioErrorType.other,
-          ));
-        }
-      }
+      //   if (cachedData != null) {
+      //     // Tạo response từ cache và gọi onResponse
+      //     return handler.resolve(Response(
+      //       requestOptions: options,
+      //       data: cachedData, // Dữ liệu lấy từ cache (chuỗi JSON hoặc bất kỳ)
+      //       statusCode: 200, // Đặt mã trạng thái tùy thích (ví dụ 200)
+      //       statusMessage: 'Offline data loaded',
+      //     ));
+      //   } else {
+      //     // Không có dữ liệu cache, gọi onError
+      //     return handler.reject(DioError(
+      //       requestOptions: options,
+      //       error: 'No internet and no cached data',
+      //       type: DioErrorType.other,
+      //     ));
+      //   }
+      // }
 
       // Có mạng, tiếp tục gửi request bình thường
       return handler.next(options);
@@ -78,14 +78,14 @@ Future<Dio> provideDio(
       Response response,
       ResponseInterceptorHandler responseInterceptorHandler,
     ) async {
-      final bool isNetworkAvailable = await checkInternetConnection();
+      // final bool isNetworkAvailable = await checkInternetConnection();
 
       if (kReleaseMode) {
         AppLogger.instance.debug(response.toString());
       }
-      if (isNetworkAvailable && !Platform.isWindows) {
-        await saveResponseToCache(response);
-      }
+      // if (isNetworkAvailable && !Platform.isWindows) {
+      //   await saveResponseToCache(response);
+      // }
 
       if (response.statusCode == 401) {
         await SharedPreferencesHelper.removeByKey(

@@ -5,11 +5,14 @@ import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/core/domain/utils/share_preferences.dart';
 import 'package:babilon/core/domain/constants/app_padding.dart';
 import 'package:babilon/core/domain/utils/permission.dart';
-import 'package:babilon/presentation/pages/record_video/widgets/camera_setting.dart';
+import 'package:babilon/di.dart';
+import 'package:babilon/infrastructure/services/livekit_service.dart';
+import 'package:babilon/infrastructure/services/socket_client.service.dart';
 import 'package:babilon/presentation/pages/user/widgets/profile_avatar.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:livekit_client/livekit_client.dart';
 
 class LiveScreen extends StatefulWidget {
   const LiveScreen({super.key});
@@ -24,15 +27,20 @@ class LiveScreenState extends State<LiveScreen> with WidgetsBindingObserver {
   CameraController? _cameraController;
   bool _isCameraInitialized = false;
   bool _isBackCamera = false; // Track which camera is active
-  bool _isFlashOn = false; // Track flash status
 
-  Timer? _timer;
+  late String _userId;
+  bool _isLiving = false;
+  bool _isConnecting = false;
+  late VideoTrack? _localVideoTrack;
+  late Room _room;
+  String? _liveId;
+  Function? _roomSubscription;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _loadAvatar();
+    _loadUser();
     PermissionUtil.checkCameraPermission(
       () => PermissionUtil.checkMicrophonePermission(
         () => _initCamera(),
@@ -43,19 +51,20 @@ class LiveScreenState extends State<LiveScreen> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _timer?.cancel();
     _cameraController?.dispose();
     _titleController.dispose();
+    _roomSubscription?.call();
+    _disconnectFromRoom();
     super.dispose();
   }
 
-  Future<void> _loadAvatar() async {
-    final avatar = await SharedPreferencesHelper.getStringValue(
+  Future<void> _loadUser() async {
+    _avatarUrl = await SharedPreferencesHelper.getStringValue(
       SharedPreferencesHelper.AVATAR,
     );
-    setState(() {
-      _avatarUrl = avatar;
-    });
+    _userId = await SharedPreferencesHelper.getStringValue(
+      SharedPreferencesHelper.USER_ID,
+    );
   }
 
   @override
@@ -72,7 +81,7 @@ class LiveScreenState extends State<LiveScreen> with WidgetsBindingObserver {
   }
 
   Future<void> _initCamera() async {
-    _cameraController?.dispose();
+    await _cameraController?.dispose();
     List<CameraDescription> cameras = await availableCameras();
 
     if (cameras.isNotEmpty) {
@@ -95,11 +104,6 @@ class LiveScreenState extends State<LiveScreen> with WidgetsBindingObserver {
 
       try {
         await _cameraController!.initialize();
-        if (_isFlashOn && _isBackCamera) {
-          await _cameraController!.setFlashMode(FlashMode.torch);
-        } else {
-          await _cameraController!.setFlashMode(FlashMode.off);
-        }
 
         setState(() {
           _isCameraInitialized = true;
@@ -116,27 +120,119 @@ class LiveScreenState extends State<LiveScreen> with WidgetsBindingObserver {
     setState(() {
       _isCameraInitialized = false;
       _isBackCamera = !_isBackCamera;
-
-      if (!_isBackCamera) {
-        _isFlashOn = false;
-      }
     });
 
     await _cameraController?.dispose();
     await _initCamera();
   }
 
-  Future<void> _toggleFlash() async {
-    if (_cameraController == null || !_isBackCamera) return;
+  Future<void> _setupVideoStream({
+    required String liveId,
+    required String token,
+    required String url,
+  }) async {
+    await _cameraController?.dispose();
 
+    setState(() {
+      _isConnecting = true;
+    });
+
+    _room = await LivekitService.broadcasterCreateRoom(
+      liveId: liveId,
+      token: token,
+      url: url,
+    );
+
+    final participant = _room.localParticipant;
+    if (participant == null) return;
+
+    // Enable camera to ensure we have a video track
+    await participant.setCameraEnabled(true);
+
+    // Function to check for the local video track
+    void checkForLocalVideoTrack() {
+      // Find the local camera video track
+      for (final trackPublication in participant.trackPublications.values) {
+        if (trackPublication.kind == TrackType.VIDEO &&
+            trackPublication.track != null) {
+          setState(() {
+            _localVideoTrack = trackPublication.track as VideoTrack;
+          });
+          break;
+        }
+      }
+    }
+
+    // Check immediately in case the track is already published
+    checkForLocalVideoTrack();
+
+    // If no track found, listen to room events for track published
+    if (_localVideoTrack == null) {
+      _room.events.listen((event) {
+        if (event is LocalTrackPublishedEvent) {
+          if (event.publication.kind == TrackType.VIDEO &&
+              event.publication.track != null) {
+            setState(() {
+              _localVideoTrack = event.publication.track as VideoTrack;
+            });
+          }
+        }
+      });
+
+      // Check again after a short delay to ensure we pick up the track
+      Future.delayed(Duration(milliseconds: 500), checkForLocalVideoTrack);
+    }
+
+    setState(() {
+      _isConnecting = false;
+      _isLiving = true;
+    });
+  }
+
+  startLive() async {
+    final data = {
+      'title': _titleController.text,
+      'broadcasterId': _userId,
+    };
+    getIt<SocketClientService>().socket.emitWithAck(
+      'broadcaster-create-live',
+      data,
+      ack: (response) {
+        print('Response from socket server: $response');
+        _liveId = response['liveId'];
+        String token = response['token'];
+        String url = response['url'];
+
+        _setupVideoStream(
+          liveId: _liveId!,
+          token: token,
+          url: url,
+        );
+      },
+    );
+  }
+
+  Future<void> _disconnectFromRoom() async {
     try {
-      _isFlashOn = !_isFlashOn;
-      await _cameraController!.setFlashMode(
-        _isFlashOn ? FlashMode.torch : FlashMode.off,
+      // Ensure we disable camera and microphone first
+      final participant = _room.localParticipant;
+      if (participant != null) {
+        await participant.setCameraEnabled(false);
+        await participant.setMicrophoneEnabled(false);
+      }
+
+      // Disconnect from the room
+      await _room.disconnect();
+
+      getIt<SocketClientService>().socket.emit(
+        'broadcaster-finish-live',
+        {
+          'liveId': _liveId,
+          'broadcasterId': _userId,
+        },
       );
-      setState(() {});
     } catch (e) {
-      debugPrint('Error toggling flash: $e');
+      print('Error disconnecting from room: $e');
     }
   }
 
@@ -151,57 +247,163 @@ class LiveScreenState extends State<LiveScreen> with WidgetsBindingObserver {
             Expanded(
               child: Stack(
                 children: [
-                  Positioned.fill(
-                    child: _isCameraInitialized
-                        ? AspectRatio(
-                            aspectRatio: _cameraController!.value.aspectRatio,
-                            child: CameraPreview(_cameraController!),
-                          )
-                        : const Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                  ),
-                  Positioned(
-                    top: 20.h,
-                    left: 20.w,
-                    child: GestureDetector(
-                      onTap: () async {
-                        await _cameraController?.dispose();
-                        Navigator.pop(context);
-                      },
-                      child: Container(
-                        width: 36.w,
-                        height: 36.w,
-                        decoration: BoxDecoration(
-                          color: AppColors.black.withOpacity(0.6),
-                          shape: BoxShape.circle,
+                  if (_isConnecting)
+                    const Positioned.fill(
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircularProgressIndicator(
+                              color: Colors.white,
+                            ),
+                            SizedBox(height: 16),
+                            Text(
+                              'Đang kết nối...',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
                         ),
-                        child: const Icon(
-                          Icons.close,
-                          color: Colors.white,
-                          size: 20,
+                      ),
+                    )
+                  else if (_isLiving)
+                    Positioned.fill(
+                      child: AspectRatio(
+                        aspectRatio: 16 / 9,
+                        child: _localVideoTrack != null
+                            ? VideoTrackRenderer(_localVideoTrack!)
+                            // ? CameraPreview(_cameraController!)
+                            : const Center(
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                ),
+                              ),
+                      ),
+                    )
+                  else if (_isCameraInitialized)
+                    Positioned.fill(
+                      child: AspectRatio(
+                        aspectRatio: 16 / 9,
+                        child: CameraPreview(_cameraController!),
+                      ),
+                    )
+                  else
+                    const Positioned.fill(
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                  if (_isLiving)
+                    Positioned(
+                      top: 20.h,
+                      right: 20.w,
+                      child: GestureDetector(
+                        onTap: () async {
+                          if (_isLiving) {
+                            // show confirm dialog
+                            final confirm = await showDialog(
+                              context: context,
+                              builder: (dialogContext) {
+                                return AlertDialog(
+                                  title: const Text('Xác nhận'),
+                                  content: const Text(
+                                      'Bạn có chắc chắn muốn kết thúc live?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(false),
+                                      child: const Text('Hủy'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(true),
+                                      child: const Text('Xác nhận'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                            if (confirm == null || !confirm) {
+                              return;
+                            }
+                          }
+                          await _disconnectFromRoom();
+                          await _cameraController?.dispose();
+                          Navigator.pop(context);
+                        },
+                        child: Container(
+                          width: 36.w,
+                          height: 36.w,
+                          decoration: BoxDecoration(
+                            color: AppColors.black.withOpacity(0.6),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.power_settings_new_rounded,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    )
+                  else
+                    Positioned(
+                      top: 20.h,
+                      left: 20.w,
+                      child: GestureDetector(
+                        onTap: () async {
+                          final currentContext = context;
+                          await _cameraController?.dispose();
+                          if (mounted) {
+                            Navigator.pop(currentContext);
+                          }
+                        },
+                        child: Container(
+                          width: 36.w,
+                          height: 36.w,
+                          decoration: BoxDecoration(
+                            color: AppColors.black.withOpacity(0.6),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.close,
+                            color: Colors.white,
+                            size: 20,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Positioned(
-                    top: 20.h,
-                    right: 20.w,
-                    child: CameraSetting(
-                      isLiveMode: true,
-                      isBackCamera: _isBackCamera,
-                      isFlashOn: _isFlashOn,
-                      onSwitchCamera: _switchCamera,
-                      onToggleFlash: _toggleFlash,
+                  if (!_isLiving)
+                    Positioned(
+                      top: 20.h,
+                      right: 20.w,
+                      child: GestureDetector(
+                        onTap: _switchCamera,
+                        child: Container(
+                          width: 36.w,
+                          height: 36.w,
+                          decoration: BoxDecoration(
+                            color: AppColors.black.withOpacity(0.6),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.flip_camera_ios,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                  Positioned(
-                    left: 0,
-                    right: 0,
-                    top: 75.h,
-                    bottom: 40.h,
-                    child: _buildLiveControl(),
-                  ),
+                  if (!_isLiving)
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      top: 75.h,
+                      bottom: 40.h,
+                      child: _buildLiveControl(),
+                    ),
                 ],
               ),
             ),
@@ -259,8 +461,9 @@ class LiveScreenState extends State<LiveScreen> with WidgetsBindingObserver {
           SizedBox(height: AppPadding.input),
           AppButton(
             padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-            text: 'Bắt đầu live',
-            onPressed: () {},
+            text: _isConnecting ? 'Đang kết nối...' : 'Bắt đầu live',
+            disable: _isConnecting,
+            onPressed: startLive,
           ),
         ],
       ),
