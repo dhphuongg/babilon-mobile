@@ -23,6 +23,7 @@ class AppScreen extends StatefulWidget {
 class _AppScreenState extends State<AppScreen> {
   final ValueNotifier<int> _currentPageIndex = ValueNotifier<int>(0);
   late PageController pageController;
+  late UserCubit _userCubit;
 
   final List<Widget> _screens = [
     MultiBlocProvider(
@@ -70,6 +71,8 @@ class _AppScreenState extends State<AppScreen> {
     super.initState();
     pageController = PageController(initialPage: 0);
     _currentPageIndex.addListener(_onPageChanged);
+    _userCubit = BlocProvider.of<UserCubit>(context);
+    _userCubit.loadUserProfile();
   }
 
   @override

@@ -9,6 +9,7 @@ import 'package:babilon/presentation/pages/edit_video/edit_video_screen.dart';
 import 'package:babilon/presentation/pages/home/cubit/video_cubit.dart';
 import 'package:babilon/presentation/pages/post_video/cubit/post_video_cubit.dart';
 import 'package:babilon/presentation/pages/post_video/post_video_screen.dart';
+import 'package:babilon/presentation/pages/record_video/live_screen.dart';
 import 'package:babilon/presentation/pages/record_video/record_video_screen.dart';
 import 'package:babilon/presentation/pages/user/social_graph_screen.dart';
 import 'package:babilon/presentation/pages/root/root_screen.dart';
@@ -177,7 +178,12 @@ class AppRoutes {
         break;
 
       case RouteName.app:
-        routeWidget = const AppScreen();
+        routeWidget = BlocProvider(
+          create: (context) {
+            return UserCubit(userRepository: getIt(), videoRepository: getIt());
+          },
+          child: const AppScreen(),
+        );
         break;
 
       // user videos
@@ -209,6 +215,11 @@ class AppRoutes {
             initialVideoIndex: initialVideoIndex,
           ),
         );
+        break;
+
+      // live screen
+      case RouteName.live:
+        routeWidget = const LiveScreen();
         break;
 
       default:

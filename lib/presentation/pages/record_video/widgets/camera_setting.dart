@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CameraSetting extends StatelessWidget {
+  final bool isLiveMode;
   final bool isBackCamera;
   final bool isFlashOn;
   final VoidCallback onSwitchCamera;
@@ -10,6 +11,7 @@ class CameraSetting extends StatelessWidget {
 
   const CameraSetting({
     super.key,
+    required this.isLiveMode,
     required this.isBackCamera,
     required this.isFlashOn,
     required this.onSwitchCamera,
@@ -39,7 +41,7 @@ class CameraSetting extends StatelessWidget {
         ),
         SizedBox(height: 16.h),
         // Flash toggle button
-        if (isBackCamera)
+        if (isBackCamera && !isLiveMode)
           GestureDetector(
             onTap: onToggleFlash,
             child: Container(

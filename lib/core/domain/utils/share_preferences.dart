@@ -9,11 +9,10 @@ class SharedPreferencesHelper {
   static const String ACCESS_TOKEN = 'accessToken';
   static const String REFRESH_TOKEN = 'refreshToken';
   static const String USER_ID = 'userId';
-  static const String PROJECT_ID = 'projectId';
-  static const String PROSPECT_ID = 'prospectId';
-  static const String FIRST_NAME = 'firstName';
-  static const String LAST_NAME = 'lastName';
-  static const String COMPANY_NAME = 'companyName';
+  static const String FULL_NAME = 'fullName';
+  static const String USERNAME = 'username';
+  static const String AVATAR = 'avatar';
+  static const String SIGNATURE = 'signature';
   static const String DEVICE_TOKEN = 'deviceToken';
 
   /// Store String value locally.

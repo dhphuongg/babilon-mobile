@@ -4,6 +4,7 @@ import 'package:babilon/core/application/models/response/video/video.dart';
 import 'package:babilon/core/application/repositories/user_repository.dart';
 import 'package:babilon/core/application/repositories/video_repository.dart';
 import 'package:babilon/core/domain/enum/load_status.dart';
+import 'package:babilon/core/domain/utils/logger.dart';
 import 'package:babilon/core/domain/utils/share_preferences.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
@@ -23,6 +24,33 @@ class UserCubit extends Cubit<UserState> {
         _videoRepository = videoRepository,
         super(const UserState());
 
+  Future<void> saveUserProfile(UserEntity res) async {
+    try {
+      await SharedPreferencesHelper.saveStringValue(
+        SharedPreferencesHelper.USER_ID,
+        res.id,
+      );
+      await SharedPreferencesHelper.saveStringValue(
+        SharedPreferencesHelper.FULL_NAME,
+        res.fullName,
+      );
+      await SharedPreferencesHelper.saveStringValue(
+        SharedPreferencesHelper.USERNAME,
+        res.username,
+      );
+      await SharedPreferencesHelper.saveStringValue(
+        SharedPreferencesHelper.AVATAR,
+        res.avatar ?? '',
+      );
+      await SharedPreferencesHelper.saveStringValue(
+        SharedPreferencesHelper.SIGNATURE,
+        res.signature ?? '',
+      );
+    } catch (e) {
+      AppLogger.instance.error(e);
+    }
+  }
+
   Future<void> loadUserProfile() async {
     try {
       emit(state.copyWith(getUserStatus: LoadStatus.LOADING, error: ''));
@@ -36,6 +64,7 @@ class UserCubit extends Cubit<UserState> {
             error: '',
           ),
         );
+        await saveUserProfile(response.data!);
       } else {
         emit(state.copyWith(
           getUserStatus: LoadStatus.FAILURE,

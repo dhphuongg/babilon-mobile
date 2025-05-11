@@ -16,4 +16,5 @@ class RouteName {
   static const String postVideo = "postVideo";
   static const String setting = "setting";
   static const String userVideos = "userVideos";
+  static const String live = "live";
 }

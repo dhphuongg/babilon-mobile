@@ -11,16 +11,18 @@ class AppButton extends StatelessWidget {
   final Color? borderColor;
   final TextStyle? textStyle;
   final IconData? icon;
+  final EdgeInsetsGeometry? padding;
 
   const AppButton({
     Key? key,
-    required this.disable,
+    this.disable = false,
     required this.text,
     required this.onPressed,
     this.color = AppColors.main,
     this.borderColor,
     this.textStyle,
     this.icon,
+    this.padding,
   }) : super(key: key);
 
   @override
@@ -33,7 +35,7 @@ class AppButton extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
-            padding: EdgeInsets.all(4.w),
+            padding: padding ?? EdgeInsets.all(4.w),
             side: borderColor != null
                 ? BorderSide(color: borderColor ?? AppColors.main, width: 2)
                 : null),

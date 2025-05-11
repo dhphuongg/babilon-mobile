@@ -22,14 +22,13 @@ class RecordVideoScreen extends StatefulWidget {
 
 class RecordVideoScreenState extends State<RecordVideoScreen>
     with WidgetsBindingObserver {
+  final TextEditingController _titleController = TextEditingController();
   CameraController? _cameraController;
   bool _isCameraInitialized = false;
   bool _isStarted = false;
   bool _isRecording = false;
   bool _isBackCamera = false; // Track which camera is active
   bool _isFlashOn = false; // Track flash status
-  CameraMode _selectedMode =
-      CameraMode.post; // Track selected mode ('post' or 'live')
 
   // Recording duration options
   final List<int> _durationOptions = [15, 60]; // in seconds
@@ -59,6 +58,7 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
     WidgetsBinding.instance.removeObserver(this);
     _timer?.cancel();
     _cameraController?.dispose();
+    _titleController.dispose();
     super.dispose();
   }
 
@@ -286,30 +286,6 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
     }
   }
 
-  Widget _buildModeOption(CameraMode mode) {
-    final bool isSelected = _selectedMode == mode;
-    return GestureDetector(
-      onTap: () {
-        if (!_isRecording) {
-          setState(() {
-            _selectedMode = mode;
-          });
-        }
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
-        child: Text(
-          mode == CameraMode.post ? 'Bài đăng' : 'Live',
-          style: TextStyle(
-            color: isSelected ? AppColors.main : AppColors.white,
-            fontSize: 14.sp,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildModePicker() {
     return Container(
       color: AppColors.black,
@@ -317,9 +293,38 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _buildModeOption(CameraMode.post),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
+            child: Text(
+              'Bài đăng',
+              style: TextStyle(
+                color: AppColors.main,
+                fontSize: 14.sp,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
           SizedBox(width: AppPadding.horizontal),
-          _buildModeOption(CameraMode.live),
+          GestureDetector(
+            onTap: () async {
+              if (!_isRecording && mounted) {
+                await Navigator.pushNamed(context, RouteName.live);
+                // await _cameraController?.dispose();
+                await _initCamera();
+              }
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
+              child: Text(
+                'Live',
+                style: TextStyle(
+                  color: AppColors.white,
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -521,6 +526,7 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.black,
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Column(
           children: [
@@ -562,6 +568,7 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
                       top: 20.h,
                       right: 20.w,
                       child: CameraSetting(
+                        isLiveMode: false,
                         isBackCamera: _isBackCamera,
                         isFlashOn: _isFlashOn,
                         onSwitchCamera: _switchCamera,
@@ -572,9 +579,7 @@ class RecordVideoScreenState extends State<RecordVideoScreen>
                     left: 0,
                     right: 0,
                     bottom: 40.h,
-                    child: _selectedMode == CameraMode.post
-                        ? _buildPostControl()
-                        : const SizedBox(),
+                    child: _buildPostControl(),
                   ),
                 ],
               ),
