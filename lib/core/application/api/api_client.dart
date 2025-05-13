@@ -5,6 +5,7 @@ import 'package:babilon/core/application/models/request/auth/reset_password.dart
 import 'package:babilon/core/application/models/request/otp/request.dart';
 import 'package:babilon/core/application/models/request/otp/verify.dart';
 import 'package:babilon/core/application/models/request/video/create_comment.dart';
+import 'package:babilon/core/application/models/response/live/live.dart';
 import 'package:babilon/core/application/models/response/otp/verify.dart';
 import 'package:babilon/core/application/models/response/user/user.entity.dart';
 import 'package:babilon/core/application/models/response/video/comment.dart';
@@ -130,4 +131,8 @@ abstract class ApiClient {
   Future<ObjectResponse<dynamic>> createView(
     @Path('videoId') String videoId,
   );
+
+  // ========================== Live ==========================
+  @GET('/live/trending')
+  Future<ObjectResponse<ArrayResponse<Live>>> getLiveTrending();
 }

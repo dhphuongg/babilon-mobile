@@ -17,4 +17,5 @@ class RouteName {
   static const String setting = "setting";
   static const String userVideos = "userVideos";
   static const String live = "live";
+  static const String liveTrending = "liveTrending";
 }

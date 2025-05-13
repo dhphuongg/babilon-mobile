@@ -7,6 +7,8 @@ import 'package:babilon/presentation/pages/auth/register_screen.dart';
 import 'package:babilon/presentation/pages/auth/reset_password_screen.dart';
 import 'package:babilon/presentation/pages/edit_video/edit_video_screen.dart';
 import 'package:babilon/presentation/pages/home/cubit/video_cubit.dart';
+import 'package:babilon/presentation/pages/live/cubit/live_cubit.dart';
+import 'package:babilon/presentation/pages/live/live_trending_screen.dart';
 import 'package:babilon/presentation/pages/post_video/cubit/post_video_cubit.dart';
 import 'package:babilon/presentation/pages/post_video/post_video_screen.dart';
 import 'package:babilon/presentation/pages/record_video/live_screen.dart';
@@ -220,6 +222,20 @@ class AppRoutes {
       // live screen
       case RouteName.live:
         routeWidget = const LiveScreen();
+        break;
+
+      // live trending
+      case RouteName.liveTrending:
+        routeWidget = MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) {
+                return LiveCubit(liveRepository: getIt());
+              },
+            ),
+          ],
+          child: const LiveTrendingScreen(),
+        );
         break;
 
       default:
