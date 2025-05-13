@@ -12,6 +12,10 @@ class VideoState extends Equatable {
   final LoadStatus? getCommentsStatus;
   final LoadStatus? createCommentStatus;
 
+  final List<Video>? videoOfFollowing;
+  final int totalVideoOfFollowing;
+  final LoadStatus? getVideoOfFollowingStatus;
+
   const VideoState({
     this.videos,
     this.total = 0,
@@ -23,6 +27,9 @@ class VideoState extends Equatable {
     this.unlikeVideoStatus,
     this.getCommentsStatus,
     this.createCommentStatus,
+    this.videoOfFollowing,
+    this.totalVideoOfFollowing = 0,
+    this.getVideoOfFollowingStatus,
   });
 
   VideoState copyWith({
@@ -36,6 +43,9 @@ class VideoState extends Equatable {
     LoadStatus? unlikeVideoStatus,
     LoadStatus? getCommentsStatus,
     LoadStatus? createCommentStatus,
+    List<Video>? videoOfFollowing,
+    int? totalVideoOfFollowing,
+    LoadStatus? getVideoOfFollowingStatus,
   }) {
     return VideoState(
       videos: videos ?? this.videos,
@@ -49,6 +59,11 @@ class VideoState extends Equatable {
       unlikeVideoStatus: unlikeVideoStatus ?? this.unlikeVideoStatus,
       getCommentsStatus: getCommentsStatus ?? this.getCommentsStatus,
       createCommentStatus: createCommentStatus ?? this.createCommentStatus,
+      videoOfFollowing: videoOfFollowing ?? this.videoOfFollowing,
+      totalVideoOfFollowing:
+          totalVideoOfFollowing ?? this.totalVideoOfFollowing,
+      getVideoOfFollowingStatus:
+          getVideoOfFollowingStatus ?? this.getVideoOfFollowingStatus,
     );
   }
 
@@ -64,5 +79,8 @@ class VideoState extends Equatable {
         unlikeVideoStatus,
         getCommentsStatus,
         createCommentStatus,
+        videoOfFollowing,
+        totalVideoOfFollowing,
+        getVideoOfFollowingStatus,
       ];
 }

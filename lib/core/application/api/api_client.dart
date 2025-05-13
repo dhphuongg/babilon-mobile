@@ -97,6 +97,9 @@ abstract class ApiClient {
     @Path('userId') String userId,
   );
 
+  @GET('/video/following')
+  Future<ObjectResponse<ArrayResponse<Video>>> getListVideoOfFollowing();
+
   @GET('/video/trending')
   Future<ObjectResponse<ArrayResponse<Video>>> getTrendingVideos();
 

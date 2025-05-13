@@ -43,6 +43,34 @@ class VideoCubit extends Cubit<VideoState> {
     }
   }
 
+  Future<void> getListVideoOfFollowing({bool? isRefresh}) async {
+    try {
+      emit(state.copyWith(
+        getVideoOfFollowingStatus: LoadStatus.LOADING,
+        videoOfFollowing: isRefresh == true ? [] : state.videoOfFollowing,
+      ));
+      final response = await _videoRepository.getListVideoOfFollowing();
+      if (response.success && response.data != null) {
+        emit(state.copyWith(
+          videoOfFollowing: response.data?.items,
+          totalVideoOfFollowing: response.data?.total,
+          error: '',
+          getVideoOfFollowingStatus: LoadStatus.SUCCESS,
+        ));
+      } else {
+        emit(state.copyWith(
+          error: response.error,
+          getVideoOfFollowingStatus: LoadStatus.FAILURE,
+        ));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+        error: e.toString(),
+        getVideoOfFollowingStatus: LoadStatus.FAILURE,
+      ));
+    }
+  }
+
   Future<void> likeVideoById(String videoId) async {
     try {
       emit(state.copyWith(likeVideoStatus: LoadStatus.LOADING));

@@ -16,6 +16,8 @@ abstract class VideoRepository {
 
   Future<ObjectResponse<ArrayResponse<Video>>> getTrendingVideos();
 
+  Future<ObjectResponse<ArrayResponse<Video>>> getListVideoOfFollowing();
+
   Future<ObjectResponse> likeVideoById(String videoId);
 
   Future<ObjectResponse> unlikeVideoById(String videoId);
