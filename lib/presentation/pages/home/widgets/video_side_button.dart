@@ -161,7 +161,7 @@ class _VideoSideButtonState extends State<VideoSideButton>
                   },
                   child: ProfileAvatar(
                     avatar: widget.video.user.avatar,
-                    size: 50.w,
+                    size: 25.w,
                   ),
                 ),
                 BlocConsumer<UserCubit, UserState>(
