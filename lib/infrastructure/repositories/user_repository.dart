@@ -42,4 +42,9 @@ class UserRepositoryImpl implements UserRepository {
   Future<ObjectResponse> unfollowUser(String userId) {
     return RestClientProvider.apiClient!.unfollowUserById(userId);
   }
+
+  @override
+  Future<ObjectResponse<ArrayResponse<UserEntity>>> searchUsers(String q) {
+    return RestClientProvider.apiClient!.searchUsers(q);
+  }
 }

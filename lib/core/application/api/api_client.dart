@@ -59,6 +59,12 @@ abstract class ApiClient {
     @Body() FormData body,
   );
 
+  // search user
+  @GET('/user/search')
+  Future<ObjectResponse<ArrayResponse<UserEntity>>> searchUsers(
+    @Query('q') String q,
+  );
+
   @GET('/user/{userId}')
   Future<ObjectResponse<UserEntity>> getUserById(
     @Path('userId') String userId,
@@ -101,6 +107,13 @@ abstract class ApiClient {
   @GET('/video/following')
   Future<ObjectResponse<ArrayResponse<Video>>> getListVideoOfFollowing();
 
+  // search video
+  @GET('/video/search')
+  Future<ObjectResponse<ArrayResponse<Video>>> searchVideos(
+    @Query('q') String q,
+  );
+
+  // get trending videos
   @GET('/video/trending')
   Future<ObjectResponse<ArrayResponse<Video>>> getTrendingVideos();
 

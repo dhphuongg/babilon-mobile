@@ -21,4 +21,8 @@ abstract class UserRepository {
   Future<ObjectResponse> followUser(String userId);
 
   Future<ObjectResponse> unfollowUser(String userId);
+
+  Future<ObjectResponse<ArrayResponse<UserEntity>>> searchUsers(
+    String q,
+  );
 }
