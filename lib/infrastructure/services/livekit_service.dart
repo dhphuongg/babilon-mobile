@@ -2,6 +2,36 @@ import 'package:livekit_client/livekit_client.dart';
 import 'dart:async';
 
 class LivekitService {
+  static Future<Room> viewerJoinRoom({
+    required String liveId,
+    required String token,
+    required String url,
+  }) async {
+    final room = Room();
+
+    try {
+      print('Viewer connecting to room $liveId...');
+      const connectOptions = ConnectOptions(
+        rtcConfiguration: RTCConfiguration(),
+        autoSubscribe: true,
+      );
+      const roomOptions = RoomOptions(adaptiveStream: true, dynacast: true);
+
+      await room.connect(
+        url,
+        token,
+        connectOptions: connectOptions,
+        roomOptions: roomOptions,
+      );
+      print('Viewer connected to room $liveId successfully');
+
+      return room;
+    } catch (e) {
+      print('Error during setup: $e');
+      throw Exception('Failed to setup connection: $e');
+    }
+  }
+
   // Function to connect to LiveKit room
   static Future<Room> broadcasterCreateRoom({
     required String liveId,
