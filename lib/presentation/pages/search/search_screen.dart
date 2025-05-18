@@ -1,5 +1,7 @@
+import 'package:babilon/core/application/common/widgets/app_page_widget.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/core/domain/constants/app_padding.dart';
+import 'package:babilon/core/domain/enum/load_status.dart';
 import 'package:babilon/presentation/pages/search/cubit/search_cubit.dart';
 import 'package:babilon/presentation/pages/user/widgets/profile_avatar.dart';
 import 'package:babilon/presentation/routes/route_name.dart';
@@ -67,9 +69,8 @@ class _SearchScreenState extends State<SearchScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      appBar: AppBar(
+    return AppPageWidget(
+      appbar: AppBar(
         backgroundColor: AppColors.white,
         title: Form(
           key: _formKey,
@@ -113,6 +114,13 @@ class _SearchScreenState extends State<SearchScreen>
   Widget _buildVideoGrid() {
     return BlocBuilder<SearchCubit, SearchState>(
       builder: (context, state) {
+        if (state.getVideosStatus == null ||
+            state.getVideosStatus == LoadStatus.INITIAL) {
+          return Container();
+        }
+        if (state.getVideosStatus == LoadStatus.LOADING) {
+          return const Center(child: CircularProgressIndicator());
+        }
         if (state.videos?.isEmpty ?? true) {
           return const Center(child: Text('Không có kết quả'));
         }
@@ -121,9 +129,8 @@ class _SearchScreenState extends State<SearchScreen>
           padding: EdgeInsets.all(AppPadding.horizontal),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            childAspectRatio: 0.8,
             crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
+            mainAxisExtent: 430,
           ),
           itemCount: state.videos?.length ?? 0,
           itemBuilder: (context, index) {
@@ -142,17 +149,20 @@ class _SearchScreenState extends State<SearchScreen>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(2.r),
-                    child: CachedNetworkImage(
-                      imageUrl: video.thumbnail,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Container(
+                  AspectRatio(
+                    aspectRatio: 9 / 16,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(2.r),
+                      child: Container(
                         color: Colors.grey[300],
-                      ),
-                      errorWidget: (context, url, error) => Container(
-                        color: Colors.grey[300],
-                        child: const Icon(Icons.error),
+                        child: CachedNetworkImage(
+                          imageUrl: video.thumbnail,
+                          fit: BoxFit.cover,
+                          alignment: Alignment.center,
+                          placeholder: (context, url) => const SizedBox(),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
+                        ),
                       ),
                     ),
                   ),
@@ -198,6 +208,13 @@ class _SearchScreenState extends State<SearchScreen>
   Widget _buildUserList() {
     return BlocBuilder<SearchCubit, SearchState>(
       builder: (context, state) {
+        if (state.getUsersStatus == null ||
+            state.getUsersStatus == LoadStatus.INITIAL) {
+          return Container();
+        }
+        if (state.getUsersStatus == LoadStatus.LOADING) {
+          return const Center(child: CircularProgressIndicator());
+        }
         if (state.users?.isEmpty ?? true) {
           return const Center(child: Text('Không có kết quả'));
         }
