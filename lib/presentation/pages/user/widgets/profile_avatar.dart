@@ -1,3 +1,4 @@
+import 'package:babilon/core/application/common/widgets/app_page_widget.dart';
 import 'package:babilon/core/application/repositories/live_repository.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/di.dart';
@@ -70,9 +71,17 @@ class _ProfileAvatarState extends State<ProfileAvatar>
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => LiveList(
-                  lives: [response.data!],
-                  initialIndex: 0,
+                builder: (context) => Scaffold(
+                  backgroundColor: AppColors.white,
+                  appBar: AppBar(
+                    backgroundColor: AppColors.white,
+                  ),
+                  body: SafeArea(
+                    child: LiveList(
+                      lives: [response.data!],
+                      initialIndex: 0,
+                    ),
+                  ),
                 ),
               ),
             );

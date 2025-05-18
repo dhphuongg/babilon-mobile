@@ -62,4 +62,36 @@ class SharedPreferencesHelper {
     final prefs = await SharedPreferences.getInstance();
     prefs.clear();
   }
+
+  static Future<UserInfo> getUserInfo() async {
+    final String userId = await getStringValue(USER_ID);
+    final String fullName = await getStringValue(FULL_NAME);
+    final String username = await getStringValue(USERNAME);
+    final String avatar = await getStringValue(AVATAR);
+    final String signature = await getStringValue(SIGNATURE);
+
+    return UserInfo(
+      userId: userId,
+      fullName: fullName,
+      username: username,
+      avatar: avatar,
+      signature: signature,
+    );
+  }
+}
+
+class UserInfo {
+  final String userId;
+  final String fullName;
+  final String username;
+  final String avatar;
+  final String signature;
+
+  UserInfo({
+    required this.userId,
+    required this.fullName,
+    required this.username,
+    required this.avatar,
+    required this.signature,
+  });
 }

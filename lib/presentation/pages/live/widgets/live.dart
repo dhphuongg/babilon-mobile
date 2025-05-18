@@ -1,4 +1,5 @@
 import 'package:babilon/core/application/models/response/live/live.dart';
+import 'package:babilon/core/domain/constants/websocket_event.dart';
 import 'package:babilon/core/domain/utils/share_preferences.dart';
 import 'package:babilon/di.dart';
 import 'package:babilon/infrastructure/services/livekit_service.dart';
@@ -25,21 +26,40 @@ class _AppLiveState extends State<AppLive> {
   bool _broadcasterConnected = false;
   bool _hasShownDisconnectMessage = false;
 
+  late UserInfo? _userInfo;
+
   @override
   void initState() {
     startViewLive(widget.live.id);
     super.initState();
   }
 
+  // load user info from shared preferences
+  Future<void> _loadUserInfo() async {
+    final user = await SharedPreferencesHelper.getUserInfo();
+
+    setState(() {
+      _userInfo = user;
+    });
+  }
+
   startViewLive(String liveId) async {
+    await _loadUserInfo();
+    if (_userInfo == null) {
+      return;
+    }
     final data = {
       'liveId': liveId,
-      'userId': await SharedPreferencesHelper.getStringValue(
-        SharedPreferencesHelper.USER_ID,
-      ),
+      'user': {
+        'userId': _userInfo!.userId,
+        'fullName': _userInfo!.fullName,
+        'username': _userInfo!.username,
+        'avatar': _userInfo!.avatar,
+        'signature': _userInfo!.signature,
+      },
     };
     getIt<SocketClientService>().socket.emitWithAck(
-      'user-join-live',
+      WebsocketEvent.USER_JOIN_LIVE,
       data,
       ack: (response) {
         String liveId = response['liveId'];
@@ -48,6 +68,13 @@ class _AppLiveState extends State<AppLive> {
         _setupRoom(liveId: liveId, token: token, url: url);
       },
     );
+
+    // getIt<SocketClientService>().socket.on(
+    //   WebsocketEvent.USER_LEAVE_LIVE,
+    //   (user) {
+    //     print('${user['userId']} has left the live');
+    //   },
+    // );
   }
 
   void _setupRoom({
@@ -129,8 +156,27 @@ class _AppLiveState extends State<AppLive> {
     }
   }
 
+  void sendLeaveLiveEvent() {
+    getIt<SocketClientService>().socket.emit(
+      WebsocketEvent.USER_LEAVE_LIVE,
+      {
+        'liveId': widget.live.id,
+        'user': {
+          'userId': _userInfo!.userId,
+          'fullName': _userInfo!.fullName,
+          'username': _userInfo!.username,
+          'avatar': _userInfo!.avatar,
+          'signature': _userInfo!.signature,
+        }
+      },
+    );
+    _room.disconnect();
+    _cancelListenFunc?.call();
+  }
+
   @override
   void dispose() {
+    sendLeaveLiveEvent();
     super.dispose();
   }
 

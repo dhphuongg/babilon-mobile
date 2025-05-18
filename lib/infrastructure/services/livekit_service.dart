@@ -89,4 +89,13 @@ class LivekitService {
       throw Exception('Failed to setup connection: $e');
     }
   }
+
+// Thêm phương thức disconnect
+  static void viewerDisconnectRoom(Room room) {
+    room.disconnect().then((_) {
+      print('Disconnected from room successfully');
+    }).catchError((e) {
+      print('Error disconnecting from room: $e');
+    });
+  }
 }

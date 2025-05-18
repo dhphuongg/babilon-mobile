@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:babilon/core/application/common/widgets/button/app_button.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
+import 'package:babilon/core/domain/constants/websocket_event.dart';
 import 'package:babilon/core/domain/utils/share_preferences.dart';
 import 'package:babilon/core/domain/constants/app_padding.dart';
 import 'package:babilon/core/domain/utils/permission.dart';
@@ -28,7 +29,6 @@ class LiveScreenState extends State<LiveScreen> with WidgetsBindingObserver {
   bool _isCameraInitialized = false;
   bool _isBackCamera = false; // Track which camera is active
 
-  late String _userId;
   bool _isLiving = false;
   bool _isConnecting = false;
   late VideoTrack? _localVideoTrack;
@@ -61,9 +61,6 @@ class LiveScreenState extends State<LiveScreen> with WidgetsBindingObserver {
   Future<void> _loadUser() async {
     _avatarUrl = await SharedPreferencesHelper.getStringValue(
       SharedPreferencesHelper.AVATAR,
-    );
-    _userId = await SharedPreferencesHelper.getStringValue(
-      SharedPreferencesHelper.USER_ID,
     );
   }
 
@@ -187,15 +184,31 @@ class LiveScreenState extends State<LiveScreen> with WidgetsBindingObserver {
       _isConnecting = false;
       _isLiving = true;
     });
+
+    // getIt<SocketClientService>().socket.on(
+    //   WebsocketEvent.USER_JOIN_LIVE,
+    //   (user) {
+    //     print('${user['username']} has joined the live stream');
+    //   },
+    // );
+
+    // getIt<SocketClientService>().socket.on(
+    //   WebsocketEvent.USER_LEAVE_LIVE,
+    //   (user) {
+    //     print('${user['username']} has left the live stream');
+    //   },
+    // );
   }
 
   startLive() async {
     final data = {
       'title': _titleController.text,
-      'broadcasterId': _userId,
+      'broadcasterId': await SharedPreferencesHelper.getStringValue(
+        SharedPreferencesHelper.USER_ID,
+      ),
     };
     getIt<SocketClientService>().socket.emitWithAck(
-      'broadcaster-create-live',
+      WebsocketEvent.BROADCASTER_CREATE_LIVE,
       data,
       ack: (response) {
         print('Response from socket server: $response');
@@ -224,11 +237,14 @@ class LiveScreenState extends State<LiveScreen> with WidgetsBindingObserver {
       // Disconnect from the room
       await _room.disconnect();
 
+      final userId = await SharedPreferencesHelper.getStringValue(
+        SharedPreferencesHelper.USER_ID,
+      );
       getIt<SocketClientService>().socket.emit(
-        'broadcaster-finish-live',
+        WebsocketEvent.BROADCASTER_FINISH_LIVE,
         {
           'liveId': _liveId,
-          'broadcasterId': _userId,
+          'broadcasterId': userId,
         },
       );
     } catch (e) {
