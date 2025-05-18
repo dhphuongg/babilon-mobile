@@ -68,6 +68,14 @@ class _AppScreenState extends State<AppScreen> {
             return NotificationCubit(notificationRepository: getIt());
           },
         ),
+        BlocProvider(
+          create: (context) {
+            return UserCubit(
+              userRepository: getIt(),
+              videoRepository: getIt(),
+            );
+          },
+        ),
       ],
       child: const NotificationsScreen(),
     ),

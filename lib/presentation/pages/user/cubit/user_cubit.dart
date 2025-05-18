@@ -283,7 +283,7 @@ class UserCubit extends Cubit<UserState> {
     }
   }
 
-  Future<void> getListVideoByUserId(String userId) async {
+  Future<List<Video>?> getListVideoByUserId(String userId) async {
     try {
       emit(state.copyWith(getListVideoStatus: LoadStatus.LOADING, error: ''));
 
@@ -295,6 +295,7 @@ class UserCubit extends Cubit<UserState> {
           error: '',
           getListVideoStatus: LoadStatus.SUCCESS,
         ));
+        return response.data?.items;
       } else {
         emit(state.copyWith(
           getListVideoStatus: LoadStatus.FAILURE,
@@ -307,5 +308,6 @@ class UserCubit extends Cubit<UserState> {
         error: e.toString(),
       ));
     }
+    return null;
   }
 }
