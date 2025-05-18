@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/di.dart';
+import 'package:babilon/presentation/pages/notifications/cubit/notification_cubit.dart';
 import 'package:babilon/presentation/pages/search/cubit/search_cubit.dart';
 import 'package:babilon/presentation/pages/search/search_screen.dart';
 import 'package:babilon/presentation/pages/home/cubit/video_cubit.dart';
@@ -59,7 +60,17 @@ class _AppScreenState extends State<AppScreen> {
       child: const SearchScreen(),
     ),
     // const RecordVideoScreen(), // Placeholder for FAB
-    const NotificationsScreen(),
+
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) {
+            return NotificationCubit(notificationRepository: getIt());
+          },
+        ),
+      ],
+      child: const NotificationsScreen(),
+    ),
     MultiBlocProvider(
       providers: [
         BlocProvider(

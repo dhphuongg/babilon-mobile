@@ -1,0 +1,8 @@
+enum NotificationType {
+  FOLLOW,
+  POST_VIDEO,
+  LIKE_VIDEO,
+  COMMENT_VIDEO,
+  SHARE_VIDEO,
+  SYSTEM
+}

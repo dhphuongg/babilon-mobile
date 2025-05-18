@@ -1,9 +1,11 @@
 import 'package:babilon/core/application/repositories/auth_repository.dart';
 import 'package:babilon/core/application/repositories/live_repository.dart';
+import 'package:babilon/core/application/repositories/notification_repository.dart';
 import 'package:babilon/core/application/repositories/user_repository.dart';
 import 'package:babilon/core/application/repositories/video_repository.dart';
 import 'package:babilon/infrastructure/repositories/auth_repository.dart';
 import 'package:babilon/infrastructure/repositories/live_repository.dart';
+import 'package:babilon/infrastructure/repositories/notification_repository.dart';
 import 'package:babilon/infrastructure/repositories/user_repository.dart';
 import 'package:babilon/infrastructure/repositories/video_repository.dart';
 import 'package:babilon/infrastructure/services/socket_client.service.dart';
@@ -29,6 +31,9 @@ Future<void> configureDependencies() async {
   getIt.registerLazySingleton<UserRepository>(() => UserRepositoryImpl());
   getIt.registerLazySingleton<VideoRepository>(() => VideoRepositoryImpl());
   getIt.registerLazySingleton<LiveRepository>(() => LiveRepositoryImpl());
+  getIt.registerLazySingleton<NotificationRepository>(
+    () => NotificationRepositoryImpl(),
+  );
 
   // service
   getIt.registerLazySingleton<SocketClientService>(() => SocketClientService());

@@ -172,12 +172,12 @@ class _VideoSideButtonState extends State<VideoSideButton>
                   listener: (context, state) {
                     if (state.followStatus == LoadStatus.SUCCESS) {
                       // Handle success
-                      AppSnackBar.showSuccess('Followed successfully');
+                      AppSnackBar.showSuccess('Theo dõi thành công');
                       _isFollowing = true;
                     }
                   },
                   builder: (context, state) {
-                    return !_isFollowing
+                    return !_isFollowing && !widget.video.user.isMe
                         ? Positioned(
                             bottom: -10.h,
                             left: 0,
