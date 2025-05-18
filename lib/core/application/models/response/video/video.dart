@@ -86,6 +86,7 @@ class UserInVideo {
   bool isMe;
   bool isFollower;
   bool isFollowing;
+  bool isLiving;
 
   UserInVideo({
     required this.id,
@@ -97,6 +98,7 @@ class UserInVideo {
     required this.isMe,
     required this.isFollower,
     required this.isFollowing,
+    required this.isLiving,
   });
 
   factory UserInVideo.fromJson(Map<String, dynamic> json) => UserInVideo(
@@ -109,6 +111,7 @@ class UserInVideo {
         isMe: json['isMe'] as bool,
         isFollower: json['isFollower'] as bool,
         isFollowing: json['isFollowing'] as bool,
+        isLiving: json['isLiving'] as bool,
       );
 
   Map<String, dynamic> toJson() => {
@@ -121,5 +124,6 @@ class UserInVideo {
         'isMe': isMe,
         'isFollower': isFollower,
         'isFollowing': isFollowing,
+        'isLiving': isLiving,
       };
 }

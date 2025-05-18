@@ -177,6 +177,8 @@ class _SearchScreenState extends State<SearchScreen>
                   Row(
                     children: [
                       ProfileAvatar(
+                        userId: video.user.id,
+                        isLiving: video.user.isLiving,
                         avatar: video.user.avatar,
                         size: 15,
                       ),
@@ -236,6 +238,8 @@ class _SearchScreenState extends State<SearchScreen>
               child: Row(
                 children: [
                   ProfileAvatar(
+                    userId: user.id,
+                    isLiving: user.isLiving,
                     avatar: user.avatar,
                     size: 25.r,
                   ),

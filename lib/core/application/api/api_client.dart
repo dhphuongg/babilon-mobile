@@ -150,6 +150,11 @@ abstract class ApiClient {
   @GET('/live/trending')
   Future<ObjectResponse<ArrayResponse<Live>>> getLiveTrending();
 
+  @GET('/live/user/{userId}')
+  Future<ObjectResponse<Live>> getLiveByUserId(
+    @Path('userId') String userId,
+  );
+
   // ========================== Notification ==========================
   @GET('/notification')
   Future<ObjectResponse<ArrayResponse<Notification>>> getNotificationList();

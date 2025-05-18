@@ -80,6 +80,8 @@ class _ProfileState extends State<Profile> {
       children: <Widget>[
         // Avatar Section
         ProfileAvatar(
+          userId: widget.user.id,
+          isLiving: !widget.user.isMe && widget.user.isLiving,
           avatar: widget.user.avatar,
           size: 45.w,
         ),

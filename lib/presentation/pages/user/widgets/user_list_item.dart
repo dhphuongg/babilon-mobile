@@ -115,6 +115,8 @@ class _UserListItemState extends State<UserListItem> {
           children: [
             // Avatar
             ProfileAvatar(
+              userId: widget.user.id,
+              isLiving: widget.user.isLiving,
               avatar: widget.user.avatar,
               size: 25.w,
             ),

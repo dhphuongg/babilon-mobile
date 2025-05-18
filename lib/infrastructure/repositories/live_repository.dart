@@ -9,4 +9,9 @@ class LiveRepositoryImpl implements LiveRepository {
   Future<ObjectResponse<ArrayResponse<Live>>> getLiveTrending() {
     return RestClientProvider.apiClient!.getLiveTrending();
   }
+
+  @override
+  Future<ObjectResponse<Live>> getByUserId(String userId) {
+    return RestClientProvider.apiClient!.getLiveByUserId(userId);
+  }
 }

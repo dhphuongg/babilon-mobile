@@ -9,6 +9,7 @@ class UserEntity {
   final bool isMe;
   final bool isFollower;
   final bool isFollowing;
+  final bool isLiving;
 
   UserEntity({
     required this.id,
@@ -21,6 +22,7 @@ class UserEntity {
     this.isMe = false,
     this.isFollower = false,
     this.isFollowing = false,
+    this.isLiving = false,
   });
 
   factory UserEntity.fromJson(Map<String, dynamic> json) {
@@ -35,6 +37,7 @@ class UserEntity {
       isMe: json['isMe'] ?? false,
       isFollower: json['isFollower'] ?? false,
       isFollowing: json['isFollowing'] ?? false,
+      isLiving: json['isLiving'] ?? false,
     );
   }
 
@@ -50,6 +53,7 @@ class UserEntity {
       'isMe': isMe,
       'isFollower': isFollower,
       'isFollowing': isFollowing,
+      'isLiving': isLiving,
     };
   }
 }

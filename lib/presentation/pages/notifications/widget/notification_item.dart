@@ -54,6 +54,8 @@ class _NotificationItemState extends State<NotificationItem> {
               children: [
                 // User Avatar
                 ProfileAvatar(
+                  userId: state.user!.id,
+                  isLiving: state.user!.isLiving,
                   avatar: state.user!.avatar,
                   size: 30.r,
                 ),

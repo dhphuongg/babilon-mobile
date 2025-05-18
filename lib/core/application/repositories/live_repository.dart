@@ -4,4 +4,5 @@ import 'package:babilon/core/application/models/response/live/live.dart';
 
 abstract class LiveRepository {
   Future<ObjectResponse<ArrayResponse<Live>>> getLiveTrending();
+  Future<ObjectResponse<Live>> getByUserId(String userId);
 }

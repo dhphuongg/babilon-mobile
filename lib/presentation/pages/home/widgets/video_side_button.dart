@@ -160,6 +160,8 @@ class _VideoSideButtonState extends State<VideoSideButton>
                     }
                   },
                   child: ProfileAvatar(
+                    userId: widget.video.user.id,
+                    isLiving: widget.video.user.isLiving,
                     avatar: widget.video.user.avatar,
                     size: 25.w,
                   ),
