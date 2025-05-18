@@ -4,6 +4,7 @@ import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/core/domain/constants/app_padding.dart';
 import 'package:babilon/core/domain/enum/load_status.dart';
 import 'package:babilon/core/domain/utils/date.dart';
+import 'package:babilon/core/domain/utils/share_preferences.dart';
 import 'package:babilon/presentation/pages/home/cubit/video_cubit.dart';
 import 'package:babilon/presentation/pages/user/widgets/profile_avatar.dart';
 import 'package:flutter/material.dart';
@@ -151,6 +152,7 @@ class VideoComments extends StatefulWidget {
 class _VideoCommentsState extends State<VideoComments> {
   late TextEditingController _commentController;
   late VideoCubit _videoCubit;
+  late String _userAvatar = 'https://picsum.photos/200';
 
   @override
   void initState() {
@@ -158,6 +160,17 @@ class _VideoCommentsState extends State<VideoComments> {
     _commentController = TextEditingController();
     _videoCubit = BlocProvider.of<VideoCubit>(context);
     _videoCubit.getCommentsByVideoId(widget.video.id);
+    getUserAvatar();
+  }
+
+  Future<void> getUserAvatar() async {
+    final avt = await SharedPreferencesHelper.getStringValue(
+      SharedPreferencesHelper.AVATAR,
+    );
+
+    setState(() {
+      _userAvatar = avt.isNotEmpty ? avt : 'https://picsum.photos/200';
+    });
   }
 
   @override
@@ -227,8 +240,7 @@ class _VideoCommentsState extends State<VideoComments> {
                   return CommentInput(
                     videoId: widget.video.id,
                     videoCubit: _videoCubit,
-                    avatar:
-                        widget.video.user.avatar ?? 'https://picsum.photos/200',
+                    avatar: _userAvatar,
                   );
                 },
               );
@@ -252,8 +264,7 @@ class _VideoCommentsState extends State<VideoComments> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ProfileAvatar(
-                      avatar: widget.video.user.avatar ??
-                          'https://picsum.photos/200',
+                      avatar: _userAvatar,
                       size: 20.r,
                     ),
                     SizedBox(width: 8.w),
