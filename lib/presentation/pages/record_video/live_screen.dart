@@ -36,11 +36,22 @@ class LiveScreenState extends State<LiveScreen> with WidgetsBindingObserver {
   String? _liveId;
   Function? _roomSubscription;
 
+  late UserInfo? _userInfo;
+
+  // load user info from shared preferences
+  Future<void> _loadUserInfo() async {
+    final user = await SharedPreferencesHelper.getUserInfo();
+
+    setState(() {
+      _userInfo = user;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _loadUser();
+    _loadUserInfo();
     PermissionUtil.checkCameraPermission(
       () => PermissionUtil.checkMicrophonePermission(
         () => _initCamera(),
@@ -56,12 +67,6 @@ class LiveScreenState extends State<LiveScreen> with WidgetsBindingObserver {
     _roomSubscription?.call();
     _disconnectFromRoom();
     super.dispose();
-  }
-
-  Future<void> _loadUser() async {
-    _avatarUrl = await SharedPreferencesHelper.getStringValue(
-      SharedPreferencesHelper.AVATAR,
-    );
   }
 
   @override
@@ -203,9 +208,7 @@ class LiveScreenState extends State<LiveScreen> with WidgetsBindingObserver {
   startLive() async {
     final data = {
       'title': _titleController.text,
-      'broadcasterId': await SharedPreferencesHelper.getStringValue(
-        SharedPreferencesHelper.USER_ID,
-      ),
+      'broadcasterId': _userInfo!.userId,
     };
     getIt<SocketClientService>().socket.emitWithAck(
       WebsocketEvent.BROADCASTER_CREATE_LIVE,
@@ -237,14 +240,11 @@ class LiveScreenState extends State<LiveScreen> with WidgetsBindingObserver {
       // Disconnect from the room
       await _room.disconnect();
 
-      final userId = await SharedPreferencesHelper.getStringValue(
-        SharedPreferencesHelper.USER_ID,
-      );
       getIt<SocketClientService>().socket.emit(
         WebsocketEvent.BROADCASTER_FINISH_LIVE,
         {
           'liveId': _liveId,
-          'broadcasterId': userId,
+          'broadcasterId': _userInfo!.userId,
         },
       );
     } catch (e) {
