@@ -72,10 +72,7 @@ class _ProfileAvatarState extends State<ProfileAvatar>
               context,
               MaterialPageRoute(
                 builder: (context) => Scaffold(
-                  backgroundColor: AppColors.white,
-                  appBar: AppBar(
-                    backgroundColor: AppColors.white,
-                  ),
+                  backgroundColor: AppColors.black,
                   body: SafeArea(
                     child: LiveList(
                       lives: [response.data!],

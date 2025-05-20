@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:babilon/presentation/pages/record_video/widgets/list_live_event.dart';
 import 'package:babilon/core/application/common/widgets/button/app_button.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/core/domain/constants/websocket_event.dart';
@@ -24,6 +25,8 @@ class LiveScreen extends StatefulWidget {
 
 class LiveScreenState extends State<LiveScreen> with WidgetsBindingObserver {
   final TextEditingController _titleController = TextEditingController();
+  final GlobalKey<ListLiveEventState> _chatKey =
+      GlobalKey<ListLiveEventState>();
   String _avatarUrl = '';
   CameraController? _cameraController;
   bool _isCameraInitialized = false;
@@ -193,9 +196,13 @@ class LiveScreenState extends State<LiveScreen> with WidgetsBindingObserver {
     getIt<SocketClientService>().socket.on(
       WebsocketEvent.USER_JOIN_LIVE,
       (user) {
-        _chatKey.currentState?.addMessage(
-          '${user['username']} đã tham gia live',
-          isSystem: true,
+        _chatKey.currentState?.addEvent(
+          LiveEvent(
+            text: '${user['username']} đã tham gia live',
+            isSystem: true,
+            avatar: user['avatar'],
+            fullName: user['fullName'],
+          ),
         );
       },
     );
@@ -203,9 +210,13 @@ class LiveScreenState extends State<LiveScreen> with WidgetsBindingObserver {
     getIt<SocketClientService>().socket.on(
       WebsocketEvent.USER_LEAVE_LIVE,
       (user) {
-        _chatKey.currentState?.addMessage(
-          '${user['username']} đã rời khỏi live',
-          isSystem: true,
+        _chatKey.currentState?.addEvent(
+          LiveEvent(
+            text: '${user['username']} đã rời khỏi live',
+            isSystem: true,
+            avatar: user['avatar'],
+            fullName: user['fullName'],
+          ),
         );
       },
     );
@@ -262,7 +273,7 @@ class LiveScreenState extends State<LiveScreen> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.black,
-      resizeToAvoidBottomInset: false,
+      // resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Column(
           children: [
@@ -315,6 +326,19 @@ class LiveScreenState extends State<LiveScreen> with WidgetsBindingObserver {
                     const Positioned.fill(
                       child: Center(
                         child: CircularProgressIndicator(),
+                      ),
+                    ),
+                  if (_isLiving)
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: ListLiveEvent(
+                        key: _chatKey,
+                        onSendMessage: (message) {
+                          // TODO: Implement send message functionality
+                          _chatKey.currentState?.addEvent(message);
+                        },
                       ),
                     ),
                   if (_isLiving)
@@ -429,7 +453,7 @@ class LiveScreenState extends State<LiveScreen> with WidgetsBindingObserver {
                 ],
               ),
             ),
-            SizedBox(height: 65.h)
+            // SizedBox(height: 65.h)
           ],
         ),
       ),
