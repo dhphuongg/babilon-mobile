@@ -4,6 +4,7 @@ import 'package:babilon/presentation/pages/live/cubit/live_cubit.dart';
 import 'package:babilon/presentation/pages/live/widgets/live_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class LiveTrendingScreen extends StatefulWidget {
   const LiveTrendingScreen({super.key});
@@ -25,7 +26,7 @@ class _LiveTrendingScreenState extends State<LiveTrendingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.black,
       body: SafeArea(
         child: BlocConsumer<LiveCubit, LiveState>(
           listenWhen: (previous, current) =>

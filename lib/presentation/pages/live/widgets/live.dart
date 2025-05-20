@@ -69,12 +69,12 @@ class _AppLiveState extends State<AppLive> {
       },
     );
 
-    // getIt<SocketClientService>().socket.on(
-    //   WebsocketEvent.USER_LEAVE_LIVE,
-    //   (user) {
-    //     print('${user['userId']} has left the live');
-    //   },
-    // );
+    getIt<SocketClientService>().socket.on(
+      WebsocketEvent.USER_LEAVE_LIVE,
+      (user) {
+        print('${user['userId']} has left the live');
+      },
+    );
   }
 
   void _setupRoom({
@@ -259,7 +259,7 @@ class _AppLiveState extends State<AppLive> {
                         _hasShownDisconnectMessage = true;
                       });
                     },
-                    child: Text('Refresh Status'),
+                    child: const Text('Refresh Status'),
                   ),
               ],
             ),

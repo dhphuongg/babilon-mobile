@@ -190,19 +190,25 @@ class LiveScreenState extends State<LiveScreen> with WidgetsBindingObserver {
       _isLiving = true;
     });
 
-    // getIt<SocketClientService>().socket.on(
-    //   WebsocketEvent.USER_JOIN_LIVE,
-    //   (user) {
-    //     print('${user['username']} has joined the live stream');
-    //   },
-    // );
+    getIt<SocketClientService>().socket.on(
+      WebsocketEvent.USER_JOIN_LIVE,
+      (user) {
+        _chatKey.currentState?.addMessage(
+          '${user['username']} đã tham gia live',
+          isSystem: true,
+        );
+      },
+    );
 
-    // getIt<SocketClientService>().socket.on(
-    //   WebsocketEvent.USER_LEAVE_LIVE,
-    //   (user) {
-    //     print('${user['username']} has left the live stream');
-    //   },
-    // );
+    getIt<SocketClientService>().socket.on(
+      WebsocketEvent.USER_LEAVE_LIVE,
+      (user) {
+        _chatKey.currentState?.addMessage(
+          '${user['username']} đã rời khỏi live',
+          isSystem: true,
+        );
+      },
+    );
   }
 
   startLive() async {
