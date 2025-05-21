@@ -18,11 +18,11 @@ class LiveEvent {
 }
 
 class ListLiveEvent extends StatefulWidget {
-  final Function(LiveEvent) onSendMessage;
+  final Function(LiveEvent) onSendEvent;
 
   const ListLiveEvent({
     super.key,
-    required this.onSendMessage,
+    required this.onSendEvent,
   });
 
   @override
@@ -56,7 +56,7 @@ class ListLiveEventState extends State<ListLiveEvent> {
   void _handleSubmitted(LiveEvent event) {
     if (event.text.isEmpty) return;
 
-    widget.onSendMessage(event);
+    widget.onSendEvent(event);
     _messageController.clear();
   }
 
@@ -114,6 +114,7 @@ class ListLiveEventState extends State<ListLiveEvent> {
                               ),
                               SizedBox(width: 10.w),
                               Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     event.fullName,

@@ -220,6 +220,19 @@ class LiveScreenState extends State<LiveScreen> with WidgetsBindingObserver {
         );
       },
     );
+
+    getIt<SocketClientService>().socket.on(
+      WebsocketEvent.USER_SEND_MESSAGE_TO_LIVE,
+      (message) {
+        _chatKey.currentState?.addEvent(
+          LiveEvent(
+            text: message['text'],
+            avatar: message['user']['avatar'],
+            fullName: message['user']['fullName'],
+          ),
+        );
+      },
+    );
   }
 
   startLive() async {
@@ -335,9 +348,21 @@ class LiveScreenState extends State<LiveScreen> with WidgetsBindingObserver {
                       bottom: 0,
                       child: ListLiveEvent(
                         key: _chatKey,
-                        onSendMessage: (message) {
+                        onSendEvent: (event) {
                           // TODO: Implement send message functionality
-                          _chatKey.currentState?.addEvent(message);
+                          getIt<SocketClientService>().socket.emit(
+                            WebsocketEvent.USER_SEND_MESSAGE_TO_LIVE,
+                            {
+                              'liveId': _liveId,
+                              'text': event.text,
+                              'user': {
+                                'userId': _userInfo!.userId,
+                                'username': _userInfo!.username,
+                                'avatar': _userInfo!.avatar,
+                                'fullName': _userInfo!.fullName,
+                              },
+                            },
+                          );
                         },
                       ),
                     ),

@@ -1,9 +1,11 @@
 import 'package:babilon/core/application/models/response/live/live.dart';
+import 'package:babilon/core/domain/constants/app_colors.dart';
 import 'package:babilon/core/domain/constants/websocket_event.dart';
 import 'package:babilon/core/domain/utils/share_preferences.dart';
 import 'package:babilon/di.dart';
 import 'package:babilon/infrastructure/services/livekit_service.dart';
 import 'package:babilon/infrastructure/services/socket_client.service.dart';
+import 'package:babilon/presentation/pages/record_video/widgets/list_live_event.dart';
 import 'package:flutter/material.dart';
 import 'package:livekit_client/livekit_client.dart';
 
@@ -27,6 +29,9 @@ class _AppLiveState extends State<AppLive> {
   bool _hasShownDisconnectMessage = false;
 
   late UserInfo? _userInfo;
+
+  final GlobalKey<ListLiveEventState> _chatKey =
+      GlobalKey<ListLiveEventState>();
 
   @override
   void initState() {
@@ -134,6 +139,19 @@ class _AppLiveState extends State<AppLive> {
 
     // Check for any existing remote participants that are already streaming video
     _checkExistingParticipants();
+
+    getIt<SocketClientService>().socket.on(
+      WebsocketEvent.USER_SEND_MESSAGE_TO_LIVE,
+      (message) {
+        _chatKey.currentState?.addEvent(
+          LiveEvent(
+            text: message['text'],
+            avatar: message['user']['avatar'],
+            fullName: message['user']['fullName'],
+          ),
+        );
+      },
+    );
   }
 
   void _checkExistingParticipants() {
@@ -237,6 +255,31 @@ class _AppLiveState extends State<AppLive> {
                   ),
                 ),
               ),
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: ListLiveEvent(
+                  key: _chatKey,
+                  onSendEvent: (event) {
+                    // TODO: Implement send event functionality
+                    getIt<SocketClientService>().socket.emit(
+                      WebsocketEvent.USER_SEND_MESSAGE_TO_LIVE,
+                      {
+                        'liveId': widget.live.id,
+                        'user': {
+                          'userId': _userInfo!.userId,
+                          'fullName': _userInfo!.fullName,
+                          'username': _userInfo!.username,
+                          'avatar': _userInfo!.avatar,
+                          'signature': _userInfo!.signature,
+                        },
+                        'text': event.text,
+                      },
+                    );
+                  },
+                ),
+              )
             ],
           )
         : Center(
@@ -251,6 +294,11 @@ class _AppLiveState extends State<AppLive> {
                         ? 'Broadcaster has disconnected.\nPlease go back and join another room.'
                         : 'Waiting for broadcaster to join...',
                     textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: AppColors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 if (!_broadcasterConnected && !_hasShownDisconnectMessage)
                   ElevatedButton(
