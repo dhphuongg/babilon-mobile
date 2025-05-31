@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:babilon/presentation/pages/record_video/widgets/broadcaster.dart';
 import 'package:babilon/presentation/pages/record_video/widgets/list_live_event.dart';
 import 'package:babilon/core/application/common/widgets/button/app_button.dart';
 import 'package:babilon/core/domain/constants/app_colors.dart';
@@ -47,6 +48,7 @@ class LiveScreenState extends State<LiveScreen> with WidgetsBindingObserver {
 
     setState(() {
       _userInfo = user;
+      _avatarUrl = user.avatar;
     });
   }
 
@@ -366,57 +368,64 @@ class LiveScreenState extends State<LiveScreen> with WidgetsBindingObserver {
                         },
                       ),
                     ),
-                  if (_isLiving)
+                  if (_isLiving && _userInfo != null)
                     Positioned(
                       top: 20.h,
+                      left: 20.w,
                       right: 20.w,
-                      child: GestureDetector(
-                        onTap: () async {
-                          if (_isLiving) {
-                            // show confirm dialog
-                            final confirm = await showDialog(
-                              context: context,
-                              builder: (dialogContext) {
-                                return AlertDialog(
-                                  title: const Text('Xác nhận'),
-                                  content: const Text(
-                                      'Bạn có chắc chắn muốn kết thúc live?'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(false),
-                                      child: const Text('Hủy'),
-                                    ),
-                                    TextButton(
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(true),
-                                      child: const Text('Xác nhận'),
-                                    ),
-                                  ],
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Broadcaster(userInfo: _userInfo!),
+                          GestureDetector(
+                            onTap: () async {
+                              if (_isLiving) {
+                                // show confirm dialog
+                                final confirm = await showDialog(
+                                  context: context,
+                                  builder: (dialogContext) {
+                                    return AlertDialog(
+                                      title: const Text('Xác nhận'),
+                                      content: const Text(
+                                          'Bạn có chắc chắn muốn kết thúc live?'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(false),
+                                          child: const Text('Hủy'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(true),
+                                          child: const Text('Xác nhận'),
+                                        ),
+                                      ],
+                                    );
+                                  },
                                 );
-                              },
-                            );
-                            if (confirm == null || !confirm) {
-                              return;
-                            }
-                          }
-                          await _disconnectFromRoom();
-                          await _cameraController?.dispose();
-                          Navigator.pop(context);
-                        },
-                        child: Container(
-                          width: 36.w,
-                          height: 36.w,
-                          decoration: BoxDecoration(
-                            color: AppColors.black.withOpacity(0.6),
-                            shape: BoxShape.circle,
+                                if (confirm == null || !confirm) {
+                                  return;
+                                }
+                              }
+                              await _disconnectFromRoom();
+                              await _cameraController?.dispose();
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                              width: 36.w,
+                              height: 36.w,
+                              decoration: BoxDecoration(
+                                color: AppColors.black.withOpacity(0.6),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.power_settings_new_rounded,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                            ),
                           ),
-                          child: const Icon(
-                            Icons.power_settings_new_rounded,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                        ),
+                        ],
                       ),
                     )
                   else
