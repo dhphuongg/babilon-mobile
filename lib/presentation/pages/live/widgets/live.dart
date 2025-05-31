@@ -5,8 +5,10 @@ import 'package:babilon/core/domain/utils/share_preferences.dart';
 import 'package:babilon/di.dart';
 import 'package:babilon/infrastructure/services/livekit_service.dart';
 import 'package:babilon/infrastructure/services/socket_client.service.dart';
+import 'package:babilon/presentation/pages/record_video/widgets/broadcaster.dart';
 import 'package:babilon/presentation/pages/record_video/widgets/list_live_event.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:livekit_client/livekit_client.dart';
 
 class AppLive extends StatefulWidget {
@@ -211,50 +213,47 @@ class _AppLiveState extends State<AppLive> {
                 ),
               ),
 
-              // "LIVE" indicator
+              // Top row with broadcaster info and LIVE indicator
               Positioned(
-                top: 10,
-                right: 10,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8.0,
-                    vertical: 4.0,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.red,
-                    borderRadius: BorderRadius.circular(4.0),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
-                        blurRadius: 4.0,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 8,
-                        height: 8,
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
+                top: 0,
+                left: 10.w,
+                right: 10.w,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Broadcaster(
+                        userInfo: UserInfo(
+                      userId: widget.live.user.id,
+                      username: widget.live.user.username,
+                      avatar: widget.live.user.avatar ?? '',
+                      fullName: widget.live.user.fullName,
+                      signature: '',
+                    )),
+                    // x button
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Container(
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: const Center(
+                          child: Icon(
+                            Icons.close,
+                            color: Colors.white,
+                            size: 20,
+                          ),
                         ),
                       ),
-                      const SizedBox(width: 4),
-                      const Text(
-                        'LIVE',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
+
               Positioned(
                 left: 0,
                 right: 0,

@@ -370,9 +370,9 @@ class LiveScreenState extends State<LiveScreen> with WidgetsBindingObserver {
                     ),
                   if (_isLiving && _userInfo != null)
                     Positioned(
-                      top: 20.h,
-                      left: 20.w,
-                      right: 20.w,
+                      top: 0,
+                      left: 10.w,
+                      right: 10.w,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
