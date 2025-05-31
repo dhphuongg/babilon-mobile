@@ -84,10 +84,21 @@ class _PostVideoScreenState extends State<PostVideoScreen> {
               previous.postVideoStatus != current.postVideoStatus,
           listener: (context, state) {
             if (state.postVideoStatus == LoadStatus.SUCCESS) {
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                RouteName.app,
-                (route) => false,
-              );
+              if (state.postedVideo != null) {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  RouteName.userVideos,
+                  (route) => route.settings.name == RouteName.app,
+                  arguments: {
+                    'videos': [state.postedVideo!],
+                    'initialVideoIndex': 0,
+                  },
+                );
+              } else {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  RouteName.app,
+                  (route) => false,
+                );
+              }
               AppSnackBar.showSuccess('Đăng video thành công');
             } else if (state.postVideoStatus == LoadStatus.FAILURE) {
               AppSnackBar.showError(state.error ?? 'Đăng video thất bại');

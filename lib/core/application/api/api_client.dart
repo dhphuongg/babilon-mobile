@@ -93,7 +93,7 @@ abstract class ApiClient {
 
   // ========================== Video ==========================
   @POST('/video')
-  Future<ObjectResponse> postVideo(
+  Future<ObjectResponse<Video>> postVideo(
     @Body() FormData body,
   );
 

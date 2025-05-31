@@ -6,7 +6,7 @@ import 'package:babilon/core/application/models/response/video/video.dart';
 import 'package:dio/dio.dart';
 
 abstract class VideoRepository {
-  Future<ObjectResponse> postVideo(FormData body);
+  Future<ObjectResponse<Video>> postVideo(FormData body);
 
   Future<ObjectResponse<ArrayResponse<Video>>> getMyListVideo();
 

@@ -1,4 +1,5 @@
 import 'package:babilon/core/application/models/request/video/post_video.dart';
+import 'package:babilon/core/application/models/response/video/video.dart';
 import 'package:babilon/core/application/repositories/video_repository.dart';
 import 'package:babilon/core/domain/enum/load_status.dart';
 import 'package:dio/dio.dart';
@@ -41,7 +42,11 @@ class PostVideoCubit extends Cubit<PostVideoState> {
 
       final response = await _videoRepository.postVideo(formData);
       if (response.statusCode == 201) {
-        emit(state.copyWith(postVideoStatus: LoadStatus.SUCCESS, error: ''));
+        emit(state.copyWith(
+          postVideoStatus: LoadStatus.SUCCESS,
+          error: '',
+          postedVideo: response.data,
+        ));
       } else {
         emit(state.copyWith(
           postVideoStatus: LoadStatus.FAILURE,

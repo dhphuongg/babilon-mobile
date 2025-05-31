@@ -9,7 +9,7 @@ import 'package:dio/src/form_data.dart';
 
 class VideoRepositoryImpl implements VideoRepository {
   @override
-  Future<ObjectResponse> postVideo(FormData body) {
+  Future<ObjectResponse<Video>> postVideo(FormData body) {
     return RestClientProvider.apiClient!.postVideo(body);
   }
 
