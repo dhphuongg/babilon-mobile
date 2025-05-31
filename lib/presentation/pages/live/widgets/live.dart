@@ -30,6 +30,8 @@ class _AppLiveState extends State<AppLive> {
   bool _broadcasterConnected = false;
   bool _hasShownDisconnectMessage = false;
 
+  int _numOfViewers = 0;
+
   late UserInfo? _userInfo;
 
   final GlobalKey<ListLiveEventState> _chatKey =
@@ -78,8 +80,39 @@ class _AppLiveState extends State<AppLive> {
 
     getIt<SocketClientService>().socket.on(
       WebsocketEvent.USER_LEAVE_LIVE,
-      (user) {
-        print('${user['userId']} has left the live');
+      (res) {
+        final user = res['user'];
+        _chatKey.currentState?.addEvent(
+          LiveEvent(
+            text: '${user['username']} đã tham gia live',
+            isSystem: true,
+            avatar: user['avatar'],
+            fullName: user['fullName'],
+          ),
+        );
+        final viewers = res['viewers'];
+        setState(() {
+          _numOfViewers = viewers.length;
+        });
+      },
+    );
+
+    getIt<SocketClientService>().socket.on(
+      WebsocketEvent.USER_JOIN_LIVE,
+      (res) {
+        final user = res['user'];
+        _chatKey.currentState?.addEvent(
+          LiveEvent(
+            text: '${user['username']} đã tham gia live',
+            isSystem: true,
+            avatar: user['avatar'],
+            fullName: user['fullName'],
+          ),
+        );
+        final viewers = res['viewers'];
+        setState(() {
+          _numOfViewers = viewers.length;
+        });
       },
     );
   }
@@ -230,25 +263,60 @@ class _AppLiveState extends State<AppLive> {
                       signature: '',
                     )),
                     // x button
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Container(
-                        width: 30,
-                        height: 30,
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.5),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: const Center(
-                          child: Icon(
-                            Icons.close,
-                            color: Colors.white,
-                            size: 20,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 8.w,
+                            vertical: 4.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.black.withOpacity(0.6),
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.visibility,
+                                color: Colors.white,
+                                size: 16.sp,
+                              ),
+                              SizedBox(width: 4.w),
+                              Text(
+                                '$_numOfViewers',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ),
+                        SizedBox(width: 8.w),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Container(
+                            width: 30,
+                            height: 30,
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: const Center(
+                              child: Icon(
+                                Icons.close,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

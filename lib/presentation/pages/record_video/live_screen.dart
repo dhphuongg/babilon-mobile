@@ -32,6 +32,7 @@ class LiveScreenState extends State<LiveScreen> with WidgetsBindingObserver {
   CameraController? _cameraController;
   bool _isCameraInitialized = false;
   bool _isBackCamera = false; // Track which camera is active
+  int _numOfViewers = 0;
 
   bool _isLiving = false;
   bool _isConnecting = false;
@@ -197,7 +198,12 @@ class LiveScreenState extends State<LiveScreen> with WidgetsBindingObserver {
 
     getIt<SocketClientService>().socket.on(
       WebsocketEvent.USER_JOIN_LIVE,
-      (user) {
+      (res) {
+        final user = res['user'];
+        final viewers = res['viewers'];
+        setState(() {
+          _numOfViewers = viewers.length;
+        });
         _chatKey.currentState?.addEvent(
           LiveEvent(
             text: '${user['username']} đã tham gia live',
@@ -211,7 +217,12 @@ class LiveScreenState extends State<LiveScreen> with WidgetsBindingObserver {
 
     getIt<SocketClientService>().socket.on(
       WebsocketEvent.USER_LEAVE_LIVE,
-      (user) {
+      (res) {
+        final user = res['user'];
+        final viewers = res['viewers'];
+        setState(() {
+          _numOfViewers = viewers.length;
+        });
         _chatKey.currentState?.addEvent(
           LiveEvent(
             text: '${user['username']} đã rời khỏi live',
@@ -377,53 +388,89 @@ class LiveScreenState extends State<LiveScreen> with WidgetsBindingObserver {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Broadcaster(userInfo: _userInfo!),
-                          GestureDetector(
-                            onTap: () async {
-                              if (_isLiving) {
-                                // show confirm dialog
-                                final confirm = await showDialog(
-                                  context: context,
-                                  builder: (dialogContext) {
-                                    return AlertDialog(
-                                      title: const Text('Xác nhận'),
-                                      content: const Text(
-                                          'Bạn có chắc chắn muốn kết thúc live?'),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.of(context).pop(false),
-                                          child: const Text('Hủy'),
-                                        ),
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.of(context).pop(true),
-                                          child: const Text('Xác nhận'),
-                                        ),
-                                      ],
+                          Row(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 8.w,
+                                  vertical: 4.h,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.black.withOpacity(0.6),
+                                  borderRadius: BorderRadius.circular(12.r),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.visibility,
+                                      color: Colors.white,
+                                      size: 16.sp,
+                                    ),
+                                    SizedBox(width: 4.w),
+                                    Text(
+                                      '$_numOfViewers',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(width: 8.w),
+                              GestureDetector(
+                                onTap: () async {
+                                  if (_isLiving) {
+                                    // show confirm dialog
+                                    final confirm = await showDialog(
+                                      context: context,
+                                      builder: (dialogContext) {
+                                        return AlertDialog(
+                                          title: const Text('Xác nhận'),
+                                          content: const Text(
+                                              'Bạn có chắc chắn muốn kết thúc live?'),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.of(context)
+                                                      .pop(false),
+                                              child: const Text('Hủy'),
+                                            ),
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.of(context)
+                                                      .pop(true),
+                                              child: const Text('Xác nhận'),
+                                            ),
+                                          ],
+                                        );
+                                      },
                                     );
-                                  },
-                                );
-                                if (confirm == null || !confirm) {
-                                  return;
-                                }
-                              }
-                              await _disconnectFromRoom();
-                              await _cameraController?.dispose();
-                              Navigator.pop(context);
-                            },
-                            child: Container(
-                              width: 36.w,
-                              height: 36.w,
-                              decoration: BoxDecoration(
-                                color: AppColors.black.withOpacity(0.6),
-                                shape: BoxShape.circle,
+                                    if (confirm == null || !confirm) {
+                                      return;
+                                    }
+                                  }
+                                  await _disconnectFromRoom();
+                                  await _cameraController?.dispose();
+                                  Navigator.pop(context);
+                                },
+                                child: Container(
+                                  width: 36.w,
+                                  height: 36.w,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.black.withOpacity(0.6),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(
+                                    Icons.power_settings_new_rounded,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
+                                ),
                               ),
-                              child: const Icon(
-                                Icons.power_settings_new_rounded,
-                                color: Colors.white,
-                                size: 20,
-                              ),
-                            ),
+                            ],
                           ),
                         ],
                       ),
