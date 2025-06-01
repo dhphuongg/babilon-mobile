@@ -146,6 +146,10 @@ abstract class ApiClient {
     @Path('videoId') String videoId,
   );
 
+  // get list liked video
+  @GET('/video/liked')
+  Future<ObjectResponse<ArrayResponse<Video>>> getListLikedVideo();
+
   // ========================== Live ==========================
   @GET('/live/trending')
   Future<ObjectResponse<ArrayResponse<Live>>> getLiveTrending();

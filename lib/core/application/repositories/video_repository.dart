@@ -33,4 +33,6 @@ abstract class VideoRepository {
   Future<ObjectResponse<ArrayResponse<Video>>> searchVideos(
     String query,
   );
+
+  Future<ObjectResponse<ArrayResponse<Video>>> getListLikedVideo();
 }

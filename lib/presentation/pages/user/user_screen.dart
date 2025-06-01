@@ -64,6 +64,7 @@ class _UserScreenState extends State<UserScreen> {
                     cubit: _cubit,
                     user: state.user!,
                     videos: state.videos!,
+                    likedVideos: const [],
                   )
                 : const SizedBox.shrink(),
           ),

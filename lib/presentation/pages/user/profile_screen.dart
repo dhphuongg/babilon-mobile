@@ -24,6 +24,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _cubit = BlocProvider.of<UserCubit>(context);
     _cubit.loadUserProfile();
     _cubit.loadUserVideos();
+    _cubit.loadListLikedVideo();
   }
 
   @override
@@ -37,10 +38,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return BlocConsumer<UserCubit, UserState>(
       buildWhen: (previous, current) =>
           previous.getUserStatus != current.getUserStatus ||
-          previous.getListVideoStatus != current.getListVideoStatus,
+          previous.getListVideoStatus != current.getListVideoStatus ||
+          previous.getListLikedVideoStatus != current.getListLikedVideoStatus,
       listenWhen: (previous, current) =>
           previous.getUserStatus != current.getUserStatus ||
-          previous.getListVideoStatus != current.getListVideoStatus,
+          previous.getListVideoStatus != current.getListVideoStatus ||
+          previous.getListLikedVideoStatus != current.getListLikedVideoStatus,
       listener: (context, state) {
         if (state.getUserStatus == LoadStatus.FAILURE) {
           AppSnackBar.showError(state.error!);
@@ -63,11 +66,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           body: Padding(
             padding: EdgeInsets.symmetric(horizontal: AppPadding.horizontal),
-            child: state.user != null && state.videos != null
+            child: state.user != null &&
+                    state.videos != null &&
+                    state.likedVideos != null
                 ? Profile(
                     cubit: _cubit,
                     user: state.user!,
                     videos: state.videos!,
+                    likedVideos: state.likedVideos!,
                   )
                 : const SizedBox.shrink(),
           ),

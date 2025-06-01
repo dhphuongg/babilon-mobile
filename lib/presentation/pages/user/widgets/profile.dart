@@ -17,23 +17,36 @@ class Profile extends StatefulWidget {
     required this.cubit,
     required this.user,
     required this.videos,
+    required this.likedVideos,
   });
 
   final UserCubit cubit;
   final UserEntity user;
   final List<Video> videos;
+  final List<Video> likedVideos;
 
   @override
   State<Profile> createState() => _ProfileState();
 }
 
-class _ProfileState extends State<Profile> {
+class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   late bool isFollowing = false;
+  late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
     isFollowing = widget.user.isFollowing;
+    _tabController = TabController(
+      length: widget.user.isMe ? 2 : 1,
+      vsync: this,
+    );
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   Future<void> _onFollowTap() async {
@@ -135,10 +148,37 @@ class _ProfileState extends State<Profile> {
           style: const TextStyle(fontSize: 16),
         ),
         SizedBox(height: 16.h),
-        Expanded(
-          child: SingleChildScrollView(
-            child: UserVideoList(videos: widget.videos),
+
+        // Tab Bar (chỉ hiển thị khi có 2 tabs)
+        if (widget.user.isMe)
+          TabBar(
+            controller: _tabController,
+            labelColor: Colors.black,
+            unselectedLabelColor: Colors.grey,
+            indicatorColor: Colors.black,
+            tabs: const [
+              Tab(text: 'Videos'),
+              Tab(text: 'Liked'),
+            ],
           ),
+
+        // Tab Bar View hoặc Single View
+        Expanded(
+          child: widget.user.isMe
+              ? TabBarView(
+                  controller: _tabController,
+                  children: [
+                    SingleChildScrollView(
+                      child: UserVideoList(videos: widget.videos),
+                    ),
+                    SingleChildScrollView(
+                      child: UserVideoList(videos: widget.likedVideos),
+                    ),
+                  ],
+                )
+              : SingleChildScrollView(
+                  child: UserVideoList(videos: widget.videos),
+                ),
         ),
       ],
     );

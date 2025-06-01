@@ -8,6 +8,7 @@ class UserState extends Equatable {
   final List<UserEntity>? followings;
 
   final List<Video>? videos;
+  final List<Video>? likedVideos;
 
   final LoadStatus? getUserStatus;
   final LoadStatus? updateStatus;
@@ -15,12 +16,14 @@ class UserState extends Equatable {
   final LoadStatus? followStatus;
   final LoadStatus? unfollowStatus;
   final LoadStatus? getListVideoStatus;
+  final LoadStatus? getListLikedVideoStatus;
 
   const UserState({
     this.user,
     this.followers,
     this.followings,
     this.videos,
+    this.likedVideos,
     this.error,
     this.updateStatus,
     this.getUserStatus,
@@ -28,6 +31,7 @@ class UserState extends Equatable {
     this.followStatus,
     this.unfollowStatus,
     this.getListVideoStatus,
+    this.getListLikedVideoStatus,
   });
 
   UserState copyWith({
@@ -35,6 +39,7 @@ class UserState extends Equatable {
     List<UserEntity>? followers,
     List<UserEntity>? followings,
     List<Video>? videos,
+    List<Video>? likedVideos,
     String? error,
     LoadStatus? updateStatus,
     LoadStatus? getUserStatus,
@@ -42,12 +47,14 @@ class UserState extends Equatable {
     LoadStatus? followStatus,
     LoadStatus? unfollowStatus,
     LoadStatus? getListVideoStatus,
+    LoadStatus? getListLikedVideoStatus,
   }) {
     return UserState(
       user: user ?? this.user,
       followers: followers ?? this.followers,
       followings: followings ?? this.followings,
       videos: videos ?? this.videos,
+      likedVideos: likedVideos ?? this.likedVideos,
       error: error ?? this.error,
       updateStatus: updateStatus ?? this.updateStatus,
       getUserStatus: getUserStatus ?? this.getUserStatus,
@@ -55,6 +62,8 @@ class UserState extends Equatable {
       followStatus: followStatus ?? this.followStatus,
       unfollowStatus: unfollowStatus ?? this.unfollowStatus,
       getListVideoStatus: getListVideoStatus ?? this.getListVideoStatus,
+      getListLikedVideoStatus:
+          getListLikedVideoStatus ?? this.getListLikedVideoStatus,
     );
   }
 
@@ -64,6 +73,7 @@ class UserState extends Equatable {
         followers,
         followings,
         videos,
+        likedVideos,
         error,
         updateStatus,
         getUserStatus,
@@ -71,5 +81,6 @@ class UserState extends Equatable {
         followStatus,
         unfollowStatus,
         getListVideoStatus,
+        getListLikedVideoStatus,
       ];
 }

@@ -310,4 +310,29 @@ class UserCubit extends Cubit<UserState> {
     }
     return null;
   }
+
+  Future<void> loadListLikedVideo() async {
+    try {
+      emit(state.copyWith(
+          getListLikedVideoStatus: LoadStatus.LOADING, error: ''));
+      final response = await _videoRepository.getListLikedVideo();
+      if (response.success && response.data != null) {
+        emit(state.copyWith(
+          likedVideos: response.data?.items,
+          error: '',
+          getListLikedVideoStatus: LoadStatus.SUCCESS,
+        ));
+      } else {
+        emit(state.copyWith(
+          getListLikedVideoStatus: LoadStatus.FAILURE,
+          error: response.error ?? 'Failed to load liked videos',
+        ));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+        getListLikedVideoStatus: LoadStatus.FAILURE,
+        error: e.toString(),
+      ));
+    }
+  }
 }

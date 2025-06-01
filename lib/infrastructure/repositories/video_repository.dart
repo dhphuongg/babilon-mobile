@@ -66,4 +66,9 @@ class VideoRepositoryImpl implements VideoRepository {
   Future<ObjectResponse<ArrayResponse<Video>>> searchVideos(String query) {
     return RestClientProvider.apiClient!.searchVideos(query);
   }
+
+  @override
+  Future<ObjectResponse<ArrayResponse<Video>>> getListLikedVideo() {
+    return RestClientProvider.apiClient!.getListLikedVideo();
+  }
 }
